@@ -1,0 +1,721 @@
+/**
+ * Estilos de acessibilidade que atendem às diretrizes WCAG 2.1 nível AA
+ *
+ * @package    local_aguiaplugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* Variáveis CSS com cores com contraste suficiente para WCAG 2.1 AA */
+:root {
+    --aguia-primary-color: #0056b3;        /* Azul principal - identidade do plugin */
+    --aguia-secondary-color: #2196f3;      /* Azul médio - para elementos destacados */
+    --aguia-accent-color: #4dabff;         /* Azul claro - para elementos decorativos */
+    --aguia-background-light: #ffffff;     /* Fundo branco */
+    --aguia-background-dark: #1a1a1a;      /* Fundo escuro */
+    --aguia-text-light: #ffffff;           /* Texto claro para fundos escuros */
+    --aguia-text-dark: #333333;            /* Texto escuro para fundos claros */
+    --aguia-focus-color: #ffbf47;          /* Amarelo destaque para foco - alto contraste */
+    --aguia-error-color: #d32f2f;          /* Vermelho para erros - com bom contraste */
+    --aguia-success-color: #388e3c;        /* Verde para sucesso - com bom contraste */
+    --aguia-hover-bg: #f5f9ff;             /* Fundo hover para itens do menu */
+    --aguia-disabled-color: #757575;       /* Cor para elementos desabilitados */
+    --aguia-border-radius: 8px;            /* Arredondamento de bordas */
+    --aguia-box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16); /* Sombra padrão */
+}
+
+/* Estilos para garantir foco visível - WCAG 2.4.7 */
+*:focus {
+    outline: 3px solid var(--aguia-focus-color) !important;
+    outline-offset: 2px !important;
+}
+
+/* Estilos para contraste suficiente - WCAG 1.4.3 */
+.aguia-button {
+    background-color: var(--aguia-background-light);
+    color: var(--aguia-primary-color);
+    border-radius: 50%;
+    position: fixed !important; /* Garantindo que o botão fique fixo mesmo com estilos conflitantes */
+    bottom: 30px !important;
+    right: 30px !important;
+    width: 64px;
+    height: 64px;
+    border: none;
+    cursor: pointer;
+    z-index: 9999;
+    box-shadow: var(--aguia-box-shadow);
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.aguia-button:hover {
+    transform: scale(1.08);
+    box-shadow: 0 8px 20px rgba(0, 86, 179, 0.3);
+}
+
+.aguia-button:focus {
+    transform: scale(1.08);
+    box-shadow: 0 8px 20px rgba(0, 86, 179, 0.3);
+}
+
+.aguia-button img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+/* Animação de pulsar para chamar atenção ao carregar a página */
+@keyframes pulseAnimation {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 86, 179, 0.4); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(0, 86, 179, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 86, 179, 0); }
+}
+
+.aguia-button.pulse {
+    animation: pulseAnimation 2s infinite;
+}
+
+/* Menu de acessibilidade */
+.aguia-menu {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    background-color: var(--aguia-background-light);
+    border: none;
+    border-radius: var(--aguia-border-radius);
+    padding: 0;
+    box-shadow: var(--aguia-box-shadow);
+    display: none;
+    width: 320px;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.aguia-menu-header {
+    background-color: var(--aguia-primary-color);
+    color: var(--aguia-text-light);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.aguia-menu-header h2 {
+    color: var(--aguia-text-light);
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.aguia-menu-close {
+    background: transparent;
+    color: var(--aguia-text-light);
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.aguia-menu-close:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.aguia-menu-content {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+/* Barra de rolagem personalizada */
+.aguia-menu-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.aguia-menu-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.aguia-menu-content::-webkit-scrollbar-thumb {
+    background: var(--aguia-secondary-color);
+    border-radius: 4px;
+}
+
+.aguia-menu-content::-webkit-scrollbar-thumb:hover {
+    background: var(--aguia-primary-color);
+}
+
+/* Organização de opções em grid */
+.aguia-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+/* Categorias de opções */
+.aguia-category {
+    margin-bottom: 20px;
+}
+
+.aguia-category-title {
+    font-size: 16px;
+    color: var(--aguia-primary-color);
+    font-weight: 500;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Botões do menu com contraste adequado - WCAG 1.4.3 */
+.aguia-option {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 12px 8px;
+    background-color: var(--aguia-background-light);
+    color: var(--aguia-text-dark);
+    border: 1px solid #eaeaea;
+    border-radius: var(--aguia-border-radius);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    height: 90px;
+}
+
+.aguia-option:hover,
+.aguia-option:focus {
+    background-color: var(--aguia-hover-bg);
+    color: var(--aguia-primary-color);
+    border-color: var(--aguia-secondary-color);
+}
+
+.aguia-option-button.active {
+    background-color: var(--aguia-primary-color);
+    color: var(--aguia-text-light);
+    border-color: var(--aguia-primary-color);
+}
+
+.aguia-option span.icon {
+    margin-bottom: 8px;
+    font-size: 24px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.aguia-option span.text {
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.aguia-option.active {
+    background-color: var(--aguia-hover-bg);
+    border-color: var(--aguia-primary-color);
+    color: var(--aguia-primary-color);
+    box-shadow: 0 2px 8px rgba(0, 86, 179, 0.15);
+}
+
+/* Estilo para opções em linha (para o reset e outras ações) */
+.aguia-inline-options {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+}
+
+.aguia-option-inline {
+    padding: 8px 16px;
+    background-color: #f5f5f5;
+    color: var(--aguia-text-dark);
+    border: none;
+    border-radius: var(--aguia-border-radius);
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.aguia-option-inline:hover {
+    background-color: #e0e0e0;
+}
+
+/* Estilos para alto contraste - WCAG 1.4.6 */
+.aguia-high-contrast {
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
+.aguia-high-contrast * {
+    background-color: #000 !important;
+    color: #fff !important;
+    border-color: #fff !important;
+}
+
+.aguia-high-contrast a,
+.aguia-high-contrast button {
+    color: #ffff00 !important;
+}
+
+.aguia-high-contrast img:not(.aguia-logo) {
+    filter: grayscale(100%) contrast(150%) !important;
+}
+
+/* Cores invertidas */
+.aguia-inverted-colors {
+    filter: invert(100%) hue-rotate(180deg) !important;
+}
+
+.aguia-inverted-colors img:not(.aguia-logo) {
+    filter: invert(100%) hue-rotate(180deg) !important;
+}
+
+/* Fontes legíveis - WCAG 1.4.8 */
+.aguia-readable-fonts,
+.aguia-readable-fonts * {
+    font-family: "Arial", "Helvetica", sans-serif !important;
+    letter-spacing: 0.12em !important;
+    word-spacing: 0.16em !important;
+    line-height: 1.5 !important;
+}
+
+/* Espaçamento adequado - WCAG 1.4.8 */
+.aguia-increased-spacing {
+    line-height: 1.8 !important;
+}
+
+.aguia-increased-spacing p, 
+.aguia-increased-spacing li, 
+.aguia-increased-spacing h1, 
+.aguia-increased-spacing h2, 
+.aguia-increased-spacing h3, 
+.aguia-increased-spacing h4, 
+.aguia-increased-spacing h5, 
+.aguia-increased-spacing h6 {
+    margin-bottom: 1.5em !important;
+}
+
+/* Destaque para texto falado - WCAG 1.4.1 */
+.aguia-text-highlight {
+    background-color: var(--aguia-focus-color) !important;
+    color: var(--aguia-text-dark) !important;
+}
+
+/* Auxiliar de leitura - WCAG 2.4.8 */
+.aguia-reading-helper {
+    position: absolute;
+    background-color: rgba(255, 215, 0, 0.3);
+    height: 2.2em;
+    pointer-events: none;
+    z-index: 9998;
+    border: 2px solid rgba(255, 165, 0, 0.5);
+}
+
+/* Status message - WCAG 4.1.3 */
+.aguia-status-message {
+    position: fixed;
+    bottom: 110px;
+    right: 30px;
+    transform: translateY(-10px);
+    padding: 12px 20px;
+    background-color: var(--aguia-background-light);
+    color: var(--aguia-text-dark);
+    border-left: 4px solid var(--aguia-primary-color);
+    border-radius: var(--aguia-border-radius);
+    box-shadow: var(--aguia-box-shadow);
+    display: none;
+    z-index: 10000;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 200px;
+    max-width: 320px;
+    animation: slideInRight 0.3s forwards;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.aguia-status-message.success {
+    border-left-color: var(--aguia-success-color);
+}
+
+.aguia-status-message.error {
+    border-left-color: var(--aguia-error-color);
+}
+
+/* Classes para ajustar tamanhos de texto - WCAG 1.4.4 */
+.aguia-text-size-100 {
+    font-size: 100% !important;
+}
+
+.aguia-text-size-110 {
+    font-size: 110% !important;
+}
+
+.aguia-text-size-120 {
+    font-size: 120% !important;
+}
+
+.aguia-text-size-130 {
+    font-size: 130% !important;
+}
+
+.aguia-text-size-140 {
+    font-size: 140% !important;
+}
+
+.aguia-text-size-150 {
+    font-size: 150% !important;
+}
+
+/* Garante que links sejam identificáveis - WCAG 1.4.1 */
+.aguia-emphasize-links a {
+    text-decoration: underline !important;
+    color: var(--aguia-secondary-color) !important;
+}
+
+.aguia-emphasize-links a:hover,
+.aguia-emphasize-links a:focus {
+    text-decoration: underline double !important;
+    color: var(--aguia-primary-color) !important;
+}
+
+/* Controles deslizantes - para tamanho de fonte e outros ajustes */
+.aguia-slider-control {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding: 12px;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: var(--aguia-border-radius);
+}
+
+.aguia-slider-label {
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--aguia-text-dark);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.aguia-slider-label::after {
+    content: attr(data-value);
+    font-size: 12px;
+    font-weight: normal;
+    color: var(--aguia-secondary-color);
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.aguia-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: #e6e6e6;
+    outline: none;
+    border-radius: 10px;
+    margin: 8px 0;
+}
+
+.aguia-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--aguia-primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+
+.aguia-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.aguia-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--aguia-primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.aguia-slider::-moz-range-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.aguia-slider::-moz-range-progress {
+    background-color: var(--aguia-primary-color);
+    height: 6px;
+    border-radius: 10px;
+}
+
+/* Estilo para botões de ação principais */
+.aguia-action-button {
+    background-color: var(--aguia-primary-color);
+    color: var(--aguia-text-light);
+    border: none;
+    border-radius: var(--aguia-border-radius);
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.aguia-action-button:hover,
+.aguia-action-button:focus {
+    background-color: #004494;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.aguia-action-button.secondary {
+    background-color: #f0f0f0;
+    color: var(--aguia-text-dark);
+}
+
+.aguia-action-button.secondary:hover,
+.aguia-action-button.secondary:focus {
+    background-color: #e0e0e0;
+}
+
+/* Estilo para interruptores (switches) */
+.aguia-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.aguia-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.aguia-switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.aguia-switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .aguia-switch-slider {
+    background-color: var(--aguia-primary-color);
+}
+
+input:focus + .aguia-switch-slider {
+    box-shadow: 0 0 1px var(--aguia-primary-color);
+}
+
+input:checked + .aguia-switch-slider:before {
+    transform: translateX(24px);
+}
+
+/* Footer do menu com opção de reset e créditos */
+.aguia-menu-footer {
+    padding: 12px 16px;
+    border-top: 1px solid #eaeaea;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fafafa;
+}
+
+.aguia-reset-button {
+    color: var(--aguia-error-color);
+    background: transparent;
+    border: 1px solid #eaeaea;
+    border-radius: var(--aguia-border-radius);
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.aguia-reset-button:hover {
+    background-color: #fff5f5;
+    border-color: var(--aguia-error-color);
+}
+
+.aguia-credits {
+    font-size: 11px;
+    color: #888;
+}
+
+/* Estilos para o painel de daltonismo */
+.aguia-submenu {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    background-color: var(--aguia-background-light);
+    border: 1px solid #ddd;
+    border-radius: var(--aguia-border-radius);
+    padding: 15px;
+    box-shadow: var(--aguia-box-shadow);
+    width: 300px;
+    z-index: 9999;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.aguia-submenu-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.aguia-back-button {
+    background: none;
+    border: none;
+    color: var(--aguia-primary-color);
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: var(--aguia-border-radius);
+    margin-right: 10px;
+}
+
+.aguia-back-button:hover {
+    background-color: var(--aguia-hover-bg);
+}
+
+.aguia-submenu h3 {
+    margin: 0;
+    flex-grow: 1;
+    font-size: 18px;
+    color: var(--aguia-text-dark);
+}
+
+.aguia-submenu-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.aguia-submenu-option {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: var(--aguia-border-radius);
+    background-color: var(--aguia-background-light);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--aguia-text-dark);
+    text-align: left;
+    font-size: 16px;
+}
+
+.aguia-submenu-option:hover {
+    background-color: var(--aguia-hover-bg);
+}
+
+.aguia-submenu-option.active {
+    background-color: var(--aguia-primary-color);
+    color: var(--aguia-text-light);
+    border-color: var(--aguia-primary-color);
+}
+
+.aguia-submenu-option .aguia-icon {
+    margin-right: 10px;
+    font-size: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+}
+
+/* Garantir que o botão de acessibilidade não seja afetado pelos filtros de daltonismo */
+#aguiaButton {
+    filter: none !important;
+    -webkit-filter: none !important;
+    z-index: 9999 !important;
+}
+
+/* Estilo melhorado para o botão de daltonismo */
+#aguiaColorblindButton {
+    background: linear-gradient(145deg, #ffffff, #f0f7ff);
+    border: 1px solid rgba(33, 150, 243, 0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+#aguiaColorblindButton .icon {
+    font-size: 28px;
+    background: linear-gradient(45deg, #ff5252, #2196f3, #4caf50, #ffeb3b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    margin-bottom: 10px;
+    display: block;
+}
+
+#aguiaColorblindButton:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(33, 150, 243, 0.2);
+}
+
+#aguiaColorblindButton.active {
+    background: linear-gradient(145deg, #2196f3, #0d47a1);
+}
+
+#aguiaColorblindButton.active .icon {
+    color: white;
+    background: none;
+}

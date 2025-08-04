@@ -1,0 +1,68 @@
+/**
+ * Filtros para daltonismo - Atende diretrizes WCAG 1.4.3
+ *
+ * Implementa filtros CSS para simular diferentes tipos de daltonismo:
+ * - Protanopia: Incapacidade de perceber vermelho
+ * - Deuteranopia: Incapacidade de perceber verde
+ * - Tritanopia: Incapacidade de perceber azul
+ * - Monocromacia/Acromatopsia: Incapacidade de perceber cores
+ *
+ * @package    local_aguiaplugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* Protanopia - Dificuldade em perceber vermelho */
+html.aguia-colorblind-protanopia {
+    filter: url('data:image/svg+xml,\
+        <svg xmlns="http://www.w3.org/2000/svg">\
+            <filter id="protanopia">\
+                <feColorMatrix in="SourceGraphic" type="matrix"\
+                    values="0.567, 0.433, 0,     0, 0\
+                            0.558, 0.442, 0,     0, 0\
+                            0,     0.242, 0.758, 0, 0\
+                            0,     0,     0,     1, 0"/>\
+            </filter>\
+        </svg>#protanopia');
+}
+
+/* Deuteranopia - Dificuldade em perceber verde */
+html.aguia-colorblind-deuteranopia {
+    filter: url('data:image/svg+xml,\
+        <svg xmlns="http://www.w3.org/2000/svg">\
+            <filter id="deuteranopia">\
+                <feColorMatrix in="SourceGraphic" type="matrix"\
+                    values="0.625, 0.375, 0,   0, 0\
+                            0.7,   0.3,   0,   0, 0\
+                            0,     0.3,   0.7, 0, 0\
+                            0,     0,     0,   1, 0"/>\
+            </filter>\
+        </svg>#deuteranopia');
+}
+
+/* Tritanopia - Dificuldade em perceber azul */
+html.aguia-colorblind-tritanopia {
+    filter: url('data:image/svg+xml,\
+        <svg xmlns="http://www.w3.org/2000/svg">\
+            <filter id="tritanopia">\
+                <feColorMatrix in="SourceGraphic" type="matrix"\
+                    values="0.95, 0.05,  0,     0, 0\
+                            0,    0.433, 0.567, 0, 0\
+                            0,    0.475, 0.525, 0, 0\
+                            0,    0,     0,     1, 0"/>\
+            </filter>\
+        </svg>#tritanopia');
+}
+
+/* Monocromacia/Acromatopsia - Visão em escala de cinza */
+html.aguia-colorblind-achromatopsia {
+    filter: url('data:image/svg+xml,\
+        <svg xmlns="http://www.w3.org/2000/svg">\
+            <filter id="achromatopsia">\
+                <feColorMatrix in="SourceGraphic" type="matrix"\
+                    values="0.299, 0.587, 0.114, 0, 0\
+                            0.299, 0.587, 0.114, 0, 0\
+                            0.299, 0.587, 0.114, 0, 0\
+                            0,     0,     0,     1, 0"/>\
+            </filter>\
+        </svg>#achromatopsia');
+}

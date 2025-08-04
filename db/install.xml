@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="local/aguiaplugin/db" VERSION="20250701" COMMENT="XMLDB file for Moodle local/aguiaplugin plugin">
+    <TABLES>
+        <TABLE NAME="local_aguiaplugin_prefs" COMMENT="Armazena as preferências de acessibilidade dos usuários">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID do usuário Moodle"/>
+                <FIELD NAME="fontsize" TYPE="int" LENGTH="3" NOTNULL="false" DEFAULT="100" SEQUENCE="false" COMMENT="Tamanho da fonte em percentual"/>
+                <FIELD NAME="contrast" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="normal" SEQUENCE="false" COMMENT="Contraste preferido (normal, high, etc)"/>
+                <FIELD NAME="readablefonts" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Fontes mais legíveis (1=sim, 0=não)"/>
+                <FIELD NAME="linespacing" TYPE="int" LENGTH="3" NOTNULL="false" DEFAULT="100" SEQUENCE="false" COMMENT="Espaçamento entre linhas em percentual"/>
+                <FIELD NAME="speech" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Leitura de texto ativada (1=sim, 0=não)"/>
+                <FIELD NAME="texthelper" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Auxiliar de leitura (1=sim, 0=não)"/>
+                <FIELD NAME="colorblind" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="none" SEQUENCE="false" COMMENT="Modo de daltonismo (none, protanopia, deuteranopia, tritanopia, achromatopsia)"/>
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Timestamp da última modificação"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+                <KEY NAME="userid" TYPE="unique" FIELDS="userid"/>
+            </KEYS>
+        </TABLE>
+    </TABLES>
+</XMLDB>

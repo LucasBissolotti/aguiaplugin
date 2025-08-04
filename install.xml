@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMLDB PATH="db" VERSION="2025070100">
+    <TABLE NAME="local_aguiaplugin_preferences" COMMENT="Tabelas de preferências de acessibilidade">
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" UNSIGNED="true" NOTNULL="true"/>
+        <FIELD NAME="fontsize" TYPE="int" LENGTH="3" NOTNULL="false"/>
+        <FIELD NAME="contrast" TYPE="varchar" LENGTH="20" NOTNULL="false"/>
+    </TABLE>
+</XMLDB>

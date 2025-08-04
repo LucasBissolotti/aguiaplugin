@@ -1,0 +1,13 @@
+/* Arquivo de estilo base para o plugin AGUIA */
+.aguia-logo {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+/* Estilo para o botão de acessibilidade com o logo AGUIA */
+#aguiaButton {
+    background-color: white !important;
+    padding: 8px !important;
+}
