@@ -253,8 +253,8 @@ document.addEventListener('DOMContentLoaded', function() {
         colorsCategory.appendChild(colorsGrid);
         
         // Título para a subcategoria de daltonismo
-        const colorblindTitle = document.createElement('h4');
-        colorblindTitle.className = 'aguia-subcategory-title';
+        const colorblindTitle = document.createElement('h3');
+        colorblindTitle.className = 'aguia-category-title';
         colorblindTitle.textContent = 'Modos de Daltonismo';
         colorsCategory.appendChild(colorblindTitle);
         
@@ -408,7 +408,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Créditos
         const credits = document.createElement('div');
         credits.className = 'aguia-credits';
-        credits.textContent = 'AGUIA Acessibilidade';
+        credits.textContent = 'AGUIA';
         
         footer.appendChild(resetButton);
         footer.appendChild(credits);

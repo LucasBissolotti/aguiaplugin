@@ -24,7 +24,5 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-// Garante que o JavaScript seja carregado
-if ($CFG->version >= 2022041900) {  // Moodle 4.0+
-    $PAGE->requires->js('/local/aguiaplugin/js/accessibility.js');
-}
+// Nota: O JavaScript principal de acessibilidade é carregado em lib.php
+// Este arquivo não carrega mais scripts separados para evitar duplicação
