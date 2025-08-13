@@ -7,6 +7,10 @@
  * - Tritanopia: Incapacidade de perceber azul
  * - Monocromacia/Acromatopsia: Incapacidade de perceber cores
  *
+ * NOTA: Este sistema suporta a combinação de múltiplos filtros de daltonismo
+ * simultaneamente, permitindo criar experiências personalizadas para diferentes
+ * tipos de deficiências visuais combinadas.
+ *
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

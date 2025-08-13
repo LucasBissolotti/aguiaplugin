@@ -1,0 +1,64 @@
+/**
+ * Estilos para botões de acessibilidade 
+ * Estado padrão: fundo branco com texto/ícones pretos
+ * Estado ativo: fundo azul com texto/ícones brancos
+ *
+ * @package    local_aguiaplugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* Estilo base para todos os botões de acessibilidade (estado padrão) */
+.aguia-option {
+    background: white !important;
+    color: #333 !important;
+    border: 1px solid #eaeaea !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
+}
+
+/* Hover para todos os botões */
+.aguia-option:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+    border-color: #2196f3 !important;
+}
+
+/* Estado ativo para todos os botões - azul com texto branco */
+.aguia-option.active {
+    background: linear-gradient(145deg, #2196f3, #0d47a1) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 4px 10px rgba(33, 150, 243, 0.4) !important;
+}
+
+/* Ícones SVG em estado normal (preto) */
+.aguia-option .icon svg {
+    fill: #333 !important;
+}
+
+/* Ícones SVG em estado ativo (branco) */
+.aguia-option.active .icon svg {
+    fill: white !important;
+    filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.2)) !important;
+}
+
+/* Texto em estado normal (preto) */
+.aguia-option span.text {
+    color: #333 !important;
+    font-weight: 500 !important;
+}
+
+/* Texto em estado ativo (branco) */
+.aguia-option.active span.text {
+    color: white !important;
+}
+
+/* Ícones emoji em estado normal */
+.aguia-option .icon {
+    color: #333 !important;
+}
+
+/* Ícones emoji em estado ativo */
+.aguia-option.active .icon {
+    color: white !important;
+    text-shadow: 0px 1px 2px rgba(0,0,0,0.2) !important;
+}

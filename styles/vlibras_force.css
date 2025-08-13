@@ -1,0 +1,108 @@
+/**
+ * Estilos forçados para garantir a exibição do personagem do VLibras
+ * Este arquivo contém estilos que sobrepõem qualquer outro estilo para garantir a visibilidade
+ *
+ * @package    local_aguiaplugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* Força o container do VLibras a ficar visível quando ativado */
+.vw-container.enabled {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 9999 !important;
+    position: fixed !important;
+    bottom: 0px !important;
+    right: 0px !important;
+    width: 300px !important;
+    height: 300px !important;
+    overflow: visible !important;
+}
+
+/* Força o plugin box do VLibras a ficar visível quando ativado */
+.vw-container.enabled .vw-plugin-box {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Força o box do avatar a ficar visível */
+.vp-box {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 10000 !important;
+}
+
+/* Força os controles do avatar a ficarem visíveis */
+.vp-box .vp-controls {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Garante que a caixa de mensagem do avatar fique visível */
+.vp-box .vp-message-box {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 10001 !important;
+}
+
+/* Garante que a caixa de sugestões do avatar fique visível */
+.vp-box .vp-suggestion-box {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 10001 !important;
+}
+
+/* Garante que o botão de acesso original do VLibras fique invisível */
+.vw-button.access-button {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Garante que o box VW seja visível */
+.vw-container.enabled .vw-box {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Garante que a janela principal do personagem fique visível */
+.vw-container.enabled .vw-main-window {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Garante que o elemento Canvas do personagem seja visível e tenha tamanho adequado */
+.vp-box canvas {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 200px !important;
+}
+
+/* Resolve problemas de visibilidade em telas menores */
+@media (max-width: 768px) {
+    .vw-container.enabled {
+        width: 250px !important;
+        height: 250px !important;
+    }
+}
+
+/* Destaca o botão do VLibras quando ativado no menu AGUIA */
+#aguia-vlibras-button.active {
+    box-shadow: 0 0 10px 3px rgba(0, 114, 188, 0.6) !important;
+    transform: scale(1.05) !important;
+    transition: all 0.3s ease !important;
+}

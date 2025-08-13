@@ -27,7 +27,10 @@ document.addEventListener('DOMContentLoaded', function() {
     let textToSpeechEnabled = false;
     let readingHelperEnabled = false;
     let emphasizeLinksEnabled = false;
+    let hideImagesEnabled = false; // Nova variável para controlar a ocultação de imagens
     let colorBlindMode = 'none'; // Valores possíveis: none, protanopia, deuteranopia, tritanopia, achromatopsia
+    let readingMaskMode = 0; // 0: desativado, 1: horizontal, 2: vertical
+    let customCursorEnabled = false; // Nova variável para controlar o cursor personalizado
     
     // Cria o botão de acessibilidade com a imagem AGUIA
     createAccessibilityButton();
@@ -145,29 +148,29 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Opções de conteúdo
         const contentOptions = [
-            { 
-                icon: '🔍', 
+            {
+                iconSvg: AguiaIcons.increaseText,
                 text: 'Aumentar Texto', 
                 action: increaseFontSize,
                 ariaLabel: 'Aumentar tamanho do texto',
                 id: 'aguiaIncreaseFontBtn'
             },
             { 
-                icon: '📝', 
+                iconSvg: AguiaIcons.readableFont,
                 text: 'Fontes Legíveis', 
                 action: toggleReadableFonts,
                 ariaLabel: 'Ativar ou desativar fontes mais legíveis',
                 id: 'aguiaReadableFontsBtn'
             },
             { 
-                icon: '↕️', 
+                iconSvg: AguiaIcons.spacing,
                 text: 'Espaçamento', 
                 action: toggleLineSpacing,
                 ariaLabel: 'Ajustar espaçamento do texto',
                 id: 'aguiaLineSpacingBtn'
             },
             { 
-                icon: '🔗', 
+                iconSvg: AguiaIcons.emphasizeLinks,
                 text: 'Destacar Links', 
                 action: toggleEmphasizeLinks,
                 ariaLabel: 'Ativar ou desativar destaque para links',
@@ -229,14 +232,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Opções de cores
         const colorsOptions = [
             { 
-                icon: '🌓', 
+                iconSvg: AguiaIcons.contrast, 
                 text: 'Alto Contraste', 
                 action: toggleHighContrast,
                 ariaLabel: 'Ativar ou desativar o modo de alto contraste',
                 id: 'aguiaHighContrastBtn'
             },
             { 
-                icon: '🔄', 
+                iconSvg: AguiaIcons.invertColors, 
                 text: 'Cores Invertidas', 
                 action: toggleInvertedColors,
                 ariaLabel: 'Ativar ou desativar inversão de cores',
@@ -365,18 +368,46 @@ document.addEventListener('DOMContentLoaded', function() {
         // Opções de navegação
         const navigationOptions = [
             { 
-                icon: '🔊', 
+                iconSvg: AguiaIcons.textToSpeech, 
                 text: 'Texto para Fala', 
                 action: toggleTextToSpeech,
                 ariaLabel: 'Ativar ou desativar leitura de texto ao clicar',
                 id: 'aguiaTextToSpeechBtn'
             },
             { 
-                icon: '👁️', 
+                iconSvg: AguiaIcons.readingGuide, 
                 text: 'Guia de Leitura', 
                 action: toggleReadingHelper,
                 ariaLabel: 'Ativar ou desativar guia visual de leitura',
                 id: 'aguiaReadingHelperBtn'
+            },
+            { 
+                iconSvg: AguiaIcons.hideImages, 
+                text: 'Ocultar Imagens', 
+                action: toggleHideImages,
+                ariaLabel: 'Ativar ou desativar ocultação de imagens',
+                id: 'aguiaHideImagesBtn'
+            },
+            {
+                iconSvg: AguiaIcons.vLibras,
+                text: 'Tradutor LIBRAS',
+                action: toggleVLibras,
+                ariaLabel: 'Ativar ou desativar tradutor em Língua Brasileira de Sinais',
+                id: 'aguia-vlibras-button'
+            },
+            {
+                icon: '�',
+                text: 'Máscara de Foco',
+                action: toggleReadingMaskAndCursor,
+                ariaLabel: 'Alternar entre modos de máscara de leitura',
+                id: 'aguiaReadingMaskCursorBtn'
+            },
+            {
+                icon: '🖱️',
+                text: 'Cursor Grande',
+                action: toggleCustomCursor,
+                ariaLabel: 'Ativar ou desativar cursor personalizado',
+                id: 'aguiaCustomCursorBtn'
             }
         ];
         
@@ -427,10 +458,18 @@ document.addEventListener('DOMContentLoaded', function() {
         button.setAttribute('aria-label', option.ariaLabel);
         button.setAttribute('tabindex', '0');
         
-        // Ícone
+        // Ícone (SVG se disponível, emoji como fallback)
         const iconSpan = document.createElement('span');
         iconSpan.className = 'icon';
-        iconSpan.textContent = option.icon;
+        
+        if (option.iconSvg) {
+            // Usar ícone SVG da biblioteca
+            iconSpan.innerHTML = option.iconSvg;
+        } else if (option.icon) {
+            // Fallback para ícone de emoji
+            iconSpan.textContent = option.icon;
+        }
+        
         iconSpan.setAttribute('aria-hidden', 'true');
         button.appendChild(iconSpan);
         
@@ -536,6 +575,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para resetar o tamanho da fonte
     function resetFontSize() {
         setFontSize(100);
+        
+        // Atualiza o controle deslizante
+        const fontSizeSlider = document.getElementById('aguiaFontSizeSlider');
+        if (fontSizeSlider) {
+            fontSizeSlider.value = 100;
+        }
+        
+        // Atualiza o rótulo
+        const fontSizeLabel = document.getElementById('aguiaFontSizeLabel');
+        if (fontSizeLabel) {
+            fontSizeLabel.setAttribute('data-value', '100%');
+        }
     }
     
     // Função para alternar alto contraste
@@ -673,35 +724,31 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Função para configurar modo de daltonismo (WCAG 1.4.8)
-    function setColorBlindMode(mode) {
+    // Função para lidar com múltiplos modos de daltonismo
+    function setColorBlindModes(modes) {
         // Remove classes anteriores
-        document.body.classList.remove(
+        document.documentElement.classList.remove(
             'aguia-colorblind-protanopia',
             'aguia-colorblind-deuteranopia',
             'aguia-colorblind-tritanopia',
             'aguia-colorblind-achromatopsia'
         );
         
-        // Atualiza a variável
-        colorBlindMode = mode;
+        // Atualiza a variável - mantemos compatibilidade com código legado usando o primeiro modo
+        colorBlindMode = modes.length > 0 ? modes[0] : 'none';
         
         // Atualiza a UI para mostrar qual opção está ativa
         const colorblindButton = document.getElementById('aguiaColorblindButton');
         
-        // Atualiza os botões do painel de daltonismo
-        document.querySelectorAll('#aguiaColorblindPanel .aguia-submenu-option').forEach(btn => {
-            if (btn.dataset.value === mode) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
-        
-        if (mode !== 'none') {
-            // Aplicar o filtro ao elemento html em vez de body
+        if (modes.length > 0) {
+            // Aplicar os filtros ao elemento html em vez de body
             // para evitar problemas com o botão de acessibilidade
             const htmlElement = document.documentElement;
-            htmlElement.classList.add('aguia-colorblind-' + mode);
+            
+            // Aplica todos os modos selecionados
+            modes.forEach(mode => {
+                htmlElement.classList.add('aguia-colorblind-' + mode);
+            });
             
             // Mantém o botão fora do efeito
             const aguiaButton = document.getElementById('aguiaButton');
@@ -712,30 +759,36 @@ document.addEventListener('DOMContentLoaded', function() {
             colorblindButton.classList.add('active');
             
             // Mensagem de status para leitores de tela
-            let modeName = '';
-            switch (mode) {
-                case 'protanopia': modeName = 'Protanopia (sem vermelho)'; break;
-                case 'deuteranopia': modeName = 'Deuteranopia (sem verde)'; break;
-                case 'tritanopia': modeName = 'Tritanopia (sem azul)'; break;
-                case 'achromatopsia': modeName = 'Monocromacia (sem cores)'; break;
-                default: modeName = mode;
-            }
+            let modeNames = modes.map(mode => {
+                switch (mode) {
+                    case 'protanopia': return 'Protanopia (sem vermelho)';
+                    case 'deuteranopia': return 'Deuteranopia (sem verde)';
+                    case 'tritanopia': return 'Tritanopia (sem azul)';
+                    case 'achromatopsia': return 'Monocromacia (sem cores)';
+                    default: return mode;
+                }
+            });
             
-            const statusText = 'Modo de daltonismo ' + modeName + ' ativado';
+            const statusText = 'Modos de daltonismo ativados: ' + modeNames.join(', ');
             showStatusMessage(statusText, 'success');
         } else {
-            // Remove o filtro do elemento html
-            document.documentElement.classList.remove('aguia-colorblind-protanopia', 
-                'aguia-colorblind-deuteranopia', 
-                'aguia-colorblind-tritanopia', 
-                'aguia-colorblind-achromatopsia');
-            
+            // Reseta a interface quando não há modos selecionados
             colorblindButton.classList.remove('active');
-            showStatusMessage('Modo de daltonismo desativado');
+            showStatusMessage('Modos de daltonismo desativados');
         }
         
         // Salva a preferência do usuário
-        saveUserPreference('colorblind', mode);
+        localStorage.setItem('aguia_colorblind_modes', JSON.stringify(modes));
+        saveUserPreference('colorblind', colorBlindMode); // Mantém a compatibilidade
+    }
+    
+    // Função legada para compatibilidade com código existente
+    function setColorBlindMode(mode) {
+        if (mode === 'none') {
+            setColorBlindModes([]);
+        } else {
+            setColorBlindModes([mode]);
+        }
     }
     
     // Função para alternar fontes legíveis
@@ -981,6 +1034,32 @@ document.addEventListener('DOMContentLoaded', function() {
         saveUserPreference('emphasizeLinks', emphasizeLinksEnabled);
     }
     
+    // Função para ocultar todas as imagens (WCAG 1.1.1)
+    function toggleHideImages() {
+        hideImagesEnabled = !hideImagesEnabled;
+        
+        // Atualiza UI
+        const hideImagesBtn = document.getElementById('aguiaHideImagesBtn');
+        if (hideImagesBtn) {
+            if (hideImagesEnabled) {
+                hideImagesBtn.classList.add('active');
+            } else {
+                hideImagesBtn.classList.remove('active');
+            }
+        }
+        
+        if (hideImagesEnabled) {
+            document.body.classList.add('aguia-hide-images');
+            showStatusMessage('Ocultação de imagens ativada', 'success');
+        } else {
+            document.body.classList.remove('aguia-hide-images');
+            showStatusMessage('Ocultação de imagens desativada');
+        }
+        
+        // Salva preferência
+        saveUserPreference('hideImages', hideImagesEnabled);
+    }
+    
     // Função para resetar todas as configurações
     function resetAll() {
         // Reset de tamanho de fonte
@@ -989,6 +1068,25 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset de contraste
         if (highContrastEnabled || invertedColorsEnabled) {
             resetContrast();
+        }
+        
+        // Reset de ocultação de imagens
+        if (hideImagesEnabled) {
+            hideImagesEnabled = false;
+            document.body.classList.remove('aguia-hide-images');
+            
+            const hideImagesBtn = document.getElementById('aguiaHideImagesBtn');
+            if (hideImagesBtn) {
+                hideImagesBtn.classList.remove('active');
+            }
+            
+            // Salva preferência
+            saveUserPreference('hideImages', false);
+        }
+        
+        // Reset da máscara de leitura e do cursor personalizado
+        if (readingMaskMode > 0 || customCursorEnabled) {
+            resetReadingMaskAndCursor();
         }
         
         // Reset de fontes legíveis
@@ -1016,25 +1114,39 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleEmphasizeLinks();
         }
         
-        // Reset de modo daltonismo
-        if (colorBlindMode !== 'none') {
-            colorBlindMode = 'none';
+        // Reset de modo daltonismo - agora com suporte a múltiplos modos
+        // Verifica se há algum modo ativo verificando classes no HTML ou o valor da variável
+        const htmlElement = document.documentElement;
+        const hasColorblindClass = 
+            htmlElement.classList.contains('aguia-colorblind-protanopia') ||
+            htmlElement.classList.contains('aguia-colorblind-deuteranopia') ||
+            htmlElement.classList.contains('aguia-colorblind-tritanopia') ||
+            htmlElement.classList.contains('aguia-colorblind-achromatopsia');
             
-            // Remove classes de daltonismo do elemento HTML
-            document.documentElement.classList.remove(
-                'aguia-colorblind-protanopia',
-                'aguia-colorblind-deuteranopia',
-                'aguia-colorblind-tritanopia',
-                'aguia-colorblind-achromatopsia'
-            );
+        if (colorBlindMode !== 'none' || hasColorblindClass) {
+            // Reseta para nenhum filtro de daltonismo
+            setColorBlindModes([]);
             
-            // Atualiza o dropdown se existir
-            const colorblindSelect = document.getElementById('aguiaColorblindSelect');
-            if (colorblindSelect) {
-                colorblindSelect.value = 'none';
+            // Atualiza a UI no painel de daltonismo
+            document.querySelectorAll('#aguiaColorblindPanel .aguia-submenu-option').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.value === 'none') {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        // Reset do VLibras se estiver ativo
+        if (typeof vLibrasEnabled !== 'undefined' && vLibrasEnabled) {
+            if (typeof disableVLibras === 'function') {
+                disableVLibras();
             }
             
-            saveUserPreference('colorblind', 'none');
+            // Atualiza o botão se existir
+            const vLibrasBtn = document.getElementById('aguia-vlibras-button');
+            if (vLibrasBtn) {
+                vLibrasBtn.classList.remove('active');
+            }
         }
         
         showStatusMessage('Todas as configurações foram resetadas', 'success');
@@ -1107,7 +1219,9 @@ document.addEventListener('DOMContentLoaded', function() {
             textToSpeech: getFromLocalStorage('textToSpeech', false),
             readingHelper: getFromLocalStorage('readingHelper', false),
             emphasizeLinks: getFromLocalStorage('emphasizeLinks', false),
-            colorblind: getFromLocalStorage('colorblind', 'none')
+            colorblind: getFromLocalStorage('colorblind', 'none'),
+            readingMaskMode: getFromLocalStorage('readingMaskMode', 0),
+            customCursor: getFromLocalStorage('customCursor', false)
         };
         
         applyUserPreferences(preferences);
@@ -1223,6 +1337,57 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
+        // Aplicar ocultação de imagens
+        if (preferences.hideImages) {
+            hideImagesEnabled = true;
+            document.body.classList.add('aguia-hide-images');
+            
+            // Atualiza botão se existir
+            const hideImagesBtn = document.getElementById('aguiaHideImagesBtn');
+            if (hideImagesBtn) {
+                hideImagesBtn.classList.add('active');
+            }
+        }
+        
+        // Aplicar VLibras se estiver habilitado nas preferências
+        if (preferences.vlibras) {
+            // Inicializa o VLibras se estiver disponível
+            if (typeof initializeVLibras === 'function') {
+                initializeVLibras();
+            }
+        }
+
+        // Aplicar máscara de leitura
+        if (preferences.readingMaskMode && preferences.readingMaskMode > 0) {
+            readingMaskMode = preferences.readingMaskMode;
+            
+            if (readingMaskMode === 1) {
+                document.body.classList.add('aguia-reading-mask-horizontal');
+                document.body.classList.remove('aguia-reading-mask-vertical');
+            } else if (readingMaskMode === 2) {
+                document.body.classList.remove('aguia-reading-mask-horizontal');
+                document.body.classList.add('aguia-reading-mask-vertical');
+            }
+            
+            // Atualiza botão se existir
+            const maskBtn = document.getElementById('aguiaReadingMaskCursorBtn');
+            if (maskBtn) {
+                maskBtn.classList.add('active');
+            }
+        }
+        
+        // Aplicar cursor personalizado (separado da máscara)
+        if (preferences.customCursor) {
+            customCursorEnabled = true;
+            document.body.classList.add('aguia-custom-cursor');
+            
+            // Atualiza botão se existir
+            const cursorBtn = document.getElementById('aguiaCustomCursorBtn');
+            if (cursorBtn) {
+                cursorBtn.classList.add('active');
+            }
+        }
+        
         // Aplicar modo de daltonismo
         if (preferences.colorblind && preferences.colorblind !== 'none') {
             colorBlindMode = preferences.colorblind;
@@ -1272,4 +1437,128 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
+
+    // Função para alternar a máscara de leitura e o cursor personalizado
+    function toggleReadingMaskAndCursor() {
+        // Alterna entre os modos: 0 (desativado), 1 (horizontal), 2 (vertical)
+        readingMaskMode = (readingMaskMode + 1) % 3;
+        
+        // Cursor personalizado é mantido independente (não se altera ao mudar a máscara)
+        // A linha abaixo foi removida: customCursorEnabled = readingMaskMode !== 0;
+
+        const maskCursorBtn = document.getElementById('aguiaReadingMaskCursorBtn');
+        if (readingMaskMode === 0) {
+            document.body.classList.remove('aguia-reading-mask-horizontal');
+            document.body.classList.remove('aguia-reading-mask-vertical');
+            showStatusMessage('Máscara de leitura desativada');
+            if (maskCursorBtn) maskCursorBtn.classList.remove('active');
+        } else if (readingMaskMode === 1) {
+            document.body.classList.add('aguia-reading-mask-horizontal');
+            document.body.classList.remove('aguia-reading-mask-vertical');
+            showStatusMessage('Modo de máscara: Foco horizontal', 'success');
+            if (maskCursorBtn) maskCursorBtn.classList.add('active');
+        } else if (readingMaskMode === 2) {
+            document.body.classList.remove('aguia-reading-mask-horizontal');
+            document.body.classList.add('aguia-reading-mask-vertical');
+            showStatusMessage('Modo de máscara: Foco vertical', 'success');
+            if (maskCursorBtn) maskCursorBtn.classList.add('active');
+        }
+
+        // Salva preferências
+        saveUserPreference('readingMaskMode', readingMaskMode);
+        saveUserPreference('customCursor', customCursorEnabled);
+    }
+    
+    // Função para criar e configurar a máscara de leitura
+    function createReadingMask() {
+        // Cria ou obtém o elemento da máscara horizontal
+        let maskH = document.getElementById('aguiaReadingMaskH');
+        if (!maskH) {
+            maskH = document.createElement('div');
+            maskH.id = 'aguiaReadingMaskH';
+            maskH.className = 'aguia-reading-mask-horizontal-element';
+            document.body.appendChild(maskH);
+        }
+        // Cria ou obtém o elemento da máscara vertical
+        let maskV = document.getElementById('aguiaReadingMaskV');
+        if (!maskV) {
+            maskV = document.createElement('div');
+            maskV.id = 'aguiaReadingMaskV';
+            maskV.className = 'aguia-reading-mask-vertical-element';
+            document.body.appendChild(maskV);
+        }
+
+        document.addEventListener('mousemove', function(e) {
+            if (readingMaskMode === 1) {
+                // Horizontal
+                const maskHeight = 100;
+                const y = e.clientY;
+                maskH.style.top = (y - maskHeight / 2) + 'px';
+                maskH.style.height = maskHeight + 'px';
+                maskH.style.display = 'block';
+                maskV.style.display = 'none';
+            } else if (readingMaskMode === 2) {
+                // Vertical
+                const maskWidth = 100;
+                const x = e.clientX;
+                maskV.style.left = (x - maskWidth / 2) + 'px';
+                maskV.style.width = maskWidth + 'px';
+                maskV.style.display = 'block';
+                maskH.style.display = 'none';
+            } else {
+                maskH.style.display = 'none';
+                maskV.style.display = 'none';
+            }
+        });
+    }
+    
+    // Função para alternar o cursor personalizado
+    function toggleCustomCursor() {
+        customCursorEnabled = !customCursorEnabled;
+        
+        if (customCursorEnabled) {
+            document.body.classList.add('aguia-custom-cursor');
+            showStatusMessage('Cursor personalizado ativado', 'success');
+        } else {
+            document.body.classList.remove('aguia-custom-cursor');
+            showStatusMessage('Cursor personalizado desativado');
+        }
+        
+        // Atualiza UI
+        const customCursorBtn = document.getElementById('aguiaCustomCursorBtn');
+        if (customCursorBtn) {
+            if (customCursorEnabled) {
+                customCursorBtn.classList.add('active');
+            } else {
+                customCursorBtn.classList.remove('active');
+            }
+        }
+        
+        // Salva preferência
+        saveUserPreference('customCursor', customCursorEnabled);
+    }
+    
+    // Função para resetar as novas configurações
+    function resetReadingMaskAndCursor() {
+        // Reset dos modos
+        readingMaskMode = 0;
+        customCursorEnabled = false;
+        document.body.classList.remove('aguia-reading-mask-horizontal');
+        document.body.classList.remove('aguia-reading-mask-vertical');
+        document.body.classList.remove('aguia-custom-cursor');
+        // Esconde as máscaras
+        const maskH = document.getElementById('aguiaReadingMaskH');
+        if (maskH) maskH.style.display = 'none';
+        const maskV = document.getElementById('aguiaReadingMaskV');
+        if (maskV) maskV.style.display = 'none';
+        // Atualiza botões
+        const maskBtn = document.getElementById('aguiaReadingMaskCursorBtn');
+        if (maskBtn) maskBtn.classList.remove('active');
+        const cursorBtn = document.getElementById('aguiaCustomCursorBtn');
+        if (cursorBtn) cursorBtn.classList.remove('active');
+        // Salva preferências
+        saveUserPreference('readingMaskMode', 0);
+        saveUserPreference('customCursor', false);
+    }    // Cria a máscara de leitura após o carregamento da página
+    createReadingMask();
 });

@@ -41,8 +41,18 @@ function local_aguiaplugin_require_js() {
     }
     
     // Carrega os scripts JavaScript
+    $PAGE->requires->js('/local/aguiaplugin/js/accessibility_icons.js');
     $PAGE->requires->js('/local/aguiaplugin/js/accessibility_wcag.js');
     $PAGE->requires->js('/local/aguiaplugin/js/colorblind_panel.js');
+    $PAGE->requires->js('/local/aguiaplugin/js/initialize_colorblind.js');
+    // Nova implementação direta do VLibras (carregada primeiro)
+    $PAGE->requires->js('/local/aguiaplugin/js/vlibras_direct.js');
+    $PAGE->requires->js('/local/aguiaplugin/js/vlibras_direct_inject.js');
+    $PAGE->requires->js('/local/aguiaplugin/js/vlibras_bugfix.js');
+    $PAGE->requires->js('/local/aguiaplugin/js/vlibras_init.js');
+    $PAGE->requires->js('/local/aguiaplugin/js/vlibras_integration.js');
+    $PAGE->requires->js('/local/aguiaplugin/js/vlibras_monitor.js');
+    $PAGE->requires->js('/local/aguiaplugin/js/icon_updater.js');
     
     // Adiciona CSS personalizado para garantir a posição fixa do botão
     echo '<style>
@@ -106,10 +116,22 @@ function local_aguiaplugin_before_standard_html_head() {
     $cssbase = new moodle_url('/local/aguiaplugin/styles/base.css');
     $csswcag = new moodle_url('/local/aguiaplugin/styles/wcag.css');
     $csscolorblind = new moodle_url('/local/aguiaplugin/styles/colorblind.css');
+    $cssreadingmask = new moodle_url('/local/aguiaplugin/styles/reading_mask_cursor.css');
+    $cssicons = new moodle_url('/local/aguiaplugin/styles/icons.css');
+    $cssmultiselect = new moodle_url('/local/aguiaplugin/styles/multi_select.css');
+    $cssbutton = new moodle_url('/local/aguiaplugin/styles/button_styles.css');
+    $cssvlibras = new moodle_url('/local/aguiaplugin/styles/vlibras.css');
+    $cssvlibrasforce = new moodle_url('/local/aguiaplugin/styles/vlibras_force.css');
     
     return "
         <link rel='stylesheet' type='text/css' href='{$cssbase}'>
         <link rel='stylesheet' type='text/css' href='{$csswcag}'>
         <link rel='stylesheet' type='text/css' href='{$csscolorblind}'>
+        <link rel='stylesheet' type='text/css' href='{$cssreadingmask}'>
+        <link rel='stylesheet' type='text/css' href='{$cssicons}'>
+        <link rel='stylesheet' type='text/css' href='{$cssmultiselect}'>
+        <link rel='stylesheet' type='text/css' href='{$cssbutton}'>
+        <link rel='stylesheet' type='text/css' href='{$cssvlibras}'>
+        <link rel='stylesheet' type='text/css' href='{$cssvlibrasforce}'>
     ";
 }

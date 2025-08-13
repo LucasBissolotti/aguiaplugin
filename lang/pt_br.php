@@ -42,3 +42,4 @@ $string['preferences_error'] = 'Erro ao salvar preferências';
 $string['ocr_title'] = 'Reconhecimento de Texto em Imagens';
 $string['ocr_button'] = 'Enviar Imagem';
 $string['ocr_processing'] = 'Processando imagem...';
+$string['hide_images'] = 'Ocultar Imagens';

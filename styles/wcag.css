@@ -85,50 +85,69 @@
     bottom: 100px;
     right: 30px;
     background-color: var(--aguia-background-light);
-    border: none;
-    border-radius: var(--aguia-border-radius);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 14px; /* Bordas mais arredondadas como UserWay */
     padding: 0;
-    box-shadow: var(--aguia-box-shadow);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* Sombra mais evidente como UserWay */
     display: none;
-    width: 320px;
+    width: 350px; /* Um pouco mais largo */
     z-index: 9999;
     overflow: hidden;
+    animation: aguiaMenuFadeIn 0.3s ease-out; /* Animação ao abrir */
+}
+
+@keyframes aguiaMenuFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .aguia-menu-header {
-    background-color: var(--aguia-primary-color);
+    background-color: #1a73e8; /* Cor mais vibrante como no UserWay */
+    background: linear-gradient(135deg, #1a73e8, #0d47a1); /* Gradiente para aparência moderna */
     color: var(--aguia-text-light);
-    padding: 16px 20px;
+    padding: 18px 22px; /* Padding maior */
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .aguia-menu-header h2 {
     color: var(--aguia-text-light);
     margin: 0;
-    font-size: 18px;
+    font-size: 20px; /* Texto ligeiramente maior */
     line-height: 1.4;
-    font-weight: 500;
+    font-weight: 600; /* Texto mais forte */
+    letter-spacing: 0.3px; /* Espaçamento de letras para legibilidade */
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1); /* Sombra sutil no texto */
 }
 
 .aguia-menu-close {
-    background: transparent;
+    background: rgba(255,255,255,0.15); /* Fundo semi-transparente */
     color: var(--aguia-text-light);
     border: none;
     font-size: 20px;
     cursor: pointer;
-    padding: 4px;
-    width: 32px;
-    height: 32px;
+    padding: 6px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .aguia-menu-close:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: rotate(90deg); /* Efeito de rotação ao passar o mouse */
 }
 
 .aguia-menu-content {
@@ -183,18 +202,19 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 12px 8px;
+    padding: 14px 8px;
     background-color: var(--aguia-background-light);
     color: var(--aguia-text-dark);
     border: 1px solid #eaeaea;
-    border-radius: var(--aguia-border-radius);
+    border-radius: 12px; /* Bordas mais arredondadas como UserWay */
     font-size: 14px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Animação mais fluida */
     text-align: center;
     align-items: center;
     justify-content: center;
-    height: 90px;
+    height: 96px; /* Um pouco mais alto */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03); /* Sombra sutil */
 }
 
 .aguia-option:hover,
@@ -202,6 +222,8 @@
     background-color: var(--aguia-hover-bg);
     color: var(--aguia-primary-color);
     border-color: var(--aguia-secondary-color);
+    transform: translateY(-3px); /* Efeito de elevação ao passar o mouse */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08); /* Sombra mais evidente ao passar o mouse */
 }
 
 .aguia-option-button.active {
@@ -718,4 +740,43 @@ input:checked + .aguia-switch-slider:before {
 #aguiaColorblindButton.active .icon {
     color: white;
     background: none;
+}
+
+/* Estilos para ocultar imagens - WCAG 1.1.1 */
+.aguia-hide-images img:not(.aguia-logo):not(#aguiaButton img) {
+    filter: opacity(0);
+    border: 1px dashed #ccc !important;
+    background-color: #f5f5f5 !important;
+    position: relative !important;
+}
+
+.aguia-hide-images img:not(.aguia-logo):not(#aguiaButton img)::before {
+    content: "Imagem Oculta";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #777;
+    font-size: 14px;
+    background-color: #f5f5f5;
+    z-index: 1;
+}
+
+/* Botão de ocultar imagens */
+#aguiaHideImagesBtn .icon {
+    font-size: 24px;
+}
+
+#aguiaHideImagesBtn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(33, 150, 243, 0.2);
+}
+
+#aguiaHideImagesBtn.active {
+    background: linear-gradient(145deg, #2196f3, #0d47a1);
+    color: white;
 }

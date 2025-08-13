@@ -42,3 +42,4 @@ $string['preferences_error'] = 'Error saving preferences';
 $string['ocr_title'] = 'Text Recognition in Images';
 $string['ocr_button'] = 'Upload Image';
 $string['ocr_processing'] = 'Processing image...';
+$string['hide_images'] = 'Hide Images';

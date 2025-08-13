@@ -6,18 +6,33 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Adiciona o painel de daltonismo ao DOM
+// Initialize
+document.addEventListener("DOMContentLoaded", function() {
+    // Create accessibility button
+    createAccessibilityButton();
+    
+    // Create menu
+    createMenu();
+    
+    // Create settings panel
+    createSettingsPanel();
+    
+    // Initialize colorblind panel
     createColorblindPanel();
     
-    // Recupera as preferências salvas
-    const savedColorblindMode = getFromLocalStorage('aguia_colorblind', 'none');
-    if (savedColorblindMode !== 'none') {
-        setColorBlindMode(savedColorblindMode);
+    // Load user preferences
+    loadUserPreferences();
+    
+    // Inicializa os modos de daltonismo salvos
+    initializeColorblindModes();
+    
+    // Inicializa o VLibras se disponível
+    if (typeof initializeVLibras === 'function') {
+        initializeVLibras();
     }
 });
 
-// Função para criar o painel de daltonismo
+// Função para criar o painel de daltonismo com suporte a múltiplas seleções
 function createColorblindPanel() {
     // Cria o painel de opções de daltonismo
     const colorblindPanel = document.createElement('div');
@@ -47,9 +62,15 @@ function createColorblindPanel() {
     
     colorblindPanel.appendChild(colorblindPanelHeader);
     
+    // Descrição para múltipla seleção
+    const selectionHelp = document.createElement('p');
+    selectionHelp.className = 'aguia-submenu-description';
+    selectionHelp.textContent = 'Você pode selecionar múltiplos tipos de daltonismo simultaneamente';
+    colorblindPanel.appendChild(selectionHelp);
+    
     // Opções para o painel de daltonismo
     const colorblindOptions = [
-        { value: 'none', text: 'Nenhum', icon: '❌' },
+        { value: 'none', text: 'Nenhum (Resetar)', icon: '❌' },
         { value: 'protanopia', text: 'Protanopia (sem vermelho)', icon: '🔴' },
         { value: 'deuteranopia', text: 'Deuteranopia (sem verde)', icon: '🟢' },
         { value: 'tritanopia', text: 'Tritanopia (sem azul)', icon: '🔵' },
@@ -60,33 +81,63 @@ function createColorblindPanel() {
     const colorblindOptionsContainer = document.createElement('div');
     colorblindOptionsContainer.className = 'aguia-submenu-content';
     
+    // Recupera os modos de daltonismo ativos
+    let activeColorblindModes = [];
+    try {
+        const savedModes = localStorage.getItem('aguia_colorblind_modes');
+        if (savedModes) {
+            activeColorblindModes = JSON.parse(savedModes);
+        }
+    } catch (e) {
+        console.error('Erro ao carregar os modos de daltonismo salvos:', e);
+        activeColorblindModes = [];
+    }
+    
     colorblindOptions.forEach(option => {
         const optionButton = document.createElement('button');
-        optionButton.className = 'aguia-submenu-option';
+        optionButton.className = 'aguia-submenu-option aguia-multi-select-option';
         optionButton.dataset.value = option.value;
         optionButton.innerHTML = `<span class="aguia-icon">${option.icon}</span> ${option.text}`;
         
-        // Marca o botão como ativo se for o modo atual
-        if (option.value === window.colorBlindMode) {
+        // Marca o botão como ativo se o modo estiver na lista de modos ativos
+        if (option.value === 'none' && activeColorblindModes.length === 0) {
+            optionButton.classList.add('active');
+        } else if (option.value !== 'none' && activeColorblindModes.includes(option.value)) {
             optionButton.classList.add('active');
         }
         
         optionButton.addEventListener('click', function() {
-            // Remove a classe ativa de todos os botões
-            document.querySelectorAll('.aguia-submenu-option').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Adiciona a classe ativa ao botão clicado
-            this.classList.add('active');
-            
-            // Aplica o modo de daltonismo
-            setColorBlindMode(this.dataset.value);
-            
-            // Fecha o painel após a seleção
-            setTimeout(() => {
-                toggleColorblindPanel();
-            }, 500);
+            // Comportamento especial para a opção "Nenhum"
+            if (this.dataset.value === 'none') {
+                // Remove a classe ativa de todos os botões
+                document.querySelectorAll('.aguia-submenu-option').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                // Ativa apenas o botão "Nenhum"
+                this.classList.add('active');
+                // Reseta os modos de daltonismo
+                setColorBlindModes([]);
+            } else {
+                // Remove a classe ativa do botão "Nenhum"
+                const noneButton = document.querySelector('.aguia-submenu-option[data-value="none"]');
+                if (noneButton) {
+                    noneButton.classList.remove('active');
+                }
+                
+                // Alterna a classe ativa do botão atual
+                this.classList.toggle('active');
+                
+                // Coleta todos os modos ativos
+                const activeModes = [];
+                document.querySelectorAll('.aguia-submenu-option.active').forEach(btn => {
+                    if (btn.dataset.value !== 'none') {
+                        activeModes.push(btn.dataset.value);
+                    }
+                });
+                
+                // Aplica os modos de daltonismo
+                setColorBlindModes(activeModes);
+            }
         });
         
         colorblindOptionsContainer.appendChild(optionButton);
