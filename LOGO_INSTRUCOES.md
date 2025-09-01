@@ -33,3 +33,17 @@ Se encontrar problemas, verifique:
 1. Permissões de arquivo: a imagem deve ser legível pelo servidor web
 2. Tamanho do arquivo: otimize a imagem para carregamento rápido (menos de 100KB)
 3. Formato correto: confirme que o arquivo está realmente em formato PNG
+
+Script para integração vlibras:
+
+```
+    <!-- VLibras Widget -->
+    <div vw class="enabled">
+      <div vw-access-button class="active"></div>
+      <div vw-plugin-wrapper></div>
+```
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+      new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
