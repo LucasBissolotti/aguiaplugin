@@ -1,0 +1,196 @@
+/**
+ * Estilos adicionais para espaçamento
+ * Aplicados a elementos comuns em ambi.aguia-spacing-level-1 .card,
+.aguia-spacing-level-1 .box,
+.aguia-spacing-level-1 .section {
+    margin-bottom: 1.2em !important;
+    padding: 0.6em !important;
+}
+
+.aguia-spacing-level-2 .card,
+.aguia-spacing-level-2 .box,
+.aguia-spacing-level-2 .section {
+    margin-bottom: 1.8em !important;
+    padding: 0.9em !important;
+}
+
+.aguia-spacing-level-3 .card,
+.aguia-spacing-level-3 .box,
+.aguia-spacing-level-3 .section {
+    margin-bottom: 2.4em !important;
+    padding: 1.2em !important;
+}m
+ *
+ * @package    local_aguiaplugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* Aplicação de espaçamento em elementos de formulário (estilo Hand Talk) */
+.aguia-spacing-level-1 input, 
+.aguia-spacing-level-1 select, 
+.aguia-spacing-level-1 textarea,
+.aguia-spacing-level-1 button {
+    margin: 0.4em 0 !important;
+    padding: 0.4em !important;
+}
+
+.aguia-spacing-level-2 input, 
+.aguia-spacing-level-2 select, 
+.aguia-spacing-level-2 textarea,
+.aguia-spacing-level-2 button {
+    margin: 0.6em 0 !important;
+    padding: 0.5em !important;
+}
+
+.aguia-spacing-level-3 input, 
+.aguia-spacing-level-3 select, 
+.aguia-spacing-level-3 textarea,
+.aguia-spacing-level-3 button {
+    margin: 0.9em 0 !important;
+    padding: 0.7em !important;
+}
+
+/* Aplicação de espaçamento em tabelas (estilo Hand Talk) */
+.aguia-spacing-level-1 td,
+.aguia-spacing-level-1 th {
+    padding: 0.6em !important;
+}
+
+.aguia-spacing-level-2 td,
+.aguia-spacing-level-2 th {
+    padding: 0.9em !important;
+}
+
+.aguia-spacing-level-3 td,
+.aguia-spacing-level-3 th {
+    padding: 1.2em !important;
+}
+
+/* Aplicação de espaçamento em elementos de lista (estilo Hand Talk) */
+.aguia-spacing-level-1 ul,
+.aguia-spacing-level-1 ol {
+    padding-left: 1.8em !important;
+    margin-top: 0.6em !important;
+    margin-bottom: 0.6em !important;
+}
+
+.aguia-spacing-level-1 li {
+    margin-bottom: 0.4em !important;
+}
+
+.aguia-spacing-level-2 ul,
+.aguia-spacing-level-2 ol {
+    padding-left: 2.2em !important;
+    margin-top: 0.9em !important;
+    margin-bottom: 0.9em !important;
+}
+
+.aguia-spacing-level-2 li {
+    margin-bottom: 0.7em !important;
+}
+
+.aguia-spacing-level-3 ul,
+.aguia-spacing-level-3 ol {
+    padding-left: 2.6em !important;
+    margin-top: 1.2em !important;
+    margin-bottom: 1.2em !important;
+}
+
+.aguia-spacing-level-3 li {
+    margin-bottom: 1.1em !important;
+}
+
+/* Espaçamento em cards e boxes (estilo Hand Talk) */
+.aguia-spacing-level-1 .card,
+.aguia-spacing-level-1 .box,
+.aguia-spacing-level-1 .section {
+    margin-bottom: 1.5em !important;
+    padding: 0.8em !important;
+}
+
+.aguia-spacing-level-2 .card,
+.aguia-spacing-level-2 .box,
+.aguia-spacing-level-2 .section {
+    margin-bottom: 2.2em !important;
+    padding: 1.2em !important;
+}
+
+.aguia-spacing-level-3 .card,
+.aguia-spacing-level-3 .box,
+.aguia-spacing-level-3 .section {
+    margin-bottom: 3em !important;
+    padding: 1.8em !important;
+}
+
+/* Ajustes específicos para ambiente Moodle (estilo Hand Talk) */
+.aguia-spacing-level-1 .activity,
+.aguia-spacing-level-1 .block {
+    padding: 0.8em !important;
+    margin-bottom: 1.2em !important;
+}
+
+.aguia-spacing-level-2 .activity,
+.aguia-spacing-level-2 .block {
+    padding: 1.2em !important;
+    margin-bottom: 1.8em !important;
+}
+
+.aguia-spacing-level-3 .activity,
+.aguia-spacing-level-3 .block {
+    padding: 1.8em !important;
+    margin-bottom: 2.5em !important;
+}
+
+/* Estilos adicionais inspirados no Hand Talk para melhorar a legibilidade */
+.aguia-spacing-level-1 {
+    --spacing-content-gap: 1.2rem !important;
+}
+
+.aguia-spacing-level-2 {
+    --spacing-content-gap: 1.8rem !important;
+}
+
+.aguia-spacing-level-3 {
+    --spacing-content-gap: 2.4rem !important;
+}
+
+/* Aplicar gap em containers de flexbox */
+.aguia-spacing-level-1 .d-flex,
+.aguia-spacing-level-1 .flex-container,
+.aguia-spacing-level-1 [class*="d-flex"],
+.aguia-spacing-level-1 [class*="flex-"] {
+    gap: var(--spacing-content-gap) !important;
+}
+
+.aguia-spacing-level-2 .d-flex,
+.aguia-spacing-level-2 .flex-container,
+.aguia-spacing-level-2 [class*="d-flex"],
+.aguia-spacing-level-2 [class*="flex-"] {
+    gap: var(--spacing-content-gap) !important;
+}
+
+.aguia-spacing-level-3 .d-flex,
+.aguia-spacing-level-3 .flex-container,
+.aguia-spacing-level-3 [class*="d-flex"],
+.aguia-spacing-level-3 [class*="flex-"] {
+    gap: var(--spacing-content-gap) !important;
+}
+
+/* Espaçamento adicional para blocos de código */
+.aguia-spacing-level-1 pre,
+.aguia-spacing-level-1 code {
+    padding: 0.8em !important;
+    margin: 1em 0 !important;
+}
+
+.aguia-spacing-level-2 pre,
+.aguia-spacing-level-2 code {
+    padding: 1.2em !important;
+    margin: 1.5em 0 !important;
+}
+
+.aguia-spacing-level-3 pre,
+.aguia-spacing-level-3 code {
+    padding: 1.8em !important;
+    margin: 2em 0 !important;
+}

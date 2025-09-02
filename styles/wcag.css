@@ -315,6 +315,73 @@
 }
 
 /* Espaçamento adequado - WCAG 1.4.8 */
+/* Nível 1 - Espaçamento pequeno (inspirado no Hand Talk) */
+.aguia-spacing-level-1 {
+    line-height: 1.4 !important;
+    word-spacing: 0.02em !important;
+}
+
+.aguia-spacing-level-1 p, 
+.aguia-spacing-level-1 li, 
+.aguia-spacing-level-1 h1, 
+.aguia-spacing-level-1 h2, 
+.aguia-spacing-level-1 h3, 
+.aguia-spacing-level-1 h4, 
+.aguia-spacing-level-1 h5, 
+.aguia-spacing-level-1 h6 {
+    margin-bottom: 0.8em !important;
+    letter-spacing: 0.01em !important;
+}
+
+.aguia-spacing-level-1 * {
+    padding: 0.1em 0 !important;
+}
+
+/* Nível 2 - Espaçamento médio (inspirado no Hand Talk) */
+.aguia-spacing-level-2 {
+    line-height: 1.6 !important;
+    word-spacing: 0.05em !important;
+}
+
+.aguia-spacing-level-2 p, 
+.aguia-spacing-level-2 li, 
+.aguia-spacing-level-2 h1, 
+.aguia-spacing-level-2 h2, 
+.aguia-spacing-level-2 h3, 
+.aguia-spacing-level-2 h4, 
+.aguia-spacing-level-2 h5, 
+.aguia-spacing-level-2 h6 {
+    margin-bottom: 1.2em !important;
+    letter-spacing: 0.02em !important;
+}
+
+.aguia-spacing-level-2 * {
+    padding: 0.18em 0 !important;
+}
+
+/* Nível 3 - Espaçamento grande (inspirado no Hand Talk) */
+.aguia-spacing-level-3 {
+    line-height: 1.8 !important;
+    word-spacing: 0.08em !important;
+}
+
+.aguia-spacing-level-3 p, 
+.aguia-spacing-level-3 li, 
+.aguia-spacing-level-3 h1, 
+.aguia-spacing-level-3 h2, 
+.aguia-spacing-level-3 h3, 
+.aguia-spacing-level-3 h4, 
+.aguia-spacing-level-3 h5, 
+.aguia-spacing-level-3 h6 {
+    margin-bottom: 1.6em !important;
+    letter-spacing: 0.04em !important;
+}
+
+.aguia-spacing-level-3 * {
+    padding: 0.22em 0 !important;
+}
+
+/* Manter compatibilidade com código existente */
 .aguia-increased-spacing {
     line-height: 1.8 !important;
 }

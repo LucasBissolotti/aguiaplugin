@@ -41,18 +41,14 @@ function local_aguiaplugin_require_js() {
     }
     
     // Carrega os scripts JavaScript
+    $PAGE->requires->js('/local/aguiaplugin/js/error_detection.js'); // Carrega primeiro o detector de erros
+    $PAGE->requires->js('/local/aguiaplugin/js/memory_management.js'); // Carrega o gerenciador de memória
     $PAGE->requires->js('/local/aguiaplugin/js/accessibility_icons.js');
     $PAGE->requires->js('/local/aguiaplugin/js/accessibility_wcag.js');
     $PAGE->requires->js('/local/aguiaplugin/js/colorblind_panel.js');
     $PAGE->requires->js('/local/aguiaplugin/js/initialize_colorblind.js');
-    // Nova implementação direta do VLibras (carregada primeiro)
-    $PAGE->requires->js('/local/aguiaplugin/js/vlibras_direct.js');
-    $PAGE->requires->js('/local/aguiaplugin/js/vlibras_direct_inject.js');
-    $PAGE->requires->js('/local/aguiaplugin/js/vlibras_bugfix.js');
-    $PAGE->requires->js('/local/aguiaplugin/js/vlibras_init.js');
-    $PAGE->requires->js('/local/aguiaplugin/js/vlibras_integration.js');
-    $PAGE->requires->js('/local/aguiaplugin/js/vlibras_monitor.js');
     $PAGE->requires->js('/local/aguiaplugin/js/icon_updater.js');
+    $PAGE->requires->js('/local/aguiaplugin/js/highlighted_letters.js');
     
     // Adiciona CSS personalizado para garantir a posição fixa do botão
     echo '<style>
@@ -93,6 +89,18 @@ function local_aguiaplugin_before_footer() {
     
     // Adiciona o JavaScript a todas as páginas
     local_aguiaplugin_require_js();
+    
+    // VLibras Widget 
+    echo '
+    <div vw class="enabled">
+      <div vw-access-button class="active"></div>
+      <div vw-plugin-wrapper></div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+      new window.VLibras.Widget(\'https://vlibras.gov.br/app\');
+    </script>
+    ';
 }
 
 /**
@@ -121,7 +129,10 @@ function local_aguiaplugin_before_standard_html_head() {
     $cssmultiselect = new moodle_url('/local/aguiaplugin/styles/multi_select.css');
     $cssbutton = new moodle_url('/local/aguiaplugin/styles/button_styles.css');
     $cssvlibras = new moodle_url('/local/aguiaplugin/styles/vlibras.css');
-    $cssvlibrasforce = new moodle_url('/local/aguiaplugin/styles/vlibras_force.css');
+    $cssspacing = new moodle_url('/local/aguiaplugin/styles/spacing_indicators.css');
+    $cssspacing_add = new moodle_url('/local/aguiaplugin/styles/spacing_additional.css');
+    $csshandtalk = new moodle_url('/local/aguiaplugin/styles/handtalk_spacing.css');
+    $csshighlightedletters = new moodle_url('/local/aguiaplugin/styles/highlighted_letters.css');
     
     return "
         <link rel='stylesheet' type='text/css' href='{$cssbase}'>
@@ -132,6 +143,9 @@ function local_aguiaplugin_before_standard_html_head() {
         <link rel='stylesheet' type='text/css' href='{$cssmultiselect}'>
         <link rel='stylesheet' type='text/css' href='{$cssbutton}'>
         <link rel='stylesheet' type='text/css' href='{$cssvlibras}'>
-        <link rel='stylesheet' type='text/css' href='{$cssvlibrasforce}'>
+        <link rel='stylesheet' type='text/css' href='{$cssspacing}'>
+        <link rel='stylesheet' type='text/css' href='{$cssspacing_add}'>
+        <link rel='stylesheet' type='text/css' href='{$csshandtalk}'>
+        <link rel='stylesheet' type='text/css' href='{$csshighlightedletters}'>
     ";
 }

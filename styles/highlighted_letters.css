@@ -1,0 +1,33 @@
+/**
+ * Estilos para a funcionalidade de letras destacadas
+ * Inspirado no Hand Talk e adaptado para o plugin AGUIA
+ * Simplificado para aplicar apenas negrito ao texto
+ *
+ * @package    local_aguiaplugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* Classe base para ativar letras destacadas - aplica negrito ao texto */
+
+/* Letras Destacadas - aplicação de negrito */
+.aguia-highlighted-letters.level-1 {
+    font-weight: 700 !important;
+}
+
+.aguia-highlighted-letters.level-1 h1,
+.aguia-highlighted-letters.level-1 h2,
+.aguia-highlighted-letters.level-1 h3,
+.aguia-highlighted-letters.level-1 h4,
+.aguia-highlighted-letters.level-1 h5,
+.aguia-highlighted-letters.level-1 h6 {
+    font-weight: 800 !important;
+}
+
+/* Aplicar em elementos adicionais para garantir consistência */
+.aguia-highlighted-letters button,
+.aguia-highlighted-letters input,
+.aguia-highlighted-letters select,
+.aguia-highlighted-letters textarea,
+.aguia-highlighted-letters a {
+    font-weight: inherit !important;
+}

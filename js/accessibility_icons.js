@@ -45,5 +45,8 @@ const AguiaIcons = {
     customCursor: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M13.64 21.97a.99.99 0 0 1-1.33-.47l-2.18-4.74l-2.51 2.02c-.17.14-.38.22-.62.22a.995.995 0 0 1-1-1V3a1 1 0 0 1 1-1c.24 0 .47.09.64.23l.01-.01l11.49 9.64a1.001 1.001 0 0 1-.44 1.78l-3.18.4l2.14 4.73c.24.52 0 1.14-.52 1.38z"/></svg>',
     
     // Ícone para resetar
-    reset: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4c2.1 0 4 .8 5.4 2.2l1.6-1.6v5h-5l2-2c-1-1-2.5-1.6-4-1.6C9 6 6 9 6 12s3 6 6 6c2.3 0 4.2-1.2 5.2-3h2.2c-1.2 2.8-3.9 4.8-7.4 4.8-4.4 0-8-3.6-8-8s3.6-8 8-8m0 3c.8 0 1.5.7 1.5 1.5S12.8 10 12 10s-1.5-.7-1.5-1.5S11.2 7 12 7z"/></svg>'
+    reset: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4c2.1 0 4 .8 5.4 2.2l1.6-1.6v5h-5l2-2c-1-1-2.5-1.6-4-1.6C9 6 6 9 6 12s3 6 6 6c2.3 0 4.2-1.2 5.2-3h2.2c-1.2 2.8-3.9 4.8-7.4 4.8-4.4 0-8-3.6-8-8s3.6-8 8-8m0 3c.8 0 1.5.7 1.5 1.5S12.8 10 12 10s-1.5-.7-1.5-1.5S11.2 7 12 7z"/></svg>',
+    
+    // Ícone para letras destacadas
+    highlightedLetters: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M9.62 12L12 5.67L14.37 12M11 3L5.5 17h2.25l1.12-3h6.25l1.13 3h2.25L13 3h-2z"/></svg>'
 };

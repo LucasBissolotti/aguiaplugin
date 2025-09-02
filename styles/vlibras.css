@@ -1,123 +1,24 @@
 /**
- * Estilos para a integração do VLibras com o plugin AGUIA de Acessibilidade
- * Garante que o personagem e o widget apareçam exatamente como no gov.br
+ * Estilos específicos para o botão VLibras
+ * Versão simplificada que mantém apenas a aparência do botão
  *
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/* Ajusta a posição do widget do VLibras para não sobrepor outros elementos */
-.vw-container {
-    z-index: 9999 !important;
-    position: fixed !important;
-    width: auto !important;
-    height: auto !important;
-    bottom: 0px !important;
-    right: 0px !important;
-    overflow: visible !important;
-    display: block !important;
+/* Estilos para o botão VLibras */
+#aguia-vlibras-button.active {
+    background: linear-gradient(145deg, #2196f3, #0d47a1) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 4px 10px rgba(33, 150, 243, 0.4) !important;
 }
 
-/* Garante visibilidade do plugin box do VLibras */
-.vw-plugin-box {
-    display: block !important;
-    visibility: visible !important;
+#aguia-vlibras-button .icon svg {
+    fill: #333 !important;
 }
 
-/* Garante que os controles do VLibras estejam visíveis */
-.vw-text {
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-/* Garante que o personagem do VLibras seja exibido corretamente */
-.vp-box {
-    visibility: visible !important;
-    opacity: 1 !important;
-    display: block !important;
-}
-
-/* Esconde o botão original do VLibras, já que usamos o do nosso menu de acessibilidade */
-.vw-button.access-button {
-    display: none !important;
-}
-
-/* Estiliza o botão do VLibras no menu de acessibilidade */
-#aguia-vlibras-button.active, #aguiaVLibrasBtn.active {
-    background: linear-gradient(135deg, #0072bc, #004080);
-    color: white;
-}
-
-#aguia-vlibras-button .icon svg, #aguiaVLibrasBtn .icon svg {
-    fill: #0072bc; /* Cor do gov.br */
-}
-
-#aguia-vlibras-button.active .icon svg, #aguiaVLibrasBtn.active .icon svg {
-    fill: white;
-    transform: scale(1.1);
-}
-
-/* Garante que o widget seja mostrado corretamente */
-.vw-container.enabled .vw-plugin-box {
-    display: block !important;
-}
-
-/* Garante que o personagem do VLibras ocupe o espaço correto */
-.vw-container.enabled {
-    width: 300px !important;
-    height: 300px !important;
-}
-
-/* Garante que os controles do VLibras fiquem visíveis */
-.vw-container .vw-controls {
-    display: block !important;
-    opacity: 1 !important;
-}
-
-/* Garante que o avatar do VLibras fique visível */
-.vp-box {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-/* Garante que o VLibras Widget apareça quando estiver ativo */
-.vw-container.enabled {
-    display: block !important;
-    visibility: visible !important;
-}
-
-/* Garante que o plugin box apareça quando o container estiver ativo */
-.vw-container.enabled .vw-plugin-box {
-    display: block !important;
-    visibility: visible !important;
-}
-
-/* Garante que os elementos do Avatar apareçam corretamente */
-.vp-box .vp-controls,
-.vp-box .vp-message-box,
-.vp-box .vp-suggestion-box {
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-/* Mantém o estilo original do VLibras sem interferências */
-#vlibras-container {
-    z-index: 1000 !important;
-}
-
-/* Garante que o avatar seja visível */
-.vw-container.enabled .vw-box {
-    display: block !important;
-    opacity: 1 !important;
-}
-
-/* Previne qualquer elemento de sobrepor o VLibras quando ativado */
-.vw-container.enabled {
-    pointer-events: auto !important;
-}
-
-/* Corrige o posicionamento do botão de fechar do VLibras */
-.vw-container .vw-title .vw-close {
-    cursor: pointer !important;
+#aguia-vlibras-button.active .icon svg {
+    fill: white !important;
+    filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.2)) !important;
 }

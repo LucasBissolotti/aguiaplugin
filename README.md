@@ -4,7 +4,7 @@
 ![Moodle](https://img.shields.io/badge/Moodle-4.1+-orange.svg)
 ![Licença](https://img.shields.io/badge/licença-GPL%20v3-green.svg)
 
-O plugin AGUIA (Um Plugin para Acessibilidade e Inclusão de Pessoas com Deficiência Visual em um Ambiente Virtual de Aprendizagem) é uma ferramenta de acessibilidade para o Moodle, especialmente projetada para pessoas com deficiência visual. O plugin oferece diversas funcionalidades que seguem as diretrizes de acessibilidade WCAG 2.1 nível AA, melhorando a experiência de uso da plataforma Moodle para todos os usuários.
+O plugin AGUIA (Acessibilidade e guia para pessoas com deficiência visual) é uma ferramenta de acessibilidade para o Moodle, especialmente projetada para pessoas com deficiência visual. O plugin oferece diversas funcionalidades que seguem as diretrizes de acessibilidade WCAG 2.1 nível AA, melhorando a experiência de uso da plataforma Moodle para todos os usuários.
 
 ## Características
 

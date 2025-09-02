@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let highContrastEnabled = false;
     let invertedColorsEnabled = false;
     let readableFontsEnabled = false;
-    let lineSpacingEnabled = false;
+    let lineSpacingLevel = 0; // 0: desativado, 1: pequeno, 2: médio, 3: grande
     let textToSpeechEnabled = false;
     let readingHelperEnabled = false;
     let emphasizeLinksEnabled = false;
@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let colorBlindMode = 'none'; // Valores possíveis: none, protanopia, deuteranopia, tritanopia, achromatopsia
     let readingMaskMode = 0; // 0: desativado, 1: horizontal, 2: vertical
     let customCursorEnabled = false; // Nova variável para controlar o cursor personalizado
+    let highlightedLettersLevel = 0; // 0: desativado, 1: pequeno, 2: médio, 3: grande
     
     // Cria o botão de acessibilidade com a imagem AGUIA
     createAccessibilityButton();
@@ -175,6 +176,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 action: toggleEmphasizeLinks,
                 ariaLabel: 'Ativar ou desativar destaque para links',
                 id: 'aguiaEmphasizeLinksBtn'
+            },
+            { 
+                iconSvg: AguiaIcons.highlightedLetters,
+                text: 'Letras Destacadas', 
+                action: toggleHighlightedLetters,
+                ariaLabel: 'Ativar ou desativar destaque para letras',
+                id: 'aguiaHighlightedLettersBtn'
             }
         ];
         
@@ -817,30 +825,58 @@ document.addEventListener('DOMContentLoaded', function() {
         saveUserPreference('readableFonts', readableFontsEnabled);
     }
     
-    // Função para alternar espaçamento de linha
+    // Função para alternar espaçamento de linha com níveis
     function toggleLineSpacing() {
-        lineSpacingEnabled = !lineSpacingEnabled;
+        // Incrementa o nível (0->1->2->3->0)
+        lineSpacingLevel = (lineSpacingLevel + 1) % 4;
         
         // Atualiza UI
         const spacingBtn = document.getElementById('aguiaLineSpacingBtn');
         if (spacingBtn) {
-            if (lineSpacingEnabled) {
+            // Remove todas as classes de nível
+            spacingBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+            
+            if (lineSpacingLevel > 0) {
                 spacingBtn.classList.add('active');
+                spacingBtn.classList.add(`level-${lineSpacingLevel}`);
+                
+                // Atualiza o texto do botão para indicar o nível atual
+                const textSpan = spacingBtn.querySelector('.text');
+                if (textSpan) {
+                    const levels = ['Espaçamento', 'Espaçamento 1', 'Espaçamento 2', 'Espaçamento 3'];
+                    textSpan.textContent = levels[lineSpacingLevel];
+                }
             } else {
-                spacingBtn.classList.remove('active');
+                // Restaura o texto original do botão
+                const textSpan = spacingBtn.querySelector('.text');
+                if (textSpan) {
+                    textSpan.textContent = 'Espaçamento';
+                }
             }
         }
         
-        if (lineSpacingEnabled) {
-            document.body.classList.add('aguia-increased-spacing');
-            showStatusMessage('Espaçamento aumentado ativado', 'success');
+        // Remove todas as classes de espaçamento existentes
+        document.body.classList.remove('aguia-spacing-level-1', 'aguia-spacing-level-2', 'aguia-spacing-level-3', 'aguia-increased-spacing');
+        
+        // Aplica a classe apropriada baseada no nível
+        if (lineSpacingLevel > 0) {
+            document.body.classList.add(`aguia-spacing-level-${lineSpacingLevel}`);
+            
+            // Mensagens detalhadas por nível - estilo Hand Talk
+            const levelMessages = [
+                '',
+                'Espaçamento nível 1: Textos e elementos com melhor separação e legibilidade',
+                'Espaçamento nível 2: Espaçamento ampliado para conforto visual e leitura facilitada',
+                'Espaçamento nível 3: Máximo espaçamento entre todos os elementos da página'
+            ];
+            
+            showStatusMessage(levelMessages[lineSpacingLevel], 'success');
         } else {
-            document.body.classList.remove('aguia-increased-spacing');
-            showStatusMessage('Espaçamento aumentado desativado');
+            showStatusMessage('Espaçamento desativado');
         }
         
         // Salva preferência
-        saveUserPreference('lineSpacing', lineSpacingEnabled);
+        saveUserPreference('lineSpacing', lineSpacingLevel);
     }
     
     // Texto para fala (WCAG 1.4.1)
@@ -970,7 +1006,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (helper) {
                 helper.remove();
             }
-            document.removeEventListener('mousemove', updateReadingHelper);
+            // Remove o event listener
+            if (typeof window.aguia_cleanupElementEventListeners === 'function') {
+                window.aguia_cleanupElementEventListeners(document);
+            } else {
+                document.removeEventListener('mousemove', updateReadingHelper);
+            }
             showStatusMessage('Guia de leitura desativado');
         }
         
@@ -985,8 +1026,12 @@ document.addEventListener('DOMContentLoaded', function() {
         helper.className = 'aguia-reading-helper';
         document.body.appendChild(helper);
         
-        // Adiciona evento para seguir o cursor
-        document.addEventListener('mousemove', updateReadingHelper);
+        // Adiciona evento para seguir o cursor usando gerenciamento de memória
+        if (typeof window.aguia_registerEventListener === 'function') {
+            window.aguia_registerEventListener(document, 'mousemove', updateReadingHelper);
+        } else {
+            document.addEventListener('mousemove', updateReadingHelper);
+        }
     }
     
     // Função para atualizar a posição do auxiliar de leitura
@@ -1095,8 +1140,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Reset de espaçamento
-        if (lineSpacingEnabled) {
-            toggleLineSpacing();
+        if (lineSpacingLevel > 0) {
+            // Reseta para zero
+            document.body.classList.remove('aguia-spacing-level-1', 'aguia-spacing-level-2', 'aguia-spacing-level-3');
+            document.body.classList.remove('aguia-increased-spacing'); // Para compatibilidade
+            
+            // Reset do botão
+            const spacingBtn = document.getElementById('aguiaLineSpacingBtn');
+            if (spacingBtn) {
+                spacingBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+                
+                // Restaura o texto original
+                const textSpan = spacingBtn.querySelector('.text');
+                if (textSpan) {
+                    textSpan.textContent = 'Espaçamento';
+                }
+            }
+            
+            // Reset da variável
+            lineSpacingLevel = 0;
+            
+            // Salva a preferência
+            saveUserPreference('lineSpacing', 0);
         }
         
         // Reset de texto para fala
@@ -1112,6 +1177,30 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset de destaque de links
         if (emphasizeLinksEnabled) {
             toggleEmphasizeLinks();
+        }
+        
+        // Reset de letras destacadas
+        if (highlightedLettersLevel > 0) {
+            // Remove todas as classes
+            document.body.classList.remove('aguia-highlighted-letters', 'level-1', 'level-2', 'level-3');
+            
+            // Reset do botão
+            const lettersBtn = document.getElementById('aguiaHighlightedLettersBtn');
+            if (lettersBtn) {
+                lettersBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+                
+                // Restaura o texto original
+                const textSpan = lettersBtn.querySelector('.text');
+                if (textSpan) {
+                    textSpan.textContent = 'Letras Destacadas';
+                }
+            }
+            
+            // Reset da variável
+            highlightedLettersLevel = 0;
+            
+            // Salva a preferência
+            saveUserPreference('highlightedLetters', 0);
         }
         
         // Reset de modo daltonismo - agora com suporte a múltiplos modos
@@ -1215,7 +1304,7 @@ document.addEventListener('DOMContentLoaded', function() {
             highContrast: getFromLocalStorage('highContrast', false),
             invertedColors: getFromLocalStorage('invertedColors', false),
             readableFonts: getFromLocalStorage('readableFonts', false),
-            lineSpacing: getFromLocalStorage('lineSpacing', false),
+            lineSpacing: getFromLocalStorage('lineSpacing', 0),
             textToSpeech: getFromLocalStorage('textToSpeech', false),
             readingHelper: getFromLocalStorage('readingHelper', false),
             emphasizeLinks: getFromLocalStorage('emphasizeLinks', false),
@@ -1289,15 +1378,42 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Aplicar espaçamento
-        if (preferences.lineSpacing) {
-            lineSpacingEnabled = true;
-            document.body.classList.add('aguia-increased-spacing');
+        // Aplicar espaçamento com níveis
+        const spacingLevel = parseInt(preferences.lineSpacing) || 0;
+        if (spacingLevel > 0 && spacingLevel <= 3) {
+            lineSpacingLevel = spacingLevel;
+            document.body.classList.add(`aguia-spacing-level-${lineSpacingLevel}`);
             
             // Atualiza botão se existir
             const spacingBtn = document.getElementById('aguiaLineSpacingBtn');
             if (spacingBtn) {
                 spacingBtn.classList.add('active');
+                spacingBtn.classList.add(`level-${lineSpacingLevel}`);
+                
+                // Atualiza o texto do botão para indicar o nível atual
+                const textSpan = spacingBtn.querySelector('.text');
+                if (textSpan) {
+                    const levels = ['Espaçamento', 'Espaçamento 1', 'Espaçamento 2', 'Espaçamento 3'];
+                    textSpan.textContent = levels[lineSpacingLevel];
+                }
+            }
+        } else if (preferences.lineSpacing === true) {
+            // Compatibilidade com versões anteriores que usavam booleano
+            lineSpacingLevel = 2; // Nível médio
+            document.body.classList.add('aguia-spacing-level-2');
+            document.body.classList.add('aguia-increased-spacing'); // Para compatibilidade
+            
+            // Atualiza botão se existir
+            const spacingBtn = document.getElementById('aguiaLineSpacingBtn');
+            if (spacingBtn) {
+                spacingBtn.classList.add('active');
+                spacingBtn.classList.add('level-2');
+                
+                // Atualiza o texto do botão
+                const textSpan = spacingBtn.querySelector('.text');
+                if (textSpan) {
+                    textSpan.textContent = 'Espaçamento 2';
+                }
             }
         }
         
@@ -1385,6 +1501,35 @@ document.addEventListener('DOMContentLoaded', function() {
             const cursorBtn = document.getElementById('aguiaCustomCursorBtn');
             if (cursorBtn) {
                 cursorBtn.classList.add('active');
+            }
+        }
+        
+        // Aplicar letras destacadas
+        const lettersLevel = parseInt(preferences.highlightedLetters) || 0;
+        if (lettersLevel > 0) {
+            highlightedLettersLevel = 1; // Sempre usa nível 1
+            document.body.classList.add('aguia-highlighted-letters');
+            document.body.classList.add('level-1');
+            
+            // Atualiza botão se existir
+            const lettersBtn = document.getElementById('aguiaHighlightedLettersBtn');
+            if (lettersBtn) {
+                lettersBtn.classList.add('active');
+                
+                // Mantém o texto padrão do botão
+                const textSpan = lettersBtn.querySelector('.text');
+                if (textSpan) {
+                    textSpan.textContent = 'Letras Destacadas';
+                }
+            }
+            
+            // Carrega o CSS necessário
+            const linkExists = document.querySelector('link[href*="highlighted_letters.css"]');
+            if (!linkExists) {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = M.cfg.wwwroot + '/local/aguiaplugin/styles/highlighted_letters.css';
+                document.head.appendChild(link);
             }
         }
         
@@ -1561,4 +1706,77 @@ document.addEventListener('DOMContentLoaded', function() {
         saveUserPreference('customCursor', false);
     }    // Cria a máscara de leitura após o carregamento da página
     createReadingMask();
+    
+    // Função para o botão VLibras (mantido apenas o botão, sem funcionalidade)
+    function toggleVLibras() {
+        const button = document.getElementById('aguia-vlibras-button');
+        if (button) {
+            // Alterna apenas o estado visual do botão
+            button.classList.toggle('active');
+            
+            // Mostra mensagem indicando que a funcionalidade foi removida
+            showStatusMessage('Funcionalidade VLibras não está disponível', 'info');
+            
+            // Após 3 segundos, remove o estado ativo do botão
+            setTimeout(function() {
+                button.classList.remove('active');
+            }, 3000);
+        }
+    }
+    
+    // Função para alternar letras destacadas
+    function toggleHighlightedLetters() {
+        try {
+            // Alterna entre ativado (1) e desativado (0)
+            highlightedLettersLevel = highlightedLettersLevel === 0 ? 1 : 0;
+            
+            // Expõe a variável globalmente para outros arquivos
+            window.highlightedLettersLevel = highlightedLettersLevel;
+            
+            // Remove todas as classes anteriores
+            if (document && document.body) {
+                document.body.classList.remove('aguia-highlighted-letters', 'level-1', 'level-2', 'level-3');
+            }
+        
+            // Atualiza UI
+            const highlightedLettersBtn = document.getElementById('aguiaHighlightedLettersBtn');
+            if (highlightedLettersBtn) {
+                // Remove o estado ativo do botão
+                highlightedLettersBtn.classList.remove('active');
+                
+                // Atualiza o texto do botão
+                const textSpan = highlightedLettersBtn.querySelector('.text');
+                if (textSpan) {
+                    textSpan.textContent = 'Letras Destacadas';
+                    
+                    if (highlightedLettersLevel === 0) {
+                        showStatusMessage('Letras destacadas desativado');
+                    } else {
+                        highlightedLettersBtn.classList.add('active');
+                        showStatusMessage('Letras destacadas ativado', 'success');
+                        
+                        // Aplica a classe correspondente
+                        document.body.classList.add('aguia-highlighted-letters');
+                        document.body.classList.add('level-1');
+                    }
+                }
+            }
+            
+            // Carrega o CSS necessário
+            if (highlightedLettersLevel > 0) {
+                const linkExists = document.querySelector('link[href*="highlighted_letters.css"]');
+                if (!linkExists) {
+                    const link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = M.cfg.wwwroot + '/local/aguiaplugin/styles/highlighted_letters.css';
+                    document.head.appendChild(link);
+                }
+            }
+            
+            // Salva a preferência do usuário
+            saveUserPreference('highlightedLetters', highlightedLettersLevel);
+        } catch (error) {
+            console.error('Erro ao alternar letras destacadas:', error);
+        }
+    }
 });
