@@ -55,12 +55,84 @@ document.addEventListener('DOMContentLoaded', function() {
         button.setAttribute('aria-haspopup', 'true');
         button.setAttribute('aria-expanded', 'false');
         
+        // Aplicar estilo diretamente ao botão para garantir a aparência correta
+        button.style.backgroundColor = '#2271ff';
+        button.style.borderRadius = '10px';
+        button.style.border = '2px solid #2271ff';
+        button.style.width = '46px';
+        button.style.height = '46px';
+        button.style.padding = '0';
+        button.style.overflow = 'visible';
+        
         // Criar a imagem do logo
         const img = document.createElement('img');
-        img.src = M.cfg.wwwroot + '/local/aguiaplugin/pix/aguia_logo.png';
+        img.src = M.cfg.wwwroot + '/local/aguiaplugin/pix/AguiaLogo.png';
         img.alt = 'Logo AGUIA - Acessibilidade';
         img.className = 'aguia-logo';
+        // Aplicar estilo diretamente à imagem para garantir que não tenha margem branca
+        img.style.width = '40px';
+        img.style.height = '40px';
+        img.style.borderRadius = '8px';
+        img.style.objectFit = 'cover';
+        img.style.padding = '0';
+        img.style.margin = '0';
+        img.style.border = 'none';
         button.appendChild(img);
+        
+        // Criar a faixa de hover com o texto AGUIA
+        const createHoverBanner = () => {
+            // Verificar se o banner já existe
+            if (document.getElementById('aguiaBanner')) return;
+            
+            const banner = document.createElement('div');
+            banner.id = 'aguiaBanner';
+            banner.textContent = 'AGUIA';
+            banner.style.position = 'absolute';
+            banner.style.left = '-100px';
+            banner.style.top = '0';
+            banner.style.height = '40px';
+            banner.style.backgroundColor = '#2271ff';
+            banner.style.color = 'white';
+            banner.style.padding = '0 12px';
+            banner.style.display = 'flex';
+            banner.style.alignItems = 'center';
+            banner.style.justifyContent = 'flex-end';
+            banner.style.borderRadius = '10px';
+            banner.style.fontWeight = 'bold';
+            banner.style.fontSize = '12px';
+            banner.style.boxShadow = '0 3px 10px rgba(0, 86, 179, 0.5)';
+            banner.style.border = '2px solid #2271ff';
+            banner.style.whiteSpace = 'nowrap';
+            banner.style.zIndex = '9998';
+            banner.style.opacity = '0';
+            banner.style.transform = 'translateX(20px)';
+            banner.style.transition = 'all 0.3s ease';
+            banner.style.pointerEvents = 'none';
+            
+            document.body.appendChild(banner);
+            return banner;
+        };
+        
+        // Adicionar eventos de hover
+        button.addEventListener('mouseenter', () => {
+            const banner = createHoverBanner();
+            if (banner) {
+                setTimeout(() => {
+                    banner.style.opacity = '1';
+                    banner.style.left = '-75px';
+                    banner.style.transform = 'translateX(0)';
+                }, 10);
+            }
+        });
+        
+        button.addEventListener('mouseleave', () => {
+            const banner = document.getElementById('aguiaBanner');
+            if (banner) {
+                banner.style.opacity = '0';
+                banner.style.left = '-100px';
+                banner.style.transform = 'translateX(20px)';
+            }
+        });
         
         // Adicionar evento de clique
         button.addEventListener('click', toggleMenu);

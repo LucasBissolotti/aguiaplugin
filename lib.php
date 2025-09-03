@@ -57,6 +57,52 @@ function local_aguiaplugin_require_js() {
             bottom: 30px !important;
             right: 30px !important;
             z-index: 9999 !important;
+            background-color: #2271ff !important;
+            border-radius: 10px !important;
+            border: 2px solid #2271ff !important;
+            width: 46px !important;
+            height: 46px !important;
+        }
+        .aguia-logo {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 8px !important;
+            object-fit: cover !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+        }
+        
+        /* Estilo para o hover mostrando AGUIA em uma faixa lateral */
+        .aguia-button::before {
+            content: "AGUIA" !important;
+            position: absolute !important;
+            left: -100px !important;
+            top: 3px !important;
+            height: 40px !important;
+            background-color: #2271ff !important;
+            color: white !important;
+            padding: 0 12px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-end !important;
+            border-radius: 10px !important;
+            font-weight: bold !important;
+            font-size: 12px !important;
+            box-shadow: 0 3px 10px rgba(0, 86, 179, 0.5) !important;
+            border: 2px solid #2271ff !important;
+            white-space: nowrap !important;
+            z-index: 9998 !important;
+            opacity: 0 !important;
+            transform: translateX(20px) !important;
+            transition: all 0.3s ease !important;
+            pointer-events: none !important;
+        }
+        
+        .aguia-button:hover::before {
+            opacity: 1 !important;
+            left: -75px !important;
+            transform: translateX(0) !important;
         }
     </style>';
 }
