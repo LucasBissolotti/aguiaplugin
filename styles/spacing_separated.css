@@ -1,0 +1,130 @@
+/**
+ * Estilos para os novos recursos de espaçamento separados
+ * - Espaçamento entre linhas (line-height)
+ * - Espaçamento entre letras (letter-spacing)
+ *
+ * @package    local_aguiaplugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* =============================== */
+/* Espaçamento entre linhas (line-height) - WCAG 1.4.8 */
+/* =============================== */
+
+/* Nível 1 - Espaçamento entre linhas pequeno */
+.aguia-line-spacing-level-1 {
+    line-height: 1.4 !important;
+}
+
+.aguia-line-spacing-level-1 p, 
+.aguia-line-spacing-level-1 li, 
+.aguia-line-spacing-level-1 h1, 
+.aguia-line-spacing-level-1 h2, 
+.aguia-line-spacing-level-1 h3, 
+.aguia-line-spacing-level-1 h4, 
+.aguia-line-spacing-level-1 h5, 
+.aguia-line-spacing-level-1 h6 {
+    margin-bottom: 0.8em !important;
+}
+
+/* Nível 2 - Espaçamento entre linhas médio */
+.aguia-line-spacing-level-2 {
+    line-height: 1.6 !important;
+}
+
+.aguia-line-spacing-level-2 p, 
+.aguia-line-spacing-level-2 li, 
+.aguia-line-spacing-level-2 h1, 
+.aguia-line-spacing-level-2 h2, 
+.aguia-line-spacing-level-2 h3, 
+.aguia-line-spacing-level-2 h4, 
+.aguia-line-spacing-level-2 h5, 
+.aguia-line-spacing-level-2 h6 {
+    margin-bottom: 1.2em !important;
+}
+
+/* Nível 3 - Espaçamento entre linhas grande */
+.aguia-line-spacing-level-3 {
+    line-height: 1.8 !important;
+}
+
+.aguia-line-spacing-level-3 p, 
+.aguia-line-spacing-level-3 li, 
+.aguia-line-spacing-level-3 h1, 
+.aguia-line-spacing-level-3 h2, 
+.aguia-line-spacing-level-3 h3, 
+.aguia-line-spacing-level-3 h4, 
+.aguia-line-spacing-level-3 h5, 
+.aguia-line-spacing-level-3 h6 {
+    margin-bottom: 1.6em !important;
+}
+
+/* =============================== */
+/* Espaçamento entre letras (letter-spacing) - WCAG 1.4.8 */
+/* =============================== */
+
+/* Nível 1 - Espaçamento entre letras pequeno */
+.aguia-letter-spacing-level-1 {
+    word-spacing: 0.02em !important;
+}
+
+.aguia-letter-spacing-level-1 p, 
+.aguia-letter-spacing-level-1 li, 
+.aguia-letter-spacing-level-1 h1, 
+.aguia-letter-spacing-level-1 h2, 
+.aguia-letter-spacing-level-1 h3, 
+.aguia-letter-spacing-level-1 h4, 
+.aguia-letter-spacing-level-1 h5, 
+.aguia-letter-spacing-level-1 h6 {
+    letter-spacing: 0.01em !important;
+}
+
+/* Nível 2 - Espaçamento entre letras médio */
+.aguia-letter-spacing-level-2 {
+    word-spacing: 0.05em !important;
+}
+
+.aguia-letter-spacing-level-2 p, 
+.aguia-letter-spacing-level-2 li, 
+.aguia-letter-spacing-level-2 h1, 
+.aguia-letter-spacing-level-2 h2, 
+.aguia-letter-spacing-level-2 h3, 
+.aguia-letter-spacing-level-2 h4, 
+.aguia-letter-spacing-level-2 h5, 
+.aguia-letter-spacing-level-2 h6 {
+    letter-spacing: 0.02em !important;
+}
+
+/* Nível 3 - Espaçamento entre letras grande */
+.aguia-letter-spacing-level-3 {
+    word-spacing: 0.08em !important;
+}
+
+.aguia-letter-spacing-level-3 p, 
+.aguia-letter-spacing-level-3 li, 
+.aguia-letter-spacing-level-3 h1, 
+.aguia-letter-spacing-level-3 h2, 
+.aguia-letter-spacing-level-3 h3, 
+.aguia-letter-spacing-level-3 h4, 
+.aguia-letter-spacing-level-3 h5, 
+.aguia-letter-spacing-level-3 h6 {
+    letter-spacing: 0.04em !important;
+}
+
+/* =============================== */
+/* Estilos de padding compartilhados */
+/* =============================== */
+
+/* Para compatibilidade, mantemos os estilos de padding separados */
+/* Estes podem ser aplicados junto com qualquer um dos espaçamentos acima */
+.aguia-spacing-padding-level-1 * {
+    padding: 0.1em 0 !important;
+}
+
+.aguia-spacing-padding-level-2 * {
+    padding: 0.18em 0 !important;
+}
+
+.aguia-spacing-padding-level-3 * {
+    padding: 0.22em 0 !important;
+}

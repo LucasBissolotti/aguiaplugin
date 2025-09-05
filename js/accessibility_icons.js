@@ -14,7 +14,13 @@ const AguiaIcons = {
     // Ícone para fonte legível
     readableFont: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 4h2v6h4V4h2v14H9v-6H5v6H3V4m14 0h5v2h-5v4h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2m0 8v4h4v-4h-4z"/></svg>',
     
-    // Ícone para espaçamento
+    // Ícone para espaçamento entre linhas
+    lineSpacing: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 16h18v2H3v-2m0-5h18v2H3v-2m0-5h18v2H3V6z"/></svg>',
+    
+    // Ícone para espaçamento entre letras
+    letterSpacing: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M9.17 15.5h5.64l1.14 3h2.09l-5.11-13h-1.86l-5.11 13h2.09l1.12-3M12 7.98l2.07 5.52H9.93L12 7.98M20 14v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4Z"/></svg>',
+    
+    // Mantém o ícone original por compatibilidade
     spacing: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 16h18v2H3v-2m0-5h18v2H3v-2m0-5h18v2H3V6z"/></svg>',
     
     // Ícone para destacar links

@@ -131,4 +131,4 @@ Este plugin é licenciado sob os termos da [GNU GPL v3](https://www.gnu.org/lice
 
 ---
 
-Desenvolvido por Lucas Bissolotti - © 2025
+Desenvolvido por Lucas Bissolotti e Matheus Bordinhão - © 2025

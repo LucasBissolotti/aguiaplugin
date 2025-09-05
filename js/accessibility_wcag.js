@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let invertedColorsEnabled = false;
     let readableFontsEnabled = false;
     let lineSpacingLevel = 0; // 0: desativado, 1: pequeno, 2: médio, 3: grande
+    let letterSpacingLevel = 0; // 0: desativado, 1: pequeno, 2: médio, 3: grande
     let textToSpeechEnabled = false;
     let readingHelperEnabled = false;
     let emphasizeLinksEnabled = false;
@@ -70,8 +71,8 @@ document.addEventListener('DOMContentLoaded', function() {
         img.alt = 'Logo AGUIA - Acessibilidade';
         img.className = 'aguia-logo';
         // Aplicar estilo diretamente à imagem para garantir que não tenha margem branca
-        img.style.width = '40px';
-        img.style.height = '40px';
+        img.style.width = '34px';
+        img.style.height = '34px';
         img.style.borderRadius = '8px';
         img.style.objectFit = 'cover';
         img.style.padding = '0';
@@ -90,18 +91,18 @@ document.addEventListener('DOMContentLoaded', function() {
             banner.style.position = 'absolute';
             banner.style.left = '-100px';
             banner.style.top = '0';
-            banner.style.height = '40px';
+            banner.style.height = '40px'; /* Mesmo tamanho do botão */
             banner.style.backgroundColor = '#2271ff';
             banner.style.color = 'white';
-            banner.style.padding = '0 12px';
+            banner.style.padding = '0 30px'; /* Aumentado horizontalmente */
             banner.style.display = 'flex';
             banner.style.alignItems = 'center';
             banner.style.justifyContent = 'flex-end';
             banner.style.borderRadius = '10px';
             banner.style.fontWeight = 'bold';
-            banner.style.fontSize = '12px';
+            banner.style.fontSize = '14px';
             banner.style.boxShadow = '0 3px 10px rgba(0, 86, 179, 0.5)';
-            banner.style.border = '2px solid #2271ff';
+            banner.style.border = '1px solid #2271ff';
             banner.style.whiteSpace = 'nowrap';
             banner.style.zIndex = '9998';
             banner.style.opacity = '0';
@@ -119,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (banner) {
                 setTimeout(() => {
                     banner.style.opacity = '1';
-                    banner.style.left = '-75px';
+                    banner.style.left = '-115px';
                     banner.style.transform = 'translateX(0)';
                 }, 10);
             }
@@ -236,11 +237,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 id: 'aguiaReadableFontsBtn'
             },
             { 
-                iconSvg: AguiaIcons.spacing,
-                text: 'Espaçamento', 
+                iconSvg: AguiaIcons.lineSpacing,
+                text: 'Espaçamento entre Linhas', 
                 action: toggleLineSpacing,
-                ariaLabel: 'Ajustar espaçamento do texto',
+                ariaLabel: 'Ajustar espaçamento entre linhas do texto',
                 id: 'aguiaLineSpacingBtn'
+            },
+            { 
+                iconSvg: AguiaIcons.letterSpacing,
+                text: 'Espaçamento entre Letras', 
+                action: toggleLetterSpacing,
+                ariaLabel: 'Ajustar espaçamento entre letras do texto',
+                id: 'aguiaLetterSpacingBtn'
             },
             { 
                 iconSvg: AguiaIcons.emphasizeLinks,
@@ -897,58 +905,119 @@ document.addEventListener('DOMContentLoaded', function() {
         saveUserPreference('readableFonts', readableFontsEnabled);
     }
     
-    // Função para alternar espaçamento de linha com níveis
+    // Função para alternar espaçamento entre linhas com níveis
     function toggleLineSpacing() {
         // Incrementa o nível (0->1->2->3->0)
         lineSpacingLevel = (lineSpacingLevel + 1) % 4;
         
         // Atualiza UI
-        const spacingBtn = document.getElementById('aguiaLineSpacingBtn');
-        if (spacingBtn) {
+        const lineSpacingBtn = document.getElementById('aguiaLineSpacingBtn');
+        if (lineSpacingBtn) {
             // Remove todas as classes de nível
-            spacingBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+            lineSpacingBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
             
             if (lineSpacingLevel > 0) {
-                spacingBtn.classList.add('active');
-                spacingBtn.classList.add(`level-${lineSpacingLevel}`);
+                lineSpacingBtn.classList.add('active');
+                lineSpacingBtn.classList.add(`level-${lineSpacingLevel}`);
                 
                 // Atualiza o texto do botão para indicar o nível atual
-                const textSpan = spacingBtn.querySelector('.text');
+                const textSpan = lineSpacingBtn.querySelector('.text');
                 if (textSpan) {
-                    const levels = ['Espaçamento', 'Espaçamento 1', 'Espaçamento 2', 'Espaçamento 3'];
+                    const levels = ['Espaçamento entre Linhas', 'Espaçamento entre Linhas 1', 'Espaçamento entre Linhas 2', 'Espaçamento entre Linhas 3'];
                     textSpan.textContent = levels[lineSpacingLevel];
                 }
             } else {
                 // Restaura o texto original do botão
-                const textSpan = spacingBtn.querySelector('.text');
+                const textSpan = lineSpacingBtn.querySelector('.text');
                 if (textSpan) {
-                    textSpan.textContent = 'Espaçamento';
+                    textSpan.textContent = 'Espaçamento entre Linhas';
                 }
             }
         }
         
-        // Remove todas as classes de espaçamento existentes
-        document.body.classList.remove('aguia-spacing-level-1', 'aguia-spacing-level-2', 'aguia-spacing-level-3', 'aguia-increased-spacing');
+        // Remove todas as classes de espaçamento entre linhas existentes
+        document.body.classList.remove('aguia-line-spacing-level-1', 'aguia-line-spacing-level-2', 'aguia-line-spacing-level-3');
+        
+        // Para compatibilidade com versões anteriores
+        if (document.body.classList.contains('aguia-spacing-level-1') || 
+            document.body.classList.contains('aguia-spacing-level-2') || 
+            document.body.classList.contains('aguia-spacing-level-3')) {
+            document.body.classList.remove('aguia-spacing-level-1', 'aguia-spacing-level-2', 'aguia-spacing-level-3', 'aguia-increased-spacing');
+        }
         
         // Aplica a classe apropriada baseada no nível
         if (lineSpacingLevel > 0) {
-            document.body.classList.add(`aguia-spacing-level-${lineSpacingLevel}`);
+            document.body.classList.add(`aguia-line-spacing-level-${lineSpacingLevel}`);
             
-            // Mensagens detalhadas por nível - estilo Hand Talk
+            // Mensagens detalhadas por nível
             const levelMessages = [
                 '',
-                'Espaçamento nível 1: Textos e elementos com melhor separação e legibilidade',
-                'Espaçamento nível 2: Espaçamento ampliado para conforto visual e leitura facilitada',
-                'Espaçamento nível 3: Máximo espaçamento entre todos os elementos da página'
+                'Espaçamento entre Linhas nível 1: Melhora o espaçamento vertical do texto',
+                'Espaçamento entre Linhas nível 2: Espaçamento vertical ampliado para conforto visual',
+                'Espaçamento entre Linhas nível 3: Máximo espaçamento vertical entre as linhas'
             ];
             
             showStatusMessage(levelMessages[lineSpacingLevel], 'success');
         } else {
-            showStatusMessage('Espaçamento desativado');
+            showStatusMessage('Espaçamento entre Linhas desativado');
         }
         
         // Salva preferência
         saveUserPreference('lineSpacing', lineSpacingLevel);
+    }
+    
+    // Nova função para alternar espaçamento entre letras com níveis
+    function toggleLetterSpacing() {
+        // Incrementa o nível (0->1->2->3->0)
+        letterSpacingLevel = (letterSpacingLevel + 1) % 4;
+        
+        // Atualiza UI
+        const letterSpacingBtn = document.getElementById('aguiaLetterSpacingBtn');
+        if (letterSpacingBtn) {
+            // Remove todas as classes de nível
+            letterSpacingBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+            
+            if (letterSpacingLevel > 0) {
+                letterSpacingBtn.classList.add('active');
+                letterSpacingBtn.classList.add(`level-${letterSpacingLevel}`);
+                
+                // Atualiza o texto do botão para indicar o nível atual
+                const textSpan = letterSpacingBtn.querySelector('.text');
+                if (textSpan) {
+                    const levels = ['Espaçamento entre Letras', 'Espaçamento entre Letras 1', 'Espaçamento entre Letras 2', 'Espaçamento entre Letras 3'];
+                    textSpan.textContent = levels[letterSpacingLevel];
+                }
+            } else {
+                // Restaura o texto original do botão
+                const textSpan = letterSpacingBtn.querySelector('.text');
+                if (textSpan) {
+                    textSpan.textContent = 'Espaçamento entre Letras';
+                }
+            }
+        }
+        
+        // Remove todas as classes de espaçamento entre letras existentes
+        document.body.classList.remove('aguia-letter-spacing-level-1', 'aguia-letter-spacing-level-2', 'aguia-letter-spacing-level-3');
+        
+        // Aplica a classe apropriada baseada no nível
+        if (letterSpacingLevel > 0) {
+            document.body.classList.add(`aguia-letter-spacing-level-${letterSpacingLevel}`);
+            
+            // Mensagens detalhadas por nível
+            const levelMessages = [
+                '',
+                'Espaçamento entre Letras nível 1: Melhora a legibilidade do texto',
+                'Espaçamento entre Letras nível 2: Espaçamento médio entre letras e palavras',
+                'Espaçamento entre Letras nível 3: Máximo espaçamento entre letras para leitura facilitada'
+            ];
+            
+            showStatusMessage(levelMessages[letterSpacingLevel], 'success');
+        } else {
+            showStatusMessage('Espaçamento entre Letras desativado');
+        }
+        
+        // Salva preferência
+        saveUserPreference('letterSpacing', letterSpacingLevel);
     }
     
     // Texto para fala (WCAG 1.4.1)
@@ -1211,21 +1280,22 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleReadableFonts();
         }
         
-        // Reset de espaçamento
+        // Reset de espaçamento entre linhas
         if (lineSpacingLevel > 0) {
             // Reseta para zero
-            document.body.classList.remove('aguia-spacing-level-1', 'aguia-spacing-level-2', 'aguia-spacing-level-3');
+            document.body.classList.remove('aguia-line-spacing-level-1', 'aguia-line-spacing-level-2', 'aguia-line-spacing-level-3');
+            document.body.classList.remove('aguia-spacing-level-1', 'aguia-spacing-level-2', 'aguia-spacing-level-3'); // Para compatibilidade
             document.body.classList.remove('aguia-increased-spacing'); // Para compatibilidade
             
             // Reset do botão
-            const spacingBtn = document.getElementById('aguiaLineSpacingBtn');
-            if (spacingBtn) {
-                spacingBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+            const lineSpacingBtn = document.getElementById('aguiaLineSpacingBtn');
+            if (lineSpacingBtn) {
+                lineSpacingBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
                 
                 // Restaura o texto original
-                const textSpan = spacingBtn.querySelector('.text');
+                const textSpan = lineSpacingBtn.querySelector('.text');
                 if (textSpan) {
-                    textSpan.textContent = 'Espaçamento';
+                    textSpan.textContent = 'Espaçamento entre Linhas';
                 }
             }
             
@@ -1234,6 +1304,30 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Salva a preferência
             saveUserPreference('lineSpacing', 0);
+        }
+        
+        // Reset de espaçamento entre letras
+        if (letterSpacingLevel > 0) {
+            // Reseta para zero
+            document.body.classList.remove('aguia-letter-spacing-level-1', 'aguia-letter-spacing-level-2', 'aguia-letter-spacing-level-3');
+            
+            // Reset do botão
+            const letterSpacingBtn = document.getElementById('aguiaLetterSpacingBtn');
+            if (letterSpacingBtn) {
+                letterSpacingBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+                
+                // Restaura o texto original
+                const textSpan = letterSpacingBtn.querySelector('.text');
+                if (textSpan) {
+                    textSpan.textContent = 'Espaçamento entre Letras';
+                }
+            }
+            
+            // Reset da variável
+            letterSpacingLevel = 0;
+            
+            // Salva a preferência
+            saveUserPreference('letterSpacing', 0);
         }
         
         // Reset de texto para fala
@@ -1377,6 +1471,7 @@ document.addEventListener('DOMContentLoaded', function() {
             invertedColors: getFromLocalStorage('invertedColors', false),
             readableFonts: getFromLocalStorage('readableFonts', false),
             lineSpacing: getFromLocalStorage('lineSpacing', 0),
+            letterSpacing: getFromLocalStorage('letterSpacing', 0),
             textToSpeech: getFromLocalStorage('textToSpeech', false),
             readingHelper: getFromLocalStorage('readingHelper', false),
             emphasizeLinks: getFromLocalStorage('emphasizeLinks', false),
@@ -1484,7 +1579,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Atualiza o texto do botão
                 const textSpan = spacingBtn.querySelector('.text');
                 if (textSpan) {
-                    textSpan.textContent = 'Espaçamento 2';
+                    textSpan.textContent = 'Espaçamento entre Linhas 2';
+                }
+            }
+        }
+        
+        // Aplicar espaçamento entre letras com níveis
+        const letterSpacingLevel = parseInt(preferences.letterSpacing) || 0;
+        if (letterSpacingLevel > 0 && letterSpacingLevel <= 3) {
+            letterSpacingLevel = letterSpacingLevel;
+            document.body.classList.add(`aguia-letter-spacing-level-${letterSpacingLevel}`);
+            
+            // Atualiza botão se existir
+            const letterSpacingBtn = document.getElementById('aguiaLetterSpacingBtn');
+            if (letterSpacingBtn) {
+                letterSpacingBtn.classList.add('active');
+                letterSpacingBtn.classList.add(`level-${letterSpacingLevel}`);
+                
+                // Atualiza o texto do botão para indicar o nível atual
+                const textSpan = letterSpacingBtn.querySelector('.text');
+                if (textSpan) {
+                    const levels = ['Espaçamento entre Letras', 'Espaçamento entre Letras 1', 'Espaçamento entre Letras 2', 'Espaçamento entre Letras 3'];
+                    textSpan.textContent = levels[letterSpacingLevel];
                 }
             }
         }

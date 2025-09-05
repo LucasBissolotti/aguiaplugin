@@ -54,18 +54,19 @@ function local_aguiaplugin_require_js() {
     echo '<style>
         .aguia-button {
             position: fixed !important;
-            bottom: 30px !important;
-            right: 30px !important;
+            top: 43% !important; /* Posicionado um pouco acima do meio vertical da tela */
+            transform: translateY(-50%) !important; /* Ajuste para centralização perfeita */
+            right: 10px !important; /* Reduzida distância da borda direita */
             z-index: 9999 !important;
             background-color: #2271ff !important;
             border-radius: 10px !important;
-            border: 2px solid #2271ff !important;
-            width: 46px !important;
-            height: 46px !important;
+            border: 1px solid #2271ff !important; /* Borda reduzida de 2px para 1px */
+            width: 40px !important; /* Tamanho reduzido para 40px conforme solicitado */
+            height: 40px !important; /* Tamanho reduzido para 40px conforme solicitado */
         }
         .aguia-logo {
-            width: 40px !important;
-            height: 40px !important;
+            width: 34px !important;
+            height: 34px !important;
             border-radius: 8px !important;
             object-fit: cover !important;
             margin: 0 !important;
@@ -78,19 +79,19 @@ function local_aguiaplugin_require_js() {
             content: "AGUIA" !important;
             position: absolute !important;
             left: -100px !important;
-            top: 3px !important;
-            height: 40px !important;
+            top: 0 !important;
+            height: 40px !important; /* Mesmo tamanho do botão */
             background-color: #2271ff !important;
             color: white !important;
-            padding: 0 12px !important;
+            padding: 0 30px !important; /* Aumentado horizontalmente */
             display: flex !important;
             align-items: center !important;
             justify-content: flex-end !important;
             border-radius: 10px !important;
             font-weight: bold !important;
-            font-size: 12px !important;
+            font-size: 14px !important;
             box-shadow: 0 3px 10px rgba(0, 86, 179, 0.5) !important;
-            border: 2px solid #2271ff !important;
+            border: 1px solid #2271ff !important;
             white-space: nowrap !important;
             z-index: 9998 !important;
             opacity: 0 !important;
@@ -101,7 +102,7 @@ function local_aguiaplugin_require_js() {
         
         .aguia-button:hover::before {
             opacity: 1 !important;
-            left: -75px !important;
+            left: -115px !important;
             transform: translateX(0) !important;
         }
     </style>';
@@ -177,6 +178,7 @@ function local_aguiaplugin_before_standard_html_head() {
     $cssvlibras = new moodle_url('/local/aguiaplugin/styles/vlibras.css');
     $cssspacing = new moodle_url('/local/aguiaplugin/styles/spacing_indicators.css');
     $cssspacing_add = new moodle_url('/local/aguiaplugin/styles/spacing_additional.css');
+    $cssspacing_separated = new moodle_url('/local/aguiaplugin/styles/spacing_separated.css');
     $csshandtalk = new moodle_url('/local/aguiaplugin/styles/handtalk_spacing.css');
     $csshighlightedletters = new moodle_url('/local/aguiaplugin/styles/highlighted_letters.css');
     
@@ -191,6 +193,7 @@ function local_aguiaplugin_before_standard_html_head() {
         <link rel='stylesheet' type='text/css' href='{$cssvlibras}'>
         <link rel='stylesheet' type='text/css' href='{$cssspacing}'>
         <link rel='stylesheet' type='text/css' href='{$cssspacing_add}'>
+        <link rel='stylesheet' type='text/css' href='{$cssspacing_separated}'>
         <link rel='stylesheet' type='text/css' href='{$csshandtalk}'>
         <link rel='stylesheet' type='text/css' href='{$csshighlightedletters}'>
     ";
