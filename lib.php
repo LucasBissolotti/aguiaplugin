@@ -49,6 +49,10 @@ function local_aguiaplugin_require_js() {
     $PAGE->requires->js('/local/aguiaplugin/js/initialize_colorblind.js');
     $PAGE->requires->js('/local/aguiaplugin/js/icon_updater.js');
     $PAGE->requires->js('/local/aguiaplugin/js/highlighted_letters.js');
+    $PAGE->requires->js('/local/aguiaplugin/js/display_fix.js'); // Carrega primeiro o script para corrigir problemas de exibição
+    $PAGE->requires->js('/local/aguiaplugin/js/content_magnifier.js'); // Carrega a lupa de conteúdo
+    $PAGE->requires->js('/local/aguiaplugin/js/magnifier_standalone.js'); // Carrega a versão independente da lupa
+    $PAGE->requires->js('/local/aguiaplugin/js/remove_magnifier_button.js'); // Remove o botão da lupa visualmente
     
     // Adiciona CSS personalizado para garantir a posição fixa do botão
     echo '<style>
@@ -171,6 +175,7 @@ function local_aguiaplugin_before_standard_html_head() {
     $cssbase = new moodle_url('/local/aguiaplugin/styles/base.css');
     $csswcag = new moodle_url('/local/aguiaplugin/styles/wcag.css');
     $csscolorblind = new moodle_url('/local/aguiaplugin/styles/colorblind.css');
+    $csscolorintensity = new moodle_url('/local/aguiaplugin/styles/color_intensity.css');
     $cssreadingmask = new moodle_url('/local/aguiaplugin/styles/reading_mask_cursor.css');
     $cssicons = new moodle_url('/local/aguiaplugin/styles/icons.css');
     $cssmultiselect = new moodle_url('/local/aguiaplugin/styles/multi_select.css');
@@ -181,11 +186,16 @@ function local_aguiaplugin_before_standard_html_head() {
     $cssspacing_separated = new moodle_url('/local/aguiaplugin/styles/spacing_separated.css');
     $csshandtalk = new moodle_url('/local/aguiaplugin/styles/handtalk_spacing.css');
     $csshighlightedletters = new moodle_url('/local/aguiaplugin/styles/highlighted_letters.css');
+    $cssopendyslexic = new moodle_url('/local/aguiaplugin/styles/opendyslexic.css');
+    $csscontentmagnifier = new moodle_url('/local/aguiaplugin/styles/content_magnifier.css');
+    $cssmagnifierfix = new moodle_url('/local/aguiaplugin/styles/magnifier_fix.css');
+    $csshidemagnifierbutton = new moodle_url('/local/aguiaplugin/styles/hide_magnifier_button.css');
     
     return "
         <link rel='stylesheet' type='text/css' href='{$cssbase}'>
         <link rel='stylesheet' type='text/css' href='{$csswcag}'>
         <link rel='stylesheet' type='text/css' href='{$csscolorblind}'>
+        <link rel='stylesheet' type='text/css' href='{$csscolorintensity}'>
         <link rel='stylesheet' type='text/css' href='{$cssreadingmask}'>
         <link rel='stylesheet' type='text/css' href='{$cssicons}'>
         <link rel='stylesheet' type='text/css' href='{$cssmultiselect}'>
@@ -196,5 +206,9 @@ function local_aguiaplugin_before_standard_html_head() {
         <link rel='stylesheet' type='text/css' href='{$cssspacing_separated}'>
         <link rel='stylesheet' type='text/css' href='{$csshandtalk}'>
         <link rel='stylesheet' type='text/css' href='{$csshighlightedletters}'>
+        <link rel='stylesheet' type='text/css' href='{$cssopendyslexic}'>
+        <link rel='stylesheet' type='text/css' href='{$csscontentmagnifier}'>
+        <link rel='stylesheet' type='text/css' href='{$cssmagnifierfix}'>
+        <link rel='stylesheet' type='text/css' href='{$csshidemagnifierbutton}'>
     ";
 }

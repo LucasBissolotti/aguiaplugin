@@ -1,0 +1,28 @@
+/* Estilos para os modos de intensidade de cores */
+
+/* Modo de baixa intensidade - cores mais suaves e reduzidas */
+.aguia-color-intensity-low {
+    filter: saturate(60%) brightness(105%) !important;
+}
+
+.aguia-color-intensity-low img:not(.aguia-logo) {
+    filter: saturate(70%) brightness(105%) !important;
+}
+
+/* Modo de alta intensidade - cores mais fortes e marcantes */
+.aguia-color-intensity-high {
+    filter: saturate(150%) contrast(110%) !important;
+}
+
+.aguia-color-intensity-high img:not(.aguia-logo) {
+    filter: saturate(140%) contrast(110%) !important;
+}
+
+/* Modo sem cor - escala de cinza */
+.aguia-color-intensity-gray {
+    filter: grayscale(100%) !important;
+}
+
+.aguia-color-intensity-gray img:not(.aguia-logo) {
+    filter: grayscale(100%) !important;
+}

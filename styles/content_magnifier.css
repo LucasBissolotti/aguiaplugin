@@ -1,0 +1,199 @@
+/**
+ * Estilos para a lupa de conteúdo do plugin AGUIA
+ * Inspirada na funcionalidade do site Hand Talk
+ * 
+ * @package    local_aguiaplugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* Estilo base para o elemento da lupa */
+#aguia-content-magnifier,
+.aguia-magnifier {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.98);
+    border: 2px solid #2271ff;
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-size: 22px !important;
+    font-weight: 500;
+    color: #000;
+    z-index: 9999;
+    max-width: 350px;
+    min-width: 120px;
+    max-height: 300px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    pointer-events: none;
+    transition: all 0.2s ease;
+    overflow-y: auto;
+    overflow-x: hidden;
+    line-height: 1.5;
+    letter-spacing: 0.2px;
+    white-space: normal;
+    text-align: left;
+}
+
+/* Remover marcações ou estruturas que possam aparecer no texto magnificado */
+#aguia-content-magnifier *,
+.aguia-magnifier * {
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Estado oculto da lupa */
+.aguia-magnifier-hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(10px);
+}
+
+/* Estilos para o painel AGUIA */
+#aguia-menu-panel {
+    position: fixed;
+    top: 50%;
+    right: 60px;
+    transform: translateY(-50%);
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    width: 300px;
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    display: none !important; /* Garantir que o painel esteja sempre oculto por padrão */
+}
+
+#aguia-menu-panel.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+#aguia-menu-panel h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.aguia-buttons-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+/* Estilos para os botões de feature */
+.aguia-feature-button {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.aguia-feature-button:hover {
+    background-color: #e9e9e9;
+    border-color: #ccc;
+}
+
+.aguia-feature-button.active {
+    background-color: #2271ff;
+    color: white;
+    border-color: #2271ff;
+}
+
+/* Estilo específico para o botão da lupa */
+.aguia-magnifier-button {
+    position: relative;
+}
+
+.aguia-magnifier-button i {
+    margin-right: 8px;
+}
+
+/* Estilo para o item de menu da lupa */
+#aguia-menu-magnifier {
+    display: flex;
+    align-items: center;
+    color: #333;
+    text-decoration: none;
+    padding: 8px 12px;
+    transition: background-color 0.2s;
+    border-radius: 4px;
+}
+
+#aguia-menu-magnifier:hover {
+    background-color: #f0f0f0;
+}
+
+#aguia-menu-magnifier i {
+    margin-right: 8px;
+}
+
+/* Efeitos visuais quando a lupa está ativa */
+.aguia-magnifier-active p:hover,
+.aguia-magnifier-active span:hover,
+.aguia-magnifier-active a:hover,
+.aguia-magnifier-active h1:hover,
+.aguia-magnifier-active h2:hover,
+.aguia-magnifier-active h3:hover,
+.aguia-magnifier-active h4:hover,
+.aguia-magnifier-active h5:hover,
+.aguia-magnifier-active h6:hover,
+.aguia-magnifier-active li:hover,
+.aguia-magnifier-active td:hover,
+.aguia-magnifier-active th:hover,
+.aguia-magnifier-active label:hover,
+.aguia-magnifier-active div:hover {
+    outline: 2px solid rgba(34, 113, 255, 0.5);
+    outline-offset: 2px;
+    cursor: help;
+    background-color: rgba(34, 113, 255, 0.05);
+}
+
+/* Botão principal do AGUIA */
+.aguia-button {
+    position: fixed !important;
+    top: 43% !important;
+    transform: translateY(-50%) !important;
+    right: 10px !important;
+    z-index: 9999 !important;
+    background-color: #2271ff !important;
+    border-radius: 10px !important;
+    border: 1px solid #2271ff !important;
+    width: 40px !important;
+    height: 40px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 12px rgba(34, 113, 255, 0.3) !important;
+}
+
+.aguia-button:hover {
+    background-color: #1b5fd0 !important;
+    box-shadow: 0 6px 15px rgba(34, 113, 255, 0.4) !important;
+}
+
+.aguia-logo {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 8px !important;
+    object-fit: cover !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+}

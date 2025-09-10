@@ -29,8 +29,15 @@ const AguiaIcons = {
     // Ícone para alto contraste
     contrast: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2m0 18a8 8 0 0 1-8-8a8 8 0 0 1 8-8a8 8 0 0 1 8 8a8 8 0 0 1-8 8m4-7c.6 0 1 .4 1 1s-.4 1-1 1s-1-.4-1-1s.4-1 1-1m-8 0c.6 0 1 .4 1 1s-.4 1-1 1s-1-.4-1-1s.4-1 1-1m3.3-4.3l-1.1 2l-1.7.4l1.7.4l1.1 2l1.1-2l1.7-.4l-1.7-.4l-1.1-2"/></svg>',
     
-    // Ícone para cores invertidas
-    invertColors: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8M7 12a5 5 0 0 0 5 5V7a5 5 0 0 0-5 5"/></svg>',
+    // Ícone para intensidade de cores
+    invertColors: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M17.66 7.93L12 2.27L6.34 7.93c-3.12 3.12-3.12 8.19 0 11.31A7.98 7.98 0 0 0 12 21.58c2.05 0 4.1-.78 5.66-2.34c3.12-3.12 3.12-8.19 0-11.31zM12 19.59c-1.6 0-3.11-.62-4.24-1.76C6.62 16.69 6 15.19 6 13.59s.62-3.11 1.76-4.24L12 5.1v14.49z"/></svg>',
+    
+    // Ícones para os níveis de intensidade de cor
+    colorIntensityLow: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm0 15c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5z"/></svg>',
+    
+    colorIntensityHigh: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm0 15c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5zm-1-8h2v6h-2zm0-2h2v2h-2z"/></svg>',
+    
+    colorIntensityGray: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93c0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41c0 2.08-.8 3.97-2.1 5.39z"/></svg>',
     
     // Ícone para daltonismo
     colorblind: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M17 13v-2h-1.5A1.5 1.5 0 0 1 14 9.5A1.5 1.5 0 0 1 15.5 8H17V6h-1.5A3.5 3.5 0 0 0 12 9.5c0 .93.37 1.77.96 2.39A2.99 2.99 0 0 0 11 15a3 3 0 0 0 3 3c.75 0 1.44-.28 1.97-.74a3.52 3.52 0 0 0 2.14.74A3.39 3.39 0 0 0 21.5 14.5a3.39 3.39 0 0 0-3.39-3.5c-.36 0-.7.08-1.11.2M15.5 15a1.5 1.5 0 0 1-1.5-1.5A1.5 1.5 0 0 1 15.5 12a1.39 1.39 0 0 1 1.39 1.5a1.39 1.39 0 0 1-1.39 1.5M8.33 7.5l-.66-1.5H5.33l-.67 1.5h3.67m-4.1 1l-1.04 2.39c-.04.09-.2.61.13.61h2.26C5.62 8.67 4.73 8.5 4.23 8.5M9.97 11.5c.19 0 .37-.19.26-.43L8.1 5.5a.62.62 0 0 0-.5-.5H7.12c-.26 0-.4.21-.5.5l-2.12 5.57c-.11.24.06.43.26.43h4.71z"/></svg>',
@@ -54,5 +61,8 @@ const AguiaIcons = {
     reset: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4c2.1 0 4 .8 5.4 2.2l1.6-1.6v5h-5l2-2c-1-1-2.5-1.6-4-1.6C9 6 6 9 6 12s3 6 6 6c2.3 0 4.2-1.2 5.2-3h2.2c-1.2 2.8-3.9 4.8-7.4 4.8-4.4 0-8-3.6-8-8s3.6-8 8-8m0 3c.8 0 1.5.7 1.5 1.5S12.8 10 12 10s-1.5-.7-1.5-1.5S11.2 7 12 7z"/></svg>',
     
     // Ícone para letras destacadas
-    highlightedLetters: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M9.62 12L12 5.67L14.37 12M11 3L5.5 17h2.25l1.12-3h6.25l1.13 3h2.25L13 3h-2z"/></svg>'
+    highlightedLetters: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M9.62 12L12 5.67L14.37 12M11 3L5.5 17h2.25l1.12-3h6.25l1.13 3h2.25L13 3h-2z"/></svg>',
+    
+    // Ícone para lupa de conteúdo
+    magnifier: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5l-1.5 1.5l-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16A6.5 6.5 0 0 1 3 9.5A6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14S14 12 14 9.5S12 5 9.5 5Z"/></svg>'
 };

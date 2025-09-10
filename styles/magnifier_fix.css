@@ -1,0 +1,29 @@
+/**
+ * Estilos específicos para evitar linhas azuis estruturais na lupa
+ * 
+ * @package    local_aguiaplugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* Remover bordas e outlines azuis no texto magnificado */
+.aguia-magnifier * {
+    border-color: transparent !important;
+    outline-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Ajustar largura para evitar quebra em textos longos */
+.aguia-magnifier {
+    max-width: 80vw !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: pre-wrap !important;
+}
+
+/* Ocultar qualquer elemento de código ou estrutura que possa aparecer */
+.aguia-magnifier pre,
+.aguia-magnifier code,
+.aguia-magnifier style,
+.aguia-magnifier script {
+    display: none !important;
+}

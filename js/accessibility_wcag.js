@@ -21,8 +21,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicialização das variáveis
     let currentFontSize = 100;
     let highContrastEnabled = false;
-    let invertedColorsEnabled = false;
+    let colorIntensityMode = 0; // 0: normal, 1: baixa intensidade, 2: alta intensidade, 3: escala de cinza
     let readableFontsEnabled = false;
+    let fontMode = 0; // 0: padrão, 1: fontes legíveis, 2: OpenDyslexic
     let lineSpacingLevel = 0; // 0: desativado, 1: pequeno, 2: médio, 3: grande
     let letterSpacingLevel = 0; // 0: desativado, 1: pequeno, 2: médio, 3: grande
     let textToSpeechEnabled = false;
@@ -323,15 +324,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 iconSvg: AguiaIcons.contrast, 
                 text: 'Alto Contraste', 
                 action: toggleHighContrast,
-                ariaLabel: 'Ativar ou desativar o modo de alto contraste',
+                ariaLabel: 'Ativar ou desativar o modo de alto contraste melhorado',
                 id: 'aguiaHighContrastBtn'
             },
             { 
                 iconSvg: AguiaIcons.invertColors, 
-                text: 'Cores Invertidas', 
-                action: toggleInvertedColors,
-                ariaLabel: 'Ativar ou desativar inversão de cores',
-                id: 'aguiaInvertedColorsBtn'
+                text: 'Intensidade de Cores', 
+                action: toggleColorIntensity,
+                ariaLabel: 'Alternar entre os níveis de intensidade de cores',
+                id: 'aguiaColorIntensityBtn'
             }
         ];
         
@@ -477,13 +478,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 id: 'aguiaHideImagesBtn'
             },
             {
-                iconSvg: AguiaIcons.vLibras,
-                text: 'Tradutor LIBRAS',
-                action: toggleVLibras,
-                ariaLabel: 'Ativar ou desativar tradutor em Língua Brasileira de Sinais',
-                id: 'aguia-vlibras-button'
-            },
-            {
                 icon: '�',
                 text: 'Máscara de Foco',
                 action: toggleReadingMaskAndCursor,
@@ -616,6 +610,16 @@ document.addEventListener('DOMContentLoaded', function() {
             if (fontSizeSlider) {
                 fontSizeSlider.value = currentFontSize;
             }
+            
+            // Adiciona classe ativa ao botão quando o tamanho é maior que o padrão
+            const increaseFontBtn = document.getElementById('aguiaIncreaseFontBtn');
+            if (increaseFontBtn) {
+                if (currentFontSize > 100) {
+                    increaseFontBtn.classList.add('active');
+                } else {
+                    increaseFontBtn.classList.remove('active');
+                }
+            }
         }
     }
     
@@ -653,6 +657,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Atualiza a variável atual
         currentFontSize = size;
         
+        // Atualiza o estado do botão
+        const increaseFontBtn = document.getElementById('aguiaIncreaseFontBtn');
+        if (increaseFontBtn) {
+            if (size > 100) {
+                increaseFontBtn.classList.add('active');
+            } else {
+                increaseFontBtn.classList.remove('active');
+            }
+        }
+        
         // Exibe mensagem
         showStatusMessage('Tamanho do texto ajustado para ' + size + '%', 'success');
         
@@ -675,21 +689,41 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fontSizeLabel) {
             fontSizeLabel.setAttribute('data-value', '100%');
         }
+        
+        // Certifica-se de remover a classe ativa do botão
+        const increaseFontBtn = document.getElementById('aguiaIncreaseFontBtn');
+        if (increaseFontBtn) {
+            increaseFontBtn.classList.remove('active');
+        }
     }
     
-    // Função para alternar alto contraste
+    // Função para alternar alto contraste melhorado
     function toggleHighContrast() {
         highContrastEnabled = !highContrastEnabled;
         
-        // Desativa cores invertidas se estiver ativando alto contraste
-        if (highContrastEnabled && invertedColorsEnabled) {
-            invertedColorsEnabled = false;
-            document.body.classList.remove('aguia-inverted-colors');
+        // Desativa intensidade de cores se estiver ativando alto contraste
+        if (highContrastEnabled && colorIntensityMode > 0) {
+            // Remove todas as classes de intensidade de cor
+            document.body.classList.remove(
+                'aguia-color-intensity-low',
+                'aguia-color-intensity-high',
+                'aguia-color-intensity-gray'
+            );
             
-            const invertedBtn = document.getElementById('aguiaInvertedColorsBtn');
-            if (invertedBtn) {
-                invertedBtn.classList.remove('active');
+            colorIntensityMode = 0;
+            
+            // Atualiza o botão de intensidade
+            const intensityBtn = document.getElementById('aguiaColorIntensityBtn');
+            if (intensityBtn) {
+                intensityBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+                const textSpan = intensityBtn.querySelector('.text');
+                const iconSpan = intensityBtn.querySelector('.icon');
+                if (textSpan) textSpan.textContent = 'Intensidade de Cores';
+                if (iconSpan) iconSpan.innerHTML = AguiaIcons.invertColors;
             }
+            
+            // Salva a preferência
+            saveUserPreference('colorIntensityMode', 0);
         }
         
         // Atualiza UI
@@ -702,24 +736,26 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
+        // Aplica a classe ao corpo do documento
         if (highContrastEnabled) {
             document.body.classList.add('aguia-high-contrast');
-            showStatusMessage('Alto contraste ativado', 'success');
+            showStatusMessage('Alto contraste melhorado ativado', 'success');
         } else {
             document.body.classList.remove('aguia-high-contrast');
-            showStatusMessage('Alto contraste desativado');
+            showStatusMessage('Alto contraste melhorado desativado');
         }
         
         // Salva preferência
         saveUserPreference('highContrast', highContrastEnabled);
     }
     
-    // Função para alternar cores invertidas
-    function toggleInvertedColors() {
-        invertedColorsEnabled = !invertedColorsEnabled;
+    // Função para alternar entre os níveis de intensidade de cores
+    function toggleColorIntensity() {
+        // Incrementa o modo (0: normal, 1: baixa, 2: alta, 3: escala de cinza, 0: normal...)
+        colorIntensityMode = (colorIntensityMode + 1) % 4;
         
-        // Desativa alto contraste se estiver ativando cores invertidas
-        if (invertedColorsEnabled && highContrastEnabled) {
+        // Desativa alto contraste se estiver ativando qualquer modo de intensidade de cor
+        if (colorIntensityMode > 0 && highContrastEnabled) {
             highContrastEnabled = false;
             document.body.classList.remove('aguia-high-contrast');
             
@@ -729,26 +765,58 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Atualiza UI
-        const invertedBtn = document.getElementById('aguiaInvertedColorsBtn');
-        if (invertedBtn) {
-            if (invertedColorsEnabled) {
-                invertedBtn.classList.add('active');
-            } else {
-                invertedBtn.classList.remove('active');
+        // Remove todas as classes de intensidade de cor
+        document.body.classList.remove(
+            'aguia-color-intensity-low',
+            'aguia-color-intensity-high',
+            'aguia-color-intensity-gray'
+        );
+        
+        // Atualiza o botão
+        const intensityBtn = document.getElementById('aguiaColorIntensityBtn');
+        if (intensityBtn) {
+            // Remove todas as classes de nível
+            intensityBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+            
+            // Atualiza o texto e o ícone de acordo com o modo
+            const textSpan = intensityBtn.querySelector('.text');
+            const iconSpan = intensityBtn.querySelector('.icon');
+            
+            switch (colorIntensityMode) {
+                case 0: // Normal
+                    if (textSpan) textSpan.textContent = 'Intensidade de Cores';
+                    if (iconSpan) iconSpan.innerHTML = AguiaIcons.invertColors;
+                    showStatusMessage('Intensidade de cores normal');
+                    break;
+                
+                case 1: // Baixa intensidade
+                    document.body.classList.add('aguia-color-intensity-low');
+                    intensityBtn.classList.add('active', 'level-1');
+                    if (textSpan) textSpan.textContent = 'Baixa Intensidade';
+                    if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensityLow;
+                    showStatusMessage('Modo de baixa intensidade de cores ativado', 'success');
+                    break;
+                
+                case 2: // Alta intensidade
+                    document.body.classList.add('aguia-color-intensity-high');
+                    intensityBtn.classList.add('active', 'level-2');
+                    if (textSpan) textSpan.textContent = 'Alta Intensidade';
+                    if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensityHigh;
+                    showStatusMessage('Modo de alta intensidade de cores ativado', 'success');
+                    break;
+                
+                case 3: // Escala de cinza
+                    document.body.classList.add('aguia-color-intensity-gray');
+                    intensityBtn.classList.add('active', 'level-3');
+                    if (textSpan) textSpan.textContent = 'Escala de Cinza';
+                    if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensityGray;
+                    showStatusMessage('Modo de escala de cinza ativado', 'success');
+                    break;
             }
         }
         
-        if (invertedColorsEnabled) {
-            document.body.classList.add('aguia-inverted-colors');
-            showStatusMessage('Cores invertidas ativadas', 'success');
-        } else {
-            document.body.classList.remove('aguia-inverted-colors');
-            showStatusMessage('Cores invertidas desativadas');
-        }
-        
         // Salva preferência
-        saveUserPreference('invertedColors', invertedColorsEnabled);
+        saveUserPreference('colorIntensityMode', colorIntensityMode);
     }
     
     // Função para resetar configurações de contraste
@@ -762,17 +830,34 @@ document.addEventListener('DOMContentLoaded', function() {
             if (contrastBtn) {
                 contrastBtn.classList.remove('active');
             }
+            
+            // Salva preferência
+            saveUserPreference('highContrast', false);
         }
         
-        // Reset de cores invertidas
-        if (invertedColorsEnabled) {
-            invertedColorsEnabled = false;
-            document.body.classList.remove('aguia-inverted-colors');
+        // Reset de intensidade de cores
+        if (colorIntensityMode > 0) {
+            colorIntensityMode = 0;
             
-            const invertedBtn = document.getElementById('aguiaInvertedColorsBtn');
-            if (invertedBtn) {
-                invertedBtn.classList.remove('active');
+            // Remove todas as classes de intensidade de cor
+            document.body.classList.remove(
+                'aguia-color-intensity-low',
+                'aguia-color-intensity-high',
+                'aguia-color-intensity-gray'
+            );
+            
+            // Atualiza o botão de intensidade
+            const intensityBtn = document.getElementById('aguiaColorIntensityBtn');
+            if (intensityBtn) {
+                intensityBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+                const textSpan = intensityBtn.querySelector('.text');
+                const iconSpan = intensityBtn.querySelector('.icon');
+                if (textSpan) textSpan.textContent = 'Intensidade de Cores';
+                if (iconSpan) iconSpan.innerHTML = AguiaIcons.invertColors;
             }
+            
+            // Salva preferência
+            saveUserPreference('colorIntensityMode', 0);
         }
         
         // Reset de modo daltonismo
@@ -881,28 +966,58 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Função para alternar fontes legíveis
     function toggleReadableFonts() {
-        readableFontsEnabled = !readableFontsEnabled;
+        // Atualizar para ciclar entre os 3 modos: 0 (padrão) -> 1 (fontes legíveis) -> 2 (OpenDyslexic) -> 0 (padrão)
+        fontMode = (fontMode + 1) % 3;
         
         // Atualiza UI
         const fontsBtn = document.getElementById('aguiaReadableFontsBtn');
         if (fontsBtn) {
-            if (readableFontsEnabled) {
-                fontsBtn.classList.add('active');
-            } else {
-                fontsBtn.classList.remove('active');
+            // Limpar classes antigas
+            fontsBtn.classList.remove('active', 'opendyslexic');
+            
+            // Atualizar texto e classe de acordo com o modo atual
+            const textSpan = fontsBtn.querySelector('.text');
+            if (textSpan) {
+                switch (fontMode) {
+                    case 0: // Padrão
+                        textSpan.textContent = 'Fontes Legíveis';
+                        break;
+                    case 1: // Fontes Legíveis
+                        textSpan.textContent = 'Fontes Legíveis';
+                        fontsBtn.classList.add('active');
+                        break;
+                    case 2: // OpenDyslexic
+                        textSpan.textContent = 'Fontes Amigável (OpenDyslexic)';
+                        fontsBtn.classList.add('active', 'opendyslexic');
+                        break;
+                }
             }
         }
         
-        if (readableFontsEnabled) {
-            document.body.classList.add('aguia-readable-fonts');
-            showStatusMessage('Fontes legíveis ativadas', 'success');
-        } else {
-            document.body.classList.remove('aguia-readable-fonts');
-            showStatusMessage('Fontes legíveis desativadas');
+        // Remover todas as classes de fonte
+        document.body.classList.remove('aguia-readable-fonts', 'aguia-opendyslexic-fonts');
+        
+        // Aplicar classe correta de acordo com o modo
+        switch (fontMode) {
+            case 0: // Padrão
+                showStatusMessage('Fontes padrão ativadas');
+                readableFontsEnabled = false;
+                break;
+            case 1: // Fontes Legíveis
+                document.body.classList.add('aguia-readable-fonts');
+                showStatusMessage('Fontes legíveis ativadas', 'success');
+                readableFontsEnabled = true;
+                break;
+            case 2: // OpenDyslexic
+                document.body.classList.add('aguia-opendyslexic-fonts');
+                showStatusMessage('Fontes Amigável (OpenDyslexic) ativadas', 'success');
+                readableFontsEnabled = true;
+                break;
         }
         
-        // Salva preferência
+        // Salva preferências
         saveUserPreference('readableFonts', readableFontsEnabled);
+        saveUserPreference('fontMode', fontMode);
     }
     
     // Função para alternar espaçamento entre linhas com níveis
@@ -1275,9 +1390,28 @@ document.addEventListener('DOMContentLoaded', function() {
             resetReadingMaskAndCursor();
         }
         
-        // Reset de fontes legíveis
-        if (readableFontsEnabled) {
-            toggleReadableFonts();
+        // Reset de fontes legíveis e OpenDyslexic
+        if (fontMode !== 0) {
+            // Remover todas as classes de fonte
+            document.body.classList.remove('aguia-readable-fonts', 'aguia-opendyslexic-fonts');
+            
+            // Resetar o botão
+            const fontsBtn = document.getElementById('aguiaReadableFontsBtn');
+            if (fontsBtn) {
+                fontsBtn.classList.remove('active', 'opendyslexic');
+                const textSpan = fontsBtn.querySelector('.text');
+                if (textSpan) {
+                    textSpan.textContent = 'Fontes Legíveis';
+                }
+            }
+            
+            // Resetar variáveis
+            fontMode = 0;
+            readableFontsEnabled = false;
+            
+            // Salvar preferências
+            saveUserPreference('readableFonts', false);
+            saveUserPreference('fontMode', 0);
         }
         
         // Reset de espaçamento entre linhas
@@ -1468,8 +1602,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const preferences = {
             fontSize: getFromLocalStorage('fontSize', 100),
             highContrast: getFromLocalStorage('highContrast', false),
-            invertedColors: getFromLocalStorage('invertedColors', false),
+            colorIntensityMode: getFromLocalStorage('colorIntensityMode', 0),
             readableFonts: getFromLocalStorage('readableFonts', false),
+            fontMode: getFromLocalStorage('fontMode', 0),
             lineSpacing: getFromLocalStorage('lineSpacing', 0),
             letterSpacing: getFromLocalStorage('letterSpacing', 0),
             textToSpeech: getFromLocalStorage('textToSpeech', false),
@@ -1479,6 +1614,11 @@ document.addEventListener('DOMContentLoaded', function() {
             readingMaskMode: getFromLocalStorage('readingMaskMode', 0),
             customCursor: getFromLocalStorage('customCursor', false)
         };
+        
+        // Compatibilidade com versões anteriores
+        if (getFromLocalStorage('invertedColors', false) === true) {
+            preferences.colorIntensityMode = 3; // Escala de cinza é o mais próximo das cores invertidas
+        }
         
         applyUserPreferences(preferences);
     }
@@ -1521,27 +1661,81 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Aplicar cores invertidas
-        if (preferences.invertedColors) {
-            invertedColorsEnabled = true;
-            document.body.classList.add('aguia-inverted-colors');
-            
+        // Aplicar modo de intensidade de cor
+        colorIntensityMode = parseInt(preferences.colorIntensityMode) || 0;
+        if (colorIntensityMode > 0) {
             // Atualiza botão se existir
-            const invertedBtn = document.getElementById('aguiaInvertedColorsBtn');
-            if (invertedBtn) {
-                invertedBtn.classList.add('active');
+            const intensityBtn = document.getElementById('aguiaColorIntensityBtn');
+            
+            // Aplica a classe adequada ao body
+            switch (colorIntensityMode) {
+                case 1: // Baixa intensidade
+                    document.body.classList.add('aguia-color-intensity-low');
+                    if (intensityBtn) {
+                        intensityBtn.classList.add('active', 'level-1');
+                        const textSpan = intensityBtn.querySelector('.text');
+                        const iconSpan = intensityBtn.querySelector('.icon');
+                        if (textSpan) textSpan.textContent = 'Baixa Intensidade';
+                        if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensityLow;
+                    }
+                    break;
+                
+                case 2: // Alta intensidade
+                    document.body.classList.add('aguia-color-intensity-high');
+                    if (intensityBtn) {
+                        intensityBtn.classList.add('active', 'level-2');
+                        const textSpan = intensityBtn.querySelector('.text');
+                        const iconSpan = intensityBtn.querySelector('.icon');
+                        if (textSpan) textSpan.textContent = 'Alta Intensidade';
+                        if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensityHigh;
+                    }
+                    break;
+                
+                case 3: // Escala de cinza
+                    document.body.classList.add('aguia-color-intensity-gray');
+                    if (intensityBtn) {
+                        intensityBtn.classList.add('active', 'level-3');
+                        const textSpan = intensityBtn.querySelector('.text');
+                        const iconSpan = intensityBtn.querySelector('.icon');
+                        if (textSpan) textSpan.textContent = 'Escala de Cinza';
+                        if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensityGray;
+                    }
+                    break;
             }
         }
         
-        // Aplicar fontes legíveis
-        if (preferences.readableFonts) {
+        // Aplicar fontes legíveis ou OpenDyslexic
+        fontMode = parseInt(preferences.fontMode) || 0;
+        if (fontMode > 0) {
             readableFontsEnabled = true;
-            document.body.classList.add('aguia-readable-fonts');
             
             // Atualiza botão se existir
             const fontsBtn = document.getElementById('aguiaReadableFontsBtn');
             if (fontsBtn) {
                 fontsBtn.classList.add('active');
+                
+                // Atualiza texto e classe de acordo com o modo
+                const textSpan = fontsBtn.querySelector('.text');
+                if (textSpan) {
+                    switch (fontMode) {
+                        case 1: // Fontes Legíveis
+                            document.body.classList.add('aguia-readable-fonts');
+                            textSpan.textContent = 'Fontes Legíveis';
+                            break;
+                        case 2: // OpenDyslexic
+                            document.body.classList.add('aguia-opendyslexic-fonts');
+                            textSpan.textContent = 'Fontes Amigável (OpenDyslexic)';
+                            fontsBtn.classList.add('opendyslexic');
+                            break;
+                    }
+                }
+            } else {
+                // Se o botão não existe, aplicamos apenas as classes ao corpo
+                if (fontMode === 1) {
+                    document.body.classList.add('aguia-readable-fonts');
+                } else if (fontMode === 2) {
+                    document.body.classList.add('aguia-opendyslexic-fonts');
+                }
             }
         }
         

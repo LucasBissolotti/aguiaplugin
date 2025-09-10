@@ -1,0 +1,39 @@
+/* OpenDyslexic font styles for AGUIA plugin */
+
+/* Import the OpenDyslexic font */
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-BoldItalic.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+}
+
+/* Apply OpenDyslexic font to all text elements */
+.aguia-opendyslexic-fonts {
+    font-family: 'OpenDyslexic', sans-serif !important;
+}
+
+.aguia-opendyslexic-fonts *:not(i):not(.fa):not(.fas):not(.far):not(.fal):not(.fab):not(.material-icons):not([class*="icon-"]):not(.glyphicon) {
+    font-family: 'OpenDyslexic', sans-serif !important;
+}

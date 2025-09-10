@@ -52,8 +52,8 @@
 
 /* Estilos para o cursor personalizado */
 .aguia-custom-cursor {
-    /* Cursor padrão ampliado */
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16"><path fill="black" stroke="white" stroke-width="0.5" d="M1 1l7 14 2-6 6-2L1 1z"/></svg>') 2 2, auto;
+    /* Cursor padrão ampliado - aumentado para 64px */
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 16 16"><path fill="black" stroke="white" stroke-width="1" d="M1 1l7 14 2-6 6-2L1 1z"/></svg>') 4 4, auto;
 }
 
 .aguia-custom-cursor a,
@@ -62,12 +62,12 @@
 .aguia-custom-cursor input[type="button"],
 .aguia-custom-cursor input[type="submit"],
 .aguia-custom-cursor input[type="reset"] {
-    /* Cursor de mão ampliado para elementos clicáveis */
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16"><path fill="black" stroke="white" stroke-width="0.5" d="M5.25 5a.75.75 0 0 1 .75.75v2.5h2.5a.75.75 0 0 1 0 1.5h-2.5v2.5a.75.75 0 0 1-1.5 0v-2.5h-2.5a.75.75 0 0 1 0-1.5h2.5v-2.5a.75.75 0 0 1 .75-.75z"/></svg>') 16 16, pointer;
+    /* Cursor de mão ampliado para elementos clicáveis - aumentado para 64px */
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 16 16"><path fill="black" stroke="white" stroke-width="1" d="M5.25 5a.75.75 0 0 1 .75.75v2.5h2.5a.75.75 0 0 1 0 1.5h-2.5v2.5a.75.75 0 0 1-1.5 0v-2.5h-2.5a.75.75 0 0 1 0-1.5h2.5v-2.5a.75.75 0 0 1 .75-.75z"/></svg>') 32 32, pointer;
 }
 
 .aguia-custom-cursor input[type="text"],
 .aguia-custom-cursor textarea {
-    /* Cursor de texto ampliado para áreas de texto */
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16"><path fill="black" stroke="white" stroke-width="0.5" d="M2.5 1h11a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 .5-.5z"/></svg>') 16 16, text;
+    /* Cursor de texto ampliado para áreas de texto - aumentado para 64px */
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 16 16"><path fill="black" stroke="white" stroke-width="1" d="M2.5 1h11a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 .5-.5z"/></svg>') 32 32, text;
 }

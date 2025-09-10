@@ -312,35 +312,72 @@ button#aguiaButton.aguia-button:hover::before {
     background-color: #e0e0e0;
 }
 
-/* Estilos para alto contraste - WCAG 1.4.6 */
+/* Estilos para alto contraste melhorado - WCAG 1.4.6 */
 .aguia-high-contrast {
     background-color: #000 !important;
     color: #fff !important;
+    transition: all 0.3s ease !important;
 }
 
 .aguia-high-contrast * {
     background-color: #000 !important;
     color: #fff !important;
     border-color: #fff !important;
+    transition: all 0.3s ease !important;
 }
 
-.aguia-high-contrast a,
-.aguia-high-contrast button {
-    color: #ffff00 !important;
+.aguia-high-contrast a {
+    color: #55AAFF !important; /* Azul mais claro e visível em fundo preto */
+    text-decoration: underline !important;
+    text-underline-offset: 2px !important;
+    transition: all 0.2s ease !important;
+}
+
+.aguia-high-contrast a:hover,
+.aguia-high-contrast a:focus {
+    color: #88CCFF !important;
+    text-decoration: underline !important;
+    text-decoration-thickness: 2px !important;
+}
+
+.aguia-high-contrast button,
+.aguia-high-contrast [role="button"],
+.aguia-high-contrast input[type="button"],
+.aguia-high-contrast input[type="submit"] {
+    color: #fff !important;
+    background-color: #0057b8 !important; /* Azul escuro com boa visibilidade */
+    border: 2px solid #fff !important;
+    border-radius: 4px !important;
+    transition: all 0.2s ease !important;
+}
+
+.aguia-high-contrast button:hover,
+.aguia-high-contrast [role="button"]:hover,
+.aguia-high-contrast input[type="button"]:hover,
+.aguia-high-contrast input[type="submit"]:hover {
+    background-color: #0070e0 !important;
 }
 
 .aguia-high-contrast img:not(.aguia-logo) {
     filter: grayscale(100%) contrast(150%) !important;
+    border: 1px solid #fff !important;
 }
 
-/* Cores invertidas */
-.aguia-inverted-colors {
-    filter: invert(100%) hue-rotate(180deg) !important;
+.aguia-high-contrast input[type="text"],
+.aguia-high-contrast textarea,
+.aguia-high-contrast select {
+    background-color: #000 !important;
+    color: #fff !important;
+    border: 2px solid #fff !important;
+    border-radius: 4px !important;
 }
 
-.aguia-inverted-colors img:not(.aguia-logo) {
-    filter: invert(100%) hue-rotate(180deg) !important;
+.aguia-high-contrast :focus {
+    outline: 3px solid #55AAFF !important;
+    outline-offset: 2px !important;
 }
+
+/* Removido: Cores invertidas */
 
 /* Fontes legíveis - WCAG 1.4.8 */
 .aguia-readable-fonts,

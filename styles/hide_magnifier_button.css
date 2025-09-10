@@ -1,0 +1,22 @@
+/**
+ * Estilo para ocultar o botão da lupa standalone
+ * 
+ * @package    local_aguiaplugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* Ocultar completamente o botão standalone da lupa */
+#aguia-magnifier-standalone-button {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Ocultar qualquer versão adicional do botão */
+.aguia-standalone-button {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
