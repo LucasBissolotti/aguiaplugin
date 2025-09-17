@@ -60,14 +60,6 @@ O plugin foi projetado para ser totalmente acessível:
 
 As preferências do usuário são salvas automaticamente no banco de dados e aplicadas em todas as sessões futuras.
 
-### Personalizando o logo
-
-Para usar uma imagem personalizada do logo AGUIA:
-
-1. A imagem deve estar no formato PNG com fundo transparente (200x200px recomendado)
-2. Substitua o arquivo em `/local/aguiaplugin/pix/aguia_logo.png`
-3. Limpe os caches do Moodle em: Administração do site > Desenvolvimento > Limpar caches
-
 ## Estrutura do projeto
 
 ```
