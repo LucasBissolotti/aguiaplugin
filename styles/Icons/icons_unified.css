@@ -1,0 +1,97 @@
+/**
+ * Estilos unificados para todos os ícones do plugin AGUIA
+ *
+ * @package    local_aguiaplugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/*****************************************************************************
+ * Estilos base para todos os ícones
+ *****************************************************************************/
+[id^="aguia"] .icon,
+.aguia-option .icon,
+.aguia-button .icon,
+.aguia-wcag-button .icon {
+    position: static !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: 40px !important;
+    margin-bottom: 10px !important;
+}
+
+[id^="aguia"] .icon svg,
+.aguia-option .icon svg,
+.aguia-button .icon svg,
+.aguia-wcag-button .icon svg {
+    width: 32px !important;
+    height: 32px !important;
+    overflow: visible !important;
+    display: block !important;
+    margin: 0 auto !important;
+    transform: none !important;
+    filter: none !important;
+    fill: #444444 !important;
+    transition: transform 0.2s ease, fill 0.2s ease, stroke 0.2s ease !important;
+}
+
+/* Estado ativo geral para todos os ícones */
+[id^="aguia"].active .icon svg,
+.aguia-option.active .icon svg,
+.aguia-button.active .icon svg,
+.aguia-wcag-button.active .icon svg {
+    fill: #2271ff !important;
+}
+
+/* Estado hover geral para todos os ícones */
+[id^="aguia"]:hover .icon svg,
+.aguia-option:hover .icon svg,
+.aguia-button:hover .icon svg,
+.aguia-wcag-button:hover .icon svg {
+    transform: scale(1.05) !important;
+}
+
+/* Remover elementos que possam estar sobrepondo os ícones */
+[id^="aguia"] .icon::before,
+[id^="aguia"] .icon::after,
+.aguia-option .icon::before,
+.aguia-option .icon::after,
+.aguia-button .icon::before,
+.aguia-button .icon::after,
+.aguia-wcag-button .icon::before,
+.aguia-wcag-button .icon::after {
+    display: none !important;
+    content: none !important;
+}
+
+/*****************************************************************************
+ * Estilos específicos para ícones individuais quando necessário
+ *****************************************************************************/
+
+/* Letra Spacing - Cores específicas para SVG path e text */
+#aguiaLetterSpacingBtn.active .icon svg text {
+    fill: #2271ff !important;
+}
+
+#aguiaLetterSpacingBtn.active .icon svg path {
+    stroke: #2271ff !important;
+}
+
+/* Lupa de Conteúdo - Cores específicas para SVG circle e path */
+#aguiaMagnifierBtn.active .icon svg circle,
+#aguiaMagnifierBtn.active .icon svg path {
+    stroke: #2271ff !important;
+    fill: none !important;
+}
+
+/* Destacar Cabeçalhos - Cores específicas para SVG rect e path */
+#aguiaHeaderHighlightBtn.active .icon svg rect,
+#aguiaHeaderHighlightBtn.active .icon svg path {
+    stroke: #2271ff !important;
+    fill: none !important;
+}
+
+/* Ajuste para o padding específico do ícone de espaçamento de letras */
+#aguiaLetterSpacingBtn .icon svg {
+    padding: 2px !important;
+}

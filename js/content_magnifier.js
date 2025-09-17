@@ -47,12 +47,31 @@ const AguiaMagnifier = {
         // Adicionar a lupa ao menu principal do AGUIA
         this.addToMainMenu();
         
+        // Aplicar o estado inicial se estiver ativado
+        if (this.state.enabled) {
+            document.body.classList.add('aguia-magnifier-active');
+            // Ativar os botões
+            if (this.state.button) {
+                this.state.button.classList.add('active');
+            }
+            const menuButton = document.getElementById('aguiaMagnifierBtn');
+            if (menuButton) {
+                menuButton.classList.add('active');
+            }
+        }
+        
         console.log('AGUIA Magnifier: Lupa de conteúdo inicializada');
     },
     
     // Verificar se a lupa estava ativada anteriormente
     isEnabled: function() {
-        return localStorage.getItem(this.config.storageKey) === 'true';
+        const savedState = localStorage.getItem(this.config.storageKey);
+        // Se não houver estado salvo, verifica o botão do menu
+        if (savedState === null) {
+            const menuButton = document.getElementById('aguiaMagnifierBtn');
+            return menuButton ? menuButton.classList.contains('active') : false;
+        }
+        return savedState === 'true';
     },
     
     // Salvar o estado da lupa
@@ -146,11 +165,23 @@ const AguiaMagnifier = {
             this.state.button.classList.remove('active');
             document.body.classList.remove('aguia-magnifier-active');
             this.saveState(false);
+            
+            // Atualiza também o botão no menu principal
+            const menuButton = document.getElementById('aguiaMagnifierBtn');
+            if (menuButton) {
+                menuButton.classList.remove('active');
+            }
         } else {
             // Ativar a lupa
             this.state.button.classList.add('active');
             document.body.classList.add('aguia-magnifier-active');
             this.saveState(true);
+            
+            // Atualiza também o botão no menu principal
+            const menuButton = document.getElementById('aguiaMagnifierBtn');
+            if (menuButton) {
+                menuButton.classList.add('active');
+            }
         }
     },
     
@@ -368,22 +399,106 @@ const AguiaMagnifier = {
     addToMainMenu: function() {
         // Aguardar a criação do menu de acessibilidade
         setTimeout(() => {
-            const accessibilityMenu = document.querySelector('.aguia-accessibility-menu');
-            if (accessibilityMenu) {
-                const menuItem = document.createElement('li');
-                menuItem.innerHTML = `<a href="#" id="aguia-menu-magnifier">${AguiaIcons.magnifier} Lupa de Conteúdo</a>`;
-                
-                menuItem.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    this.toggleMagnifier();
-                });
-                
-                accessibilityMenu.appendChild(menuItem);
-                    accessibilityMenu.appendChild(menuItem);
+            // Procurar a categoria de Orientação e Navegação
+            const navigationCategory = document.querySelector('.aguia-category:has(h3.aguia-category-title:contains("Orientação"))');
+            
+            if (navigationCategory) {
+                const navigationGrid = navigationCategory.querySelector('.aguia-options-grid');
+                if (navigationGrid) {
+                    // Criar o botão de lupa no formato correto
+                    const lupaOption = {
+                        iconSvg: AguiaIcons.magnifier,
+                        text: 'Lupa de Conteúdo',
+                        action: this.toggleMagnifier.bind(this),
+                        ariaLabel: 'Ativar ou desativar lupa de conteúdo',
+                        id: 'aguiaMagnifierBtn'
+                    };
+                    
+                    // Criar o botão usando a função existente
+                    const button = this.createOptionButton(lupaOption);
+                    
+                    // Aplicar a classe active se a lupa estiver ativa
+                    if (this.state.enabled) {
+                        button.classList.add('active');
+                    }
+                    
+                    navigationGrid.appendChild(button);
+                    
+                    console.log('AGUIA: Botão de lupa adicionado ao menu');
+                } else {
+                    console.log('AGUIA: Grid de navegação não encontrado');
                 }
-            }, 1000);
+            } else {
+                console.log('AGUIA: Categoria de navegação não encontrada');
+                
+                // Tenta adicionar à primeira categoria disponível como fallback
+                const anyCategory = document.querySelector('.aguia-category');
+                if (anyCategory) {
+                    const grid = anyCategory.querySelector('.aguia-options-grid');
+                    if (grid) {
+                        const lupaButton = document.createElement('button');
+                        lupaButton.className = 'aguia-option';
+                        lupaButton.id = 'aguiaMagnifierBtn';
+                        lupaButton.innerHTML = `<span class="icon">${AguiaIcons.magnifier}</span><span class="text">Lupa de Conteúdo</span>`;
+                        lupaButton.addEventListener('click', this.toggleMagnifier.bind(this));
+                        
+                        // Aplicar a classe active se a lupa estiver ativa
+                        if (this.state.enabled) {
+                            lupaButton.classList.add('active');
+                        }
+                        
+                        grid.appendChild(lupaButton);
+                        console.log('AGUIA: Botão de lupa adicionado como fallback');
+                    }
+                }
+            }
+        }, 1000);
+    },
+    
+    // Função para criar botões de opção com estilo consistente (espelho da função em accessibility_wcag.js)
+    createOptionButton: function(option) {
+        const button = document.createElement('button');
+        button.className = 'aguia-option';
+        button.id = option.id;
+        button.setAttribute('role', 'button');
+        button.setAttribute('aria-label', option.ariaLabel);
+        button.setAttribute('tabindex', '0');
+        
+        // Ícone (SVG se disponível, emoji como fallback)
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'icon';
+        
+        if (option.iconSvg) {
+            // Usar ícone SVG da biblioteca
+            iconSpan.innerHTML = option.iconSvg;
+        } else if (option.icon) {
+            // Fallback para ícone de emoji
+            iconSpan.textContent = option.icon;
         }
-    };
+        
+        iconSpan.setAttribute('aria-hidden', 'true');
+        button.appendChild(iconSpan);
+        
+        // Texto
+        const textSpan = document.createElement('span');
+        textSpan.className = 'text';
+        textSpan.textContent = option.text;
+        button.appendChild(textSpan);
+        
+        // Eventos
+        button.addEventListener('click', option.action);
+        button.addEventListener('keydown', function(e) {
+            // Permitir navegação por teclado (WCAG 2.1.1)
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                option.action();
+            }
+        });
+        
+        return button;
+    }
+};
+
 // Inicializar a lupa quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', function() {
     try {
@@ -398,7 +513,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Erro ao inicializar AguiaMagnifier:', e);
     }
 });
-    
     // Função para atualizar a posição e conteúdo da lupa
     function updateMagnifier(e) {
         if (!document.body.classList.contains('aguia-magnifier-active')) {

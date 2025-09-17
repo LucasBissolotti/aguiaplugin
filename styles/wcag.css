@@ -216,18 +216,20 @@ button#aguiaButton.aguia-button:hover::before {
 .aguia-options-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 16px;
+    gap: 14px;
+    margin-bottom: 18px;
 }
 
 /* Categorias de opções */
 .aguia-category {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .aguia-category-title {
     font-size: 16px;
-    color: var(--aguia-primary-color);
+    color: #2271ff;
+    margin-bottom: 12px;
+    font-weight: 600;
     font-weight: 500;
     margin-bottom: 12px;
     padding-bottom: 6px;
@@ -239,55 +241,76 @@ button#aguiaButton.aguia-button:hover::before {
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 14px 8px;
-    background-color: var(--aguia-background-light);
-    color: var(--aguia-text-dark);
-    border: 1px solid #eaeaea;
-    border-radius: 12px; /* Bordas mais arredondadas como UserWay */
+    padding: 12px 8px;
+    background-color: #FFFFFF;
+    color: #333333;
+    border: 1px solid #E6E6E6;
+    border-radius: 10px; /* Bordas mais arredondadas para um look moderno */
     font-size: 14px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Animação mais fluida */
+    transition: all 0.2s ease; /* Animação mais suave e simples */
     text-align: center;
     align-items: center;
     justify-content: center;
-    height: 96px; /* Um pouco mais alto */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.03); /* Sombra sutil */
+    height: 120px; /* Altura um pouco maior para melhor espaçamento */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Sombra muito sutil */
 }
 
 .aguia-option:hover,
 .aguia-option:focus {
-    background-color: var(--aguia-hover-bg);
-    color: var(--aguia-primary-color);
-    border-color: var(--aguia-secondary-color);
-    transform: translateY(-3px); /* Efeito de elevação ao passar o mouse */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08); /* Sombra mais evidente ao passar o mouse */
+    background-color: #F9FBFF;
+    border-color: #D0D0D0;
+    box-shadow: 0 2px 6px rgba(34, 113, 255, 0.1); /* Sombra leve com tom azulado */
 }
 
 .aguia-option-button.active {
-    background-color: var(--aguia-primary-color);
-    color: var(--aguia-text-light);
-    border-color: var(--aguia-primary-color);
+    background-color: #2271ff;
+    color: #FFFFFF;
+    border-color: #2271ff;
 }
 
 .aguia-option span.icon {
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     font-size: 24px;
-    height: 32px;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+.aguia-option span.icon svg {
+    width: 36px;
+    height: 36px;
+    fill: #333333;
+    color: #333333;
+    transition: all 0.2s ease;
+}
+
 .aguia-option span.text {
     font-weight: 500;
     line-height: 1.2;
+    font-size: 15px;
+    text-align: center;
+    color: #333;
+    max-width: 95%;
+    margin: 0 auto;
 }
 
 .aguia-option.active {
-    background-color: var(--aguia-hover-bg);
-    border-color: var(--aguia-primary-color);
-    color: var(--aguia-primary-color);
-    box-shadow: 0 2px 8px rgba(0, 86, 179, 0.15);
+    background-color: rgba(34, 113, 255, 0.05);
+    border-color: #2271ff;
+    box-shadow: 0 1px 4px rgba(34, 113, 255, 0.15);
+}
+
+.aguia-option.active span.icon svg {
+    fill: #2271ff;
+    color: #2271ff;
+    stroke: #2271ff;
+}
+
+.aguia-option.active span.text {
+    color: #2271ff;
+    font-weight: 600;
 }
 
 /* Estilo para opções em linha (para o reset e outras ações) */
@@ -314,66 +337,72 @@ button#aguiaButton.aguia-button:hover::before {
 
 /* Estilos para alto contraste melhorado - WCAG 1.4.6 */
 .aguia-high-contrast {
-    background-color: #000 !important;
-    color: #fff !important;
+    background-color: #121212 !important; /* Preto suavizado para menos agressividade visual */
+    color: #f7f7f7 !important;
     transition: all 0.3s ease !important;
 }
 
 .aguia-high-contrast * {
-    background-color: #000 !important;
-    color: #fff !important;
-    border-color: #fff !important;
+    background-color: #121212 !important;
+    color: #f7f7f7 !important;
+    border-color: #ddd !important;
     transition: all 0.3s ease !important;
 }
 
 .aguia-high-contrast a {
-    color: #55AAFF !important; /* Azul mais claro e visível em fundo preto */
+    color: #4da3ff !important; /* Azul mais harmonioso e ainda com contraste suficiente */
     text-decoration: underline !important;
     text-underline-offset: 2px !important;
     transition: all 0.2s ease !important;
+    border-bottom: 1px solid #4da3ff !important;
 }
 
 .aguia-high-contrast a:hover,
 .aguia-high-contrast a:focus {
-    color: #88CCFF !important;
+    color: #80bdff !important;
     text-decoration: underline !important;
     text-decoration-thickness: 2px !important;
+    background-color: #1a1a1a !important; /* Destaque sutil no hover */
 }
 
 .aguia-high-contrast button,
 .aguia-high-contrast [role="button"],
 .aguia-high-contrast input[type="button"],
 .aguia-high-contrast input[type="submit"] {
-    color: #fff !important;
-    background-color: #0057b8 !important; /* Azul escuro com boa visibilidade */
-    border: 2px solid #fff !important;
-    border-radius: 4px !important;
+    color: #f7f7f7 !important;
+    background-color: #0057b8 !important;
+    border: 1px solid #f7f7f7 !important; /* Borda mais fina para melhor estética */
+    border-radius: 6px !important; /* Mais arredondado para um visual moderno */
     transition: all 0.2s ease !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important; /* Sombra sutil para sensação de profundidade */
 }
 
 .aguia-high-contrast button:hover,
 .aguia-high-contrast [role="button"]:hover,
 .aguia-high-contrast input[type="button"]:hover,
 .aguia-high-contrast input[type="submit"]:hover {
-    background-color: #0070e0 !important;
+    background-color: #1e68c5 !important; /* Azul um pouco mais claro no hover */
+    transform: translateY(-1px) !important; /* Efeito sutil de elevação */
 }
 
 .aguia-high-contrast img:not(.aguia-logo) {
-    filter: grayscale(100%) contrast(150%) !important;
-    border: 1px solid #fff !important;
+    filter: grayscale(80%) contrast(120%) !important; /* Menos agressivo na imagem */
+    border: 1px solid #aaa !important;
+    border-radius: 4px !important; /* Bordas arredondadas nas imagens */
 }
 
 .aguia-high-contrast input[type="text"],
 .aguia-high-contrast textarea,
 .aguia-high-contrast select {
-    background-color: #000 !important;
-    color: #fff !important;
-    border: 2px solid #fff !important;
-    border-radius: 4px !important;
+    background-color: #1a1a1a !important; /* Fundo ligeiramente mais claro para elementos de formulário */
+    color: #f7f7f7 !important;
+    border: 1px solid #aaa !important;
+    border-radius: 6px !important;
+    padding: 6px 10px !important; /* Padding melhorado para usabilidade */
 }
 
 .aguia-high-contrast :focus {
-    outline: 3px solid #55AAFF !important;
+    outline: 3px solid #4da3ff !important;
     outline-offset: 2px !important;
 }
 
@@ -480,11 +509,19 @@ button#aguiaButton.aguia-button:hover::before {
 /* Auxiliar de leitura - WCAG 2.4.8 */
 .aguia-reading-helper {
     position: absolute;
-    background-color: rgba(255, 215, 0, 0.3);
-    height: 2.2em;
-    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(47, 128, 237, 0.15) 0%, rgba(47, 128, 237, 0.25) 100%);
+    height: 1.5em; /* Altura adequada para destacar a linha específica */
+    min-height: 24px; /* Altura mínima para garantir visibilidade */
+    pointer-events: none; /* Impede que o guia interfira com cliques */
     z-index: 9998;
-    border: 2px solid rgba(255, 165, 0, 0.5);
+    border: 2px solid rgba(47, 128, 237, 0.7); /* Borda mais nítida e mais visível */
+    border-radius: 3px; /* Raio suavemente arredondado */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); /* Sombra mais visível */
+    transition: all 0.12s ease-out; /* Transição um pouco mais rápida */
+    /* Sem efeito de blur para manter o texto nítido */
+    /* Efeito de destaque nas bordas */
+    outline: 1px solid rgba(255, 255, 255, 0.4);
+    outline-offset: -1px;
 }
 
 /* Status message - WCAG 4.1.3 */

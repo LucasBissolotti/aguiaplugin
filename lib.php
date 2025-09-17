@@ -109,6 +109,128 @@ function local_aguiaplugin_require_js() {
             left: -115px !important;
             transform: translateX(0) !important;
         }
+        
+        /* Limpa todos os estilos que podem estar interferindo */
+        .aguia-submenu-option::before {
+            content: none !important;
+            display: none !important;
+        }
+        
+        .aguia-multi-select-option::before {
+            content: none !important;
+            display: none !important;
+        }
+        
+        /* Estrutura geral dos botões */
+        .aguia-submenu-option {
+            display: flex !important;
+            align-items: center !important;
+            padding: 10px 15px !important;
+            cursor: pointer !important;
+            transition: background-color 0.2s ease !important;
+            text-align: left !important;
+            font-size: 14px !important;
+            line-height: 1.5 !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            position: relative !important;
+            border: none !important;
+            background-color: white !important;
+        }
+        
+        /* Estilos para os círculos coloridos de daltonismo */
+        .aguia-submenu-option[data-value="protanopia"]::before {
+            content: "" !important;
+            display: inline-block !important;
+            width: 20px !important;
+            height: 20px !important;
+            min-width: 20px !important;
+            background-color: #FF0000 !important;
+            border-radius: 50% !important;
+            margin-right: 10px !important;
+            border: 1px solid #444 !important;
+            vertical-align: middle !important;
+            flex-shrink: 0 !important;
+        }
+        
+        .aguia-submenu-option[data-value="deuteranopia"]::before {
+            content: "" !important;
+            display: inline-block !important;
+            width: 20px !important;
+            height: 20px !important;
+            min-width: 20px !important;
+            background-color: #00FF00 !important;
+            border-radius: 50% !important;
+            margin-right: 10px !important;
+            border: 1px solid #444 !important;
+            vertical-align: middle !important;
+            flex-shrink: 0 !important;
+        }
+        
+        .aguia-submenu-option[data-value="tritanopia"]::before {
+            content: "" !important;
+            display: inline-block !important;
+            width: 20px !important;
+            height: 20px !important;
+            min-width: 20px !important;
+            background-color: #0000FF !important;
+            border-radius: 50% !important;
+            margin-right: 10px !important;
+            border: 1px solid #444 !important;
+            vertical-align: middle !important;
+            flex-shrink: 0 !important;
+        }
+        
+        .aguia-submenu-option[data-value="achromatopsia"]::before {
+            content: "" !important;
+            display: inline-block !important;
+            width: 20px !important;
+            height: 20px !important;
+            min-width: 20px !important;
+            background-color: #000000 !important;
+            border-radius: 50% !important;
+            margin-right: 10px !important;
+            border: 1px solid #444 !important;
+            vertical-align: middle !important;
+            flex-shrink: 0 !important;
+        }
+        
+        .aguia-submenu-option[data-value="none"]::before {
+            content: "✓" !important;
+            display: inline-flex !important;
+            width: 20px !important;
+            height: 20px !important;
+            min-width: 20px !important;
+            background-color: transparent !important;
+            border-radius: 50% !important;
+            margin-right: 10px !important;
+            border: 1px solid #444 !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-weight: bold !important;
+            vertical-align: middle !important;
+            flex-shrink: 0 !important;
+        }
+        
+        /* Estados ativos dos botões */
+        .aguia-submenu-option.active[data-value="protanopia"]::before,
+        .aguia-submenu-option.active[data-value="deuteranopia"]::before,
+        .aguia-submenu-option.active[data-value="tritanopia"]::before,
+        .aguia-submenu-option.active[data-value="achromatopsia"]::before,
+        .aguia-submenu-option.active[data-value="none"]::before {
+            border: 2px solid #2271ff !important;
+        }
+        
+        /* Estilos para o texto dentro dos botões */
+        .aguia-submenu-option .option-text {
+            display: inline-block !important;
+            vertical-align: middle !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            font-size: 14px !important;
+            line-height: 1.5 !important;
+            color: #333 !important;
+        }
     </style>';
 }
 
@@ -178,9 +300,10 @@ function local_aguiaplugin_before_standard_html_head() {
     $csscolorintensity = new moodle_url('/local/aguiaplugin/styles/color_intensity.css');
     $cssreadingmask = new moodle_url('/local/aguiaplugin/styles/reading_mask_cursor.css');
     $cssicons = new moodle_url('/local/aguiaplugin/styles/icons.css');
-    $cssmultiselect = new moodle_url('/local/aguiaplugin/styles/multi_select.css');
+    // Removendo o multi_select.css para evitar conflitos
     $cssbutton = new moodle_url('/local/aguiaplugin/styles/button_styles.css');
     $cssvlibras = new moodle_url('/local/aguiaplugin/styles/vlibras.css');
+    $cssheaderhighlight = new moodle_url('/local/aguiaplugin/styles/header_highlight.css');
     $cssspacing = new moodle_url('/local/aguiaplugin/styles/spacing_indicators.css');
     $cssspacing_add = new moodle_url('/local/aguiaplugin/styles/spacing_additional.css');
     $cssspacing_separated = new moodle_url('/local/aguiaplugin/styles/spacing_separated.css');
@@ -190,6 +313,21 @@ function local_aguiaplugin_before_standard_html_head() {
     $csscontentmagnifier = new moodle_url('/local/aguiaplugin/styles/content_magnifier.css');
     $cssmagnifierfix = new moodle_url('/local/aguiaplugin/styles/magnifier_fix.css');
     $csshidemagnifierbutton = new moodle_url('/local/aguiaplugin/styles/hide_magnifier_button.css');
+    $csstextsizefix = new moodle_url('/local/aguiaplugin/styles/text_size_fix.css');
+    $csshighlightedlettersfix = new moodle_url('/local/aguiaplugin/styles/highlighted_letters_fix.css');
+    $cssletterspacingfix = new moodle_url('/local/aguiaplugin/styles/letter_spacing_fix.css');
+    $csshighcontrastfix = new moodle_url('/local/aguiaplugin/styles/high_contrast_fix.css');
+    $csscolorintensityfix = new moodle_url('/local/aguiaplugin/styles/color_intensity_fix.css');
+    $csstexttospeechfix = new moodle_url('/local/aguiaplugin/styles/text_to_speech_fix.css');
+    $cssfocusmaskhorizontalfix = new moodle_url('/local/aguiaplugin/styles/focus_mask_horizontal_fix.css');
+    $cssfocusmaskverticalfix = new moodle_url('/local/aguiaplugin/styles/focus_mask_vertical_fix.css');
+    $csscustomcursorfix = new moodle_url('/local/aguiaplugin/styles/custom_cursor_fix.css');
+    $csshideimagesfix = new moodle_url('/local/aguiaplugin/styles/hide_images_fix.css');
+    $cssemphasizelinksfix = new moodle_url('/local/aguiaplugin/styles/emphasize_links_fix.css');
+    $cssletterspacingiconfix = new moodle_url('/local/aguiaplugin/styles/letter_spacing_icon_fix.css');
+    $cssmagifiericonfix = new moodle_url('/local/aguiaplugin/styles/magnifier_icon_fix.css');
+    $cssheaderhighlighticonfix = new moodle_url('/local/aguiaplugin/styles/header_highlight_icon_fix.css');
+    $cssiconsstandardization = new moodle_url('/local/aguiaplugin/styles/icon_size_standardization.css');
     
     return "
         <link rel='stylesheet' type='text/css' href='{$cssbase}'>
@@ -198,9 +336,9 @@ function local_aguiaplugin_before_standard_html_head() {
         <link rel='stylesheet' type='text/css' href='{$csscolorintensity}'>
         <link rel='stylesheet' type='text/css' href='{$cssreadingmask}'>
         <link rel='stylesheet' type='text/css' href='{$cssicons}'>
-        <link rel='stylesheet' type='text/css' href='{$cssmultiselect}'>
         <link rel='stylesheet' type='text/css' href='{$cssbutton}'>
         <link rel='stylesheet' type='text/css' href='{$cssvlibras}'>
+        <link rel='stylesheet' type='text/css' href='{$cssheaderhighlight}'>
         <link rel='stylesheet' type='text/css' href='{$cssspacing}'>
         <link rel='stylesheet' type='text/css' href='{$cssspacing_add}'>
         <link rel='stylesheet' type='text/css' href='{$cssspacing_separated}'>
@@ -210,5 +348,20 @@ function local_aguiaplugin_before_standard_html_head() {
         <link rel='stylesheet' type='text/css' href='{$csscontentmagnifier}'>
         <link rel='stylesheet' type='text/css' href='{$cssmagnifierfix}'>
         <link rel='stylesheet' type='text/css' href='{$csshidemagnifierbutton}'>
+        <link rel='stylesheet' type='text/css' href='{$csstextsizefix}'>
+        <link rel='stylesheet' type='text/css' href='{$csshighlightedlettersfix}'>
+        <link rel='stylesheet' type='text/css' href='{$cssletterspacingfix}'>
+        <link rel='stylesheet' type='text/css' href='{$csshighcontrastfix}'>
+        <link rel='stylesheet' type='text/css' href='{$csscolorintensityfix}'>
+        <link rel='stylesheet' type='text/css' href='{$csstexttospeechfix}'>
+        <link rel='stylesheet' type='text/css' href='{$cssfocusmaskhorizontalfix}'>
+        <link rel='stylesheet' type='text/css' href='{$cssfocusmaskverticalfix}'>
+        <link rel='stylesheet' type='text/css' href='{$csscustomcursorfix}'>
+        <link rel='stylesheet' type='text/css' href='{$csshideimagesfix}'>
+        <link rel='stylesheet' type='text/css' href='{$cssemphasizelinksfix}'>
+        <link rel='stylesheet' type='text/css' href='{$cssletterspacingiconfix}'>
+        <link rel='stylesheet' type='text/css' href='{$cssmagifiericonfix}'>
+        <link rel='stylesheet' type='text/css' href='{$cssheaderhighlighticonfix}'>
+        <link rel='stylesheet' type='text/css' href='{$cssiconsstandardization}'>
     ";
 }

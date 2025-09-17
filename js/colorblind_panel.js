@@ -8,6 +8,12 @@
 
 // Initialize
 document.addEventListener("DOMContentLoaded", function() {
+    // Garantir que os ícones estão disponíveis
+    if (typeof AguiaIcons === 'undefined') {
+        console.error('AguiaIcons não está definido. Verifique se accessibility_icons.js foi carregado antes de colorblind_panel.js');
+        return;
+    }
+    
     // Create accessibility button
     createAccessibilityButton();
     
@@ -70,11 +76,11 @@ function createColorblindPanel() {
     
     // Opções para o painel de daltonismo
     const colorblindOptions = [
-        { value: 'none', text: 'Nenhum (Resetar)', icon: '❌' },
-        { value: 'protanopia', text: 'Protanopia (sem vermelho)', icon: '🔴' },
-        { value: 'deuteranopia', text: 'Deuteranopia (sem verde)', icon: '🟢' },
-        { value: 'tritanopia', text: 'Tritanopia (sem azul)', icon: '🔵' },
-        { value: 'achromatopsia', text: 'Monocromacia (sem cores)', icon: '⚫' }
+        { value: 'none', text: 'Nenhum (Resetar)', iconSvg: AguiaIcons.colorblindNone },
+        { value: 'protanopia', text: 'Protanopia (sem vermelho)', iconSvg: AguiaIcons.protanopia },
+        { value: 'deuteranopia', text: 'Deuteranopia (sem verde)', iconSvg: AguiaIcons.deuteranopia },
+        { value: 'tritanopia', text: 'Tritanopia (sem azul)', iconSvg: AguiaIcons.tritanopia },
+        { value: 'achromatopsia', text: 'Monocromacia (sem cores)', iconSvg: AguiaIcons.achromatopsia }
     ];
     
     // Adiciona as opções como botões
@@ -97,7 +103,15 @@ function createColorblindPanel() {
         const optionButton = document.createElement('button');
         optionButton.className = 'aguia-submenu-option aguia-multi-select-option';
         optionButton.dataset.value = option.value;
-        optionButton.innerHTML = `<span class="aguia-icon">${option.icon}</span> ${option.text}`;
+        
+        // Esvaziar o conteúdo do botão para garantir que não haja texto indefinido
+        optionButton.innerHTML = '';
+        
+        // Criar elemento span para o texto
+        const textSpan = document.createElement('span');
+        textSpan.textContent = option.text;
+        textSpan.className = 'option-text';
+        optionButton.appendChild(textSpan);
         
         // Marca o botão como ativo se o modo estiver na lista de modos ativos
         if (option.value === 'none' && activeColorblindModes.length === 0) {

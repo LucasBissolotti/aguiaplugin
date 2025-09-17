@@ -1,0 +1,48 @@
+/**
+ * Estilos específicos para corrigir o ícone "Destacar links"
+ *
+ * @package    local_aguiaplugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* Resetar estilos padrão do ícone */
+#aguiaEmphasizeLinksBtn .icon {
+    position: static !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: auto !important;
+}
+
+/* Garantir que o ícone tenha tamanho adequado e sem estilos que possam afetar a renderização */
+#aguiaEmphasizeLinksBtn .icon svg {
+    width: 32px !important;
+    height: 32px !important;
+    overflow: visible !important;
+    display: block !important;
+    margin: 0 auto !important;
+    transform: none !important;
+    filter: none !important;
+}
+
+/* Estado ativo com !important para garantir que seja aplicado */
+#aguiaEmphasizeLinksBtn.active .icon svg rect {
+    fill: #2271ff !important;
+}
+
+/* Garante que o símbolo interno permanece branco mesmo quando ativo */
+#aguiaEmphasizeLinksBtn.active .icon svg path {
+    fill: #FFFFFF !important;
+}
+
+/* Estado hover com !important para garantir que seja aplicado */
+#aguiaEmphasizeLinksBtn:hover .icon svg {
+    transform: scale(1.05) !important;
+}
+
+/* Removendo qualquer elemento que possa estar sobrepondo o ícone */
+#aguiaEmphasizeLinksBtn .icon::before,
+#aguiaEmphasizeLinksBtn .icon::after {
+    display: none !important;
+    content: none !important;
+}

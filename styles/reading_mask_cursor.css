@@ -13,7 +13,25 @@
     box-shadow: 0 0 0 9999px rgba(0,0,0,0.7); /* Overlay mais escuro conforme solicitado */
     border-radius: 8px;
     border: 2px solid rgba(33,150,243,0.7); /* Borda azul mais visível */
+    transition: height 0.3s ease;
 }
+
+/* Níveis de tamanho para máscara horizontal */
+.aguia-reading-mask-horizontal-level-1 .aguia-reading-mask-horizontal-element {
+    /* Tamanho pequeno (padrão) */
+    height: 125px; 
+}
+
+.aguia-reading-mask-horizontal-level-2 .aguia-reading-mask-horizontal-element {
+    /* Tamanho médio */
+    height: 175px; 
+}
+
+.aguia-reading-mask-horizontal-level-3 .aguia-reading-mask-horizontal-element {
+    /* Tamanho grande */
+    height: 225px; 
+}
+
 .aguia-reading-mask-horizontal:before {
     content: '';
     position: fixed;
@@ -37,7 +55,25 @@
     box-shadow: 0 0 0 9999px rgba(0,0,0,0.7); /* Overlay mais escuro conforme solicitado */
     border-radius: 8px;
     border: 2px solid rgba(33,150,243,0.7); /* Borda azul mais visível */
+    transition: width 0.3s ease;
 }
+
+/* Níveis de tamanho para máscara vertical */
+.aguia-reading-mask-vertical-level-1 .aguia-reading-mask-vertical-element {
+    /* Tamanho pequeno (padrão) */
+    width: 125px; 
+}
+
+.aguia-reading-mask-vertical-level-2 .aguia-reading-mask-vertical-element {
+    /* Tamanho médio */
+    width: 175px; 
+}
+
+.aguia-reading-mask-vertical-level-3 .aguia-reading-mask-vertical-element {
+    /* Tamanho grande */
+    width: 225px; 
+}
+
 .aguia-reading-mask-vertical:before {
     content: '';
     position: fixed;
@@ -52,8 +88,8 @@
 
 /* Estilos para o cursor personalizado */
 .aguia-custom-cursor {
-    /* Cursor padrão ampliado - aumentado para 64px */
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 16 16"><path fill="black" stroke="white" stroke-width="1" d="M1 1l7 14 2-6 6-2L1 1z"/></svg>') 4 4, auto;
+    /* Cursor padrão ampliado - tamanho ajustado para 55px */
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" viewBox="0 0 16 16"><path fill="black" stroke="white" stroke-width="1" d="M1 1l7 14 2-6 6-2L1 1z"/></svg>') 4 4, auto;
 }
 
 .aguia-custom-cursor a,
@@ -62,12 +98,12 @@
 .aguia-custom-cursor input[type="button"],
 .aguia-custom-cursor input[type="submit"],
 .aguia-custom-cursor input[type="reset"] {
-    /* Cursor de mão ampliado para elementos clicáveis - aumentado para 64px */
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 16 16"><path fill="black" stroke="white" stroke-width="1" d="M5.25 5a.75.75 0 0 1 .75.75v2.5h2.5a.75.75 0 0 1 0 1.5h-2.5v2.5a.75.75 0 0 1-1.5 0v-2.5h-2.5a.75.75 0 0 1 0-1.5h2.5v-2.5a.75.75 0 0 1 .75-.75z"/></svg>') 32 32, pointer;
+    /* Cursor de mão ampliado para elementos clicáveis - tamanho ajustado para 55px */
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" viewBox="0 0 16 16"><path fill="black" stroke="white" stroke-width="1" d="M5.25 5a.75.75 0 0 1 .75.75v2.5h2.5a.75.75 0 0 1 0 1.5h-2.5v2.5a.75.75 0 0 1-1.5 0v-2.5h-2.5a.75.75 0 0 1 0-1.5h2.5v-2.5a.75.75 0 0 1 .75-.75z"/></svg>') 28 28, pointer;
 }
 
 .aguia-custom-cursor input[type="text"],
 .aguia-custom-cursor textarea {
-    /* Cursor de texto ampliado para áreas de texto - aumentado para 64px */
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 16 16"><path fill="black" stroke="white" stroke-width="1" d="M2.5 1h11a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 .5-.5z"/></svg>') 32 32, text;
+    /* Cursor de texto ampliado para áreas de texto - tamanho ajustado para 55px */
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" viewBox="0 0 16 16"><path fill="black" stroke="white" stroke-width="1" d="M2.5 1h11a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 .5-.5z"/></svg>') 28 28, text;
 }

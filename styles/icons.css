@@ -1,13 +1,13 @@
 /* Estilos para os ícones SVG nos botões de acessibilidade */
 
 .aguia-option .icon svg {
-    width: 32px; /* Tamanho maior para melhor legibilidade */
-    height: 32px;
+    width: 38px; /* Tamanho maior para melhor visibilidade como na imagem */
+    height: 38px;
     vertical-align: middle;
-    fill: currentColor;
+    fill: #444444; /* Cor mais escura para melhor contraste */
     stroke-width: 0; /* Remover stroke para melhorar legibilidade */
-    filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.15)); /* Sombra sutil para melhorar contraste */
-    transition: transform 0.3s ease, filter 0.3s ease; /* Animação suave */
+    filter: none; /* Remover sombra para aparência mais limpa */
+    transition: transform 0.2s ease, fill 0.2s ease; /* Animação suave */
 }
 
 /* Garantir que os ícones fiquem centralizados */
@@ -15,19 +15,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 40px; /* Altura fixa para consistência */
-    margin-bottom: 8px; /* Espaçamento adequado entre ícone e texto */
+    height: 45px; /* Altura maior para ícones mais visíveis */
+    margin-bottom: 10px; /* Espaçamento adequado entre ícone e texto */
 }
 
 /* Adicionar estilos para quando o botão estiver ativo */
 .aguia-option.active .icon svg {
-    transform: scale(1.1); /* Efeito de zoom suave quando ativo */
-    filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.25)); /* Sombra mais forte quando ativo */
+    transform: scale(1.05); /* Efeito sutil de zoom quando ativo */
+    fill: #2271ff; /* Cor azul para indicar estado ativo */
 }
 
 /* Estado ativo mais visível */
 .aguia-option.active {
-    border-color: var(--aguia-primary-color);
+    border-color: #2271ff;
+    background-color: rgba(34, 113, 255, 0.08); /* Fundo azul claro para botão ativo */
     box-shadow: 0 4px 10px rgba(0, 86, 179, 0.25);
     transform: translateY(-2px);
     background: linear-gradient(to bottom, #f5f9ff, #e6f0ff); /* Gradiente sutil quando ativo */
@@ -52,8 +53,12 @@
 }
 
 /* Cores específicas para diferentes tipos de botões - similar ao UserWay */
-.aguia-option[id="aguiaReadingMaskCursorBtn"] .icon svg {
-    fill: #2196f3; /* Azul para máscara de leitura */
+.aguia-option[id="aguiaHorizontalMaskBtn"] .icon svg {
+    fill: #2196f3; /* Azul para máscara de leitura horizontal */
+}
+
+.aguia-option[id="aguiaVerticalMaskBtn"] .icon svg {
+    fill: #03a9f4; /* Azul claro para máscara de leitura vertical */
 }
 
 .aguia-option[id="aguiaCustomCursorBtn"] .icon svg {
@@ -77,9 +82,40 @@
 }
 
 /* Estados ativos específicos por cor - apenas ícones coloridos */
-.aguia-option[id="aguiaReadingMaskCursorBtn"].active {
+.aguia-option[id="aguiaHorizontalMaskBtn"].active {
     border-color: #2196f3;
     box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+/* Níveis da máscara horizontal */
+.aguia-option[id="aguiaHorizontalMaskBtn"].active.level-1 {
+    background-color: rgba(33, 150, 243, 0.1);
+}
+
+.aguia-option[id="aguiaHorizontalMaskBtn"].active.level-2 {
+    background-color: rgba(33, 150, 243, 0.2);
+}
+
+.aguia-option[id="aguiaHorizontalMaskBtn"].active.level-3 {
+    background-color: rgba(33, 150, 243, 0.3);
+}
+
+.aguia-option[id="aguiaVerticalMaskBtn"].active {
+    border-color: #03a9f4;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+/* Níveis da máscara vertical */
+.aguia-option[id="aguiaVerticalMaskBtn"].active.level-1 {
+    background-color: rgba(3, 169, 244, 0.1);
+}
+
+.aguia-option[id="aguiaVerticalMaskBtn"].active.level-2 {
+    background-color: rgba(3, 169, 244, 0.2);
+}
+
+.aguia-option[id="aguiaVerticalMaskBtn"].active.level-3 {
+    background-color: rgba(3, 169, 244, 0.3);
 }
 
 .aguia-option[id="aguiaCustomCursorBtn"].active {
@@ -100,4 +136,15 @@
 /* Ícones coloridos no estado ativo */
 .aguia-option.active .icon svg {
     transform: scale(1.1);
+}
+
+/* Estilos específicos para o ícone de Aumentar Texto */
+.aguia-option[id="aguiaIncreaseFontBtn"] .icon svg {
+    fill: #333333;
+    width: 32px; /* Tamanho reduzido para melhor exibição */
+    height: 32px;
+}
+
+.aguia-option[id="aguiaIncreaseFontBtn"].active .icon svg {
+    fill: #2271ff;
 }

@@ -29,9 +29,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let textToSpeechEnabled = false;
     let readingHelperEnabled = false;
     let emphasizeLinksEnabled = false;
+    let headerHighlightEnabled = false; // Nova variável para controlar o destaque de cabeçalhos
     let hideImagesEnabled = false; // Nova variável para controlar a ocultação de imagens
     let colorBlindMode = 'none'; // Valores possíveis: none, protanopia, deuteranopia, tritanopia, achromatopsia
-    let readingMaskMode = 0; // 0: desativado, 1: horizontal, 2: vertical
+    let readingMaskMode = 0; // 0: desativado, 1: horizontal, 2: vertical (manter por compatibilidade)
+    let horizontalMaskLevel = 0; // 0: desativado, 1: pequeno, 2: médio, 3: grande
+    let verticalMaskLevel = 0; // 0: desativado, 1: pequeno, 2: médio, 3: grande
     let customCursorEnabled = false; // Nova variável para controlar o cursor personalizado
     let highlightedLettersLevel = 0; // 0: desativado, 1: pequeno, 2: médio, 3: grande
     
@@ -208,20 +211,20 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Organizamos as opções em categorias
         
-        // Categoria: Conteúdo
+        // Categoria: Fonte (anteriormente Conteúdo)
         const contentCategory = document.createElement('div');
         contentCategory.className = 'aguia-category';
         
         const contentTitle = document.createElement('h3');
         contentTitle.className = 'aguia-category-title';
-        contentTitle.textContent = 'Conteúdo';
+        contentTitle.textContent = 'Fonte';
         contentCategory.appendChild(contentTitle);
         
-        // Grid para as opções da categoria Conteúdo
+        // Grid para as opções da categoria Fonte
         const contentGrid = document.createElement('div');
         contentGrid.className = 'aguia-options-grid';
         
-        // Opções de conteúdo
+        // Opções de fonte
         const contentOptions = [
             {
                 iconSvg: AguiaIcons.increaseText,
@@ -252,13 +255,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 id: 'aguiaLetterSpacingBtn'
             },
             { 
-                iconSvg: AguiaIcons.emphasizeLinks,
-                text: 'Destacar Links', 
-                action: toggleEmphasizeLinks,
-                ariaLabel: 'Ativar ou desativar destaque para links',
-                id: 'aguiaEmphasizeLinksBtn'
-            },
-            { 
                 iconSvg: AguiaIcons.highlightedLetters,
                 text: 'Letras Destacadas', 
                 action: toggleHighlightedLetters,
@@ -267,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         ];
         
-        // Adiciona as opções de conteúdo ao grid
+        // Adiciona as opções de fonte ao grid
         contentOptions.forEach(option => {
             const button = createOptionButton(option);
             contentGrid.appendChild(button);
@@ -328,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 id: 'aguiaHighContrastBtn'
             },
             { 
-                iconSvg: AguiaIcons.invertColors, 
+                iconSvg: AguiaIcons.colorIntensity, 
                 text: 'Intensidade de Cores', 
                 action: toggleColorIntensity,
                 ariaLabel: 'Alternar entre os níveis de intensidade de cores',
@@ -355,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
         colorblindButton.className = 'aguia-option';
         colorblindButton.id = 'aguiaColorblindButton';
         colorblindButton.setAttribute('aria-label', 'Opções de daltonismo');
-        colorblindButton.innerHTML = '<span class="icon">🎨</span><span class="text">Daltonismo</span>';
+        colorblindButton.innerHTML = `<span class="icon">${AguiaIcons.colorblind}</span><span class="text">Daltonismo</span>`;
         colorblindButton.addEventListener('click', function() {
             toggleColorblindPanel();
         });
@@ -393,11 +389,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Opções para o painel de daltonismo
         const colorblindOptions = [
-            { value: 'none', text: 'Nenhum', icon: '❌' },
-            { value: 'protanopia', text: 'Protanopia (sem vermelho)', icon: '🔴' },
-            { value: 'deuteranopia', text: 'Deuteranopia (sem verde)', icon: '🟢' },
-            { value: 'tritanopia', text: 'Tritanopia (sem azul)', icon: '🔵' },
-            { value: 'achromatopsia', text: 'Monocromacia (sem cores)', icon: '⚫' }
+            { value: 'none', text: 'Nenhum', iconSvg: AguiaIcons.colorblindNone },
+            { value: 'protanopia', text: 'Protanopia (sem vermelho)', iconSvg: AguiaIcons.protanopia },
+            { value: 'deuteranopia', text: 'Deuteranopia (sem verde)', iconSvg: AguiaIcons.deuteranopia },
+            { value: 'tritanopia', text: 'Tritanopia (sem azul)', iconSvg: AguiaIcons.tritanopia },
+            { value: 'achromatopsia', text: 'Monocromacia (sem cores)', iconSvg: AguiaIcons.achromatopsia }
         ];
         
         // Adiciona as opções como botões
@@ -478,18 +474,83 @@ document.addEventListener('DOMContentLoaded', function() {
                 id: 'aguiaHideImagesBtn'
             },
             {
-                icon: '�',
-                text: 'Máscara de Foco',
-                action: toggleReadingMaskAndCursor,
-                ariaLabel: 'Alternar entre modos de máscara de leitura',
-                id: 'aguiaReadingMaskCursorBtn'
-            },
-            {
-                icon: '🖱️',
+                iconSvg: AguiaIcons.customCursor,
                 text: 'Cursor Grande',
                 action: toggleCustomCursor,
                 ariaLabel: 'Ativar ou desativar cursor personalizado',
                 id: 'aguiaCustomCursorBtn'
+            },
+            {
+                iconSvg: AguiaIcons.focusMaskHorizontal,
+                text: 'Máscara de Foco Horizontal',
+                action: toggleHorizontalMask,
+                ariaLabel: 'Ativar ou desativar máscara de foco horizontal',
+                id: 'aguiaHorizontalMaskBtn'
+            },
+            {
+                iconSvg: AguiaIcons.focusMaskVertical,
+                text: 'Máscara de Foco Vertical',
+                action: toggleVerticalMask,
+                ariaLabel: 'Ativar ou desativar máscara de foco vertical',
+                id: 'aguiaVerticalMaskBtn'
+            },
+            { 
+                iconSvg: AguiaIcons.emphasizeLinks,
+                text: 'Destacar Links', 
+                action: toggleEmphasizeLinks,
+                ariaLabel: 'Ativar ou desativar destaque para links',
+                id: 'aguiaEmphasizeLinksBtn'
+            },
+            {
+                iconSvg: AguiaIcons.headerHighlight,
+                text: 'Destacar Cabeçalho',
+                action: toggleHeaderHighlight,
+                ariaLabel: 'Ativar ou desativar destaque para cabeçalhos',
+                id: 'aguiaHeaderHighlightBtn'
+            },
+            {
+                iconSvg: AguiaIcons.magnifier,
+                text: 'Lupa de Conteúdo',
+                action: function() {
+                    // Referência para o botão atual
+                    const button = document.getElementById('aguiaMagnifierBtn');
+                    const menu = document.getElementById('aguiaMenu');
+                    
+                    // Verificar se a função está disponível no namespace AguiaMagnifier
+                    if (window.AguiaMagnifier && typeof window.AguiaMagnifier.toggleMagnifier === 'function') {
+                        const wasActive = window.AguiaMagnifier.isActive();
+                        window.AguiaMagnifier.toggleMagnifier();
+                        
+                        if (!wasActive) {
+                            // Esconde o menu quando ativa a lupa
+                            if (menu) menu.style.display = 'none';
+                            if (button) button.classList.add('active');
+                            showStatusMessage('Lupa de conteúdo ativada', 'success');
+                        } else {
+                            // Mostra o menu quando desativa a lupa
+                            if (menu) menu.style.display = 'block';
+                            if (button) button.classList.remove('active');
+                            showStatusMessage('Lupa de conteúdo desativada', 'success');
+                        }
+                    } else {
+                        // Fallback simples se a função específica não estiver disponível
+                        if (document.body.classList.contains('aguia-magnifier-active')) {
+                            document.body.classList.remove('aguia-magnifier-active');
+                            if (button) button.classList.remove('active');
+                            if (menu) menu.style.display = 'block';
+                            showStatusMessage('Lupa de conteúdo desativada', 'success');
+                            saveUserPreference('magnifier', false);
+                        } else {
+                            document.body.classList.add('aguia-magnifier-active');
+                            if (button) button.classList.add('active');
+                            if (menu) menu.style.display = 'none';
+                            showStatusMessage('Lupa de conteúdo ativada', 'success');
+                            saveUserPreference('magnifier', true);
+                        }
+                    }
+                },
+                ariaLabel: 'Ativar ou desativar lupa de conteúdo',
+                id: 'aguiaMagnifierBtn'
             }
         ];
         
@@ -599,28 +660,41 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Função para aumentar o tamanho da fonte
     function increaseFontSize() {
-        if (currentFontSize < 150) {
-            currentFontSize += 10;
-            setFontSize(currentFontSize);
-            const fontSizeLabel = document.getElementById('aguiaFontSizeLabel');
-            if (fontSizeLabel) {
-                fontSizeLabel.setAttribute('data-value', currentFontSize + '%');
-            }
-            const fontSizeSlider = document.getElementById('aguiaFontSizeSlider');
-            if (fontSizeSlider) {
-                fontSizeSlider.value = currentFontSize;
-            }
-            
-            // Adiciona classe ativa ao botão quando o tamanho é maior que o padrão
-            const increaseFontBtn = document.getElementById('aguiaIncreaseFontBtn');
-            if (increaseFontBtn) {
-                if (currentFontSize > 100) {
-                    increaseFontBtn.classList.add('active');
-                } else {
-                    increaseFontBtn.classList.remove('active');
-                }
+        // Se já estamos no tamanho máximo (150%), resetar para 100%
+        if (currentFontSize >= 150) {
+            resetFontSize();
+            showStatusMessage('Tamanho de texto resetado para o padrão', 'success');
+            return;
+        }
+        
+        // Caso contrário, aumentar o tamanho em 10%
+        currentFontSize += 10;
+        setFontSize(currentFontSize);
+        
+        // Atualiza o label do tamanho da fonte
+        const fontSizeLabel = document.getElementById('aguiaFontSizeLabel');
+        if (fontSizeLabel) {
+            fontSizeLabel.setAttribute('data-value', currentFontSize + '%');
+        }
+        
+        // Atualiza o slider do tamanho da fonte
+        const fontSizeSlider = document.getElementById('aguiaFontSizeSlider');
+        if (fontSizeSlider) {
+            fontSizeSlider.value = currentFontSize;
+        }
+        
+        // Adiciona classe ativa ao botão quando o tamanho é maior que o padrão
+        const increaseFontBtn = document.getElementById('aguiaIncreaseFontBtn');
+        if (increaseFontBtn) {
+            if (currentFontSize > 100) {
+                increaseFontBtn.classList.add('active');
+            } else {
+                increaseFontBtn.classList.remove('active');
             }
         }
+        
+        // Exibe mensagem informando o tamanho atual
+        showStatusMessage('Tamanho de texto ajustado para ' + currentFontSize + '%', 'success');
     }
     
     // Função para diminuir o tamanho da fonte
@@ -640,7 +714,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Função para definir o tamanho da fonte
-    function setFontSize(size) {
+    function setFontSize(size, silent = false) {
         // Remove todas as classes anteriores de tamanho de fonte
         document.body.classList.remove(
             'aguia-text-size-100',
@@ -667,16 +741,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Exibe mensagem
-        showStatusMessage('Tamanho do texto ajustado para ' + size + '%', 'success');
+        // Exibe mensagem apenas se silent for false
+        if (!silent) {
+            showStatusMessage('Tamanho do texto ajustado para ' + size + '%', 'success');
+        }
         
         // Salva preferência
         saveUserPreference('fontSize', size);
     }
     
     // Função para resetar o tamanho da fonte
-    function resetFontSize() {
-        setFontSize(100);
+    function resetFontSize(silent = false) {
+        setFontSize(100, silent);
         
         // Atualiza o controle deslizante
         const fontSizeSlider = document.getElementById('aguiaFontSizeSlider');
@@ -820,7 +896,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Função para resetar configurações de contraste
-    function resetContrast() {
+    function resetContrast(silent = false) {
         // Reset de alto contraste
         if (highContrastEnabled) {
             highContrastEnabled = false;
@@ -888,8 +964,6 @@ document.addEventListener('DOMContentLoaded', function() {
             colorBlindMode = 'none';
             saveUserPreference('colorblind', 'none');
         }
-        
-        showStatusMessage('Configurações de contraste resetadas');
         
         // Salva preferências
         saveUserPreference('highContrast', false);
@@ -1136,7 +1210,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Texto para fala (WCAG 1.4.1)
-    function toggleTextToSpeech() {
+    function toggleTextToSpeech(silent = false) {
         textToSpeechEnabled = !textToSpeechEnabled;
         
         // Atualiza UI
@@ -1152,11 +1226,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (textToSpeechEnabled) {
             // Adiciona listeners para elementos que podem ser lidos
             addTextToSpeechListeners();
-            showStatusMessage('Texto para fala ativado', 'success');
+            if (!silent) {
+                showStatusMessage('Texto para fala ativado', 'success');
+            }
         } else {
             // Remove listeners
             removeTextToSpeechListeners();
-            showStatusMessage('Texto para fala desativado');
+            if (!silent) {
+                showStatusMessage('Texto para fala desativado');
+            }
             
             // Para qualquer leitura em andamento
             if ('speechSynthesis' in window) {
@@ -1241,7 +1319,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Auxiliar de leitura (WCAG 2.4.8)
-    function toggleReadingHelper() {
+    function toggleReadingHelper(silent = false) {
         readingHelperEnabled = !readingHelperEnabled;
         
         // Atualiza UI
@@ -1256,11 +1334,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (readingHelperEnabled) {
             createReadingHelper();
-            showStatusMessage('Guia de leitura ativado', 'success');
+            if (!silent) {
+                showStatusMessage('Guia de leitura ativado', 'success');
+            }
         } else {
             const helper = document.getElementById('aguiaReadingHelper');
             if (helper) {
                 helper.remove();
+            }
+            if (!silent) {
+                showStatusMessage('Guia de leitura desativado');
             }
             // Remove o event listener
             if (typeof window.aguia_cleanupElementEventListeners === 'function') {
@@ -1298,19 +1381,155 @@ document.addEventListener('DOMContentLoaded', function() {
         // Encontra o elemento sob o cursor
         const element = document.elementFromPoint(e.clientX, e.clientY);
         
-        if (element && element.textContent && element !== helper) {
-            const rect = element.getBoundingClientRect();
-            helper.style.width = rect.width + 'px';
-            helper.style.top = (window.scrollY + rect.top) + 'px';
-            helper.style.left = rect.left + 'px';
-            helper.style.display = 'block';
+        if (element && element !== helper) {
+            // Obtém a linha de texto mais próxima do cursor
+            const lineInfo = getTextLineAtPoint(e.clientX, e.clientY, element);
+            
+            if (lineInfo) {
+                // Animação suave para melhorar a experiência visual
+                if (helper.style.display === 'none') {
+                    helper.style.width = lineInfo.width + 'px';
+                    helper.style.top = (lineInfo.top) + 'px';
+                    helper.style.left = lineInfo.left + 'px';
+                    helper.style.height = lineInfo.height + 'px';
+                    helper.style.display = 'block';
+                    helper.style.opacity = '0';
+                    
+                    // Adiciona transição suave
+                    setTimeout(() => {
+                        helper.style.opacity = '1';
+                    }, 10);
+                } else {
+                    // Movimento suave com requestAnimationFrame para performance
+                    requestAnimationFrame(() => {
+                        helper.style.width = lineInfo.width + 'px';
+                        helper.style.top = (lineInfo.top) + 'px';
+                        helper.style.left = lineInfo.left + 'px';
+                        helper.style.height = lineInfo.height + 'px';
+                        helper.style.display = 'block';
+                        helper.style.opacity = '1';
+                    });
+                }
+            } else {
+                // Quando não está sobre texto, esconde o guia
+                requestAnimationFrame(() => {
+                    helper.style.display = 'none';
+                    helper.style.opacity = '0';
+                });
+            }
         } else {
-            helper.style.display = 'none';
+            // Quando não está sobre nenhum elemento válido, esconde o guia
+            requestAnimationFrame(() => {
+                helper.style.display = 'none';
+                helper.style.opacity = '0';
+            });
         }
     }
     
+    // Função para obter informações da linha de texto sob o cursor
+    function getTextLineAtPoint(x, y, element) {
+        // Verifica se é um elemento ou filho de elemento que deve ser ignorado
+        const ignoreElements = ['IMG', 'CANVAS', 'SVG', 'VIDEO', 'IFRAME', 'INPUT', 'TEXTAREA', 'SELECT', 'TABLE'];
+        
+        // Se o elemento atual é um dos elementos ignorados, retorne null
+        if (ignoreElements.includes(element.tagName)) {
+            return null;
+        }
+        
+        // Lista de elementos que normalmente contêm texto a ser destacado
+        const textElements = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LI', 'TD', 'TH', 'SPAN', 'DIV', 'A', 'BUTTON', 'LABEL', 'STRONG', 'EM', 'SMALL', 'CODE', 'PRE', 'BLOCKQUOTE'];
+        
+        // Verifica se o elemento ou algum ancestral próximo é um elemento de texto com conteúdo significativo
+        let textContainer = null;
+        let currentElement = element;
+        let depth = 0;
+        const maxDepth = 4; // Limite de profundidade para procurar ancestrais
+        
+        while (currentElement && depth < maxDepth) {
+            // Verifica se é um elemento de texto válido com conteúdo real
+            if (
+                textElements.includes(currentElement.tagName) && 
+                currentElement.textContent && 
+                currentElement.textContent.trim().length > 1 && // Pelo menos alguns caracteres
+                !ignoreElements.includes(currentElement.tagName)
+            ) {
+                // Verifica se o elemento não contém apenas elementos ignorados
+                const hasVisibleText = Array.from(currentElement.childNodes).some(node => {
+                    return node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0;
+                });
+                
+                if (hasVisibleText) {
+                    textContainer = currentElement;
+                    break;
+                }
+            }
+            
+            currentElement = currentElement.parentElement;
+            depth++;
+        }
+        
+        // Se não encontrou um container de texto válido, retorna null
+        if (!textContainer) {
+            return null;
+        }
+        
+        // Obtém informações do retângulo do elemento
+        const rect = textContainer.getBoundingClientRect();
+        
+        // Se o elemento de texto for muito pequeno ou estreito, talvez não seja texto legível
+        if (rect.width < 50 || rect.height < 12) {
+            return null;
+        }
+        
+        // Obtém o estilo computado para informações de linha
+        const style = window.getComputedStyle(textContainer);
+        let lineHeight = parseInt(style.lineHeight);
+        
+        // Se não conseguir obter lineHeight, calcular com base no fontSize
+        if (isNaN(lineHeight) || lineHeight === 0) {
+            const fontSize = parseInt(style.fontSize) || 16;
+            lineHeight = Math.round(fontSize * 1.4); // Estimativa razoável
+        }
+        
+        // Calcula a posição relativa do cursor dentro do elemento
+        const relativeY = y - rect.top;
+        
+        // Calcula qual linha foi clicada
+        const lineIndex = Math.floor(relativeY / lineHeight);
+        const lineTop = rect.top + (lineIndex * lineHeight);
+        
+        return {
+            left: rect.left,
+            top: window.scrollY + lineTop,
+            width: rect.width,
+            height: Math.max(lineHeight, 20) // Altura mínima para visibilidade
+        };
+    }
+    
+    // Função auxiliar para encontrar o container de texto mais apropriado
+    function findTextContainer(element) {
+        // Começar pelo elemento atual e subir na árvore DOM
+        let current = element;
+        let maxLevels = 3; // Limite de níveis para evitar subir demais
+        
+        while (current && maxLevels > 0) {
+            // Verificar se o elemento atual contém texto significativo
+            if (current.textContent && current.textContent.trim().length > 10) {
+                // Verificar se é um container comum de texto
+                if (['P', 'DIV', 'ARTICLE', 'SECTION', 'LI', 'TD', 'BLOCKQUOTE'].includes(current.tagName)) {
+                    return current;
+                }
+            }
+            
+            current = current.parentElement;
+            maxLevels--;
+        }
+        
+        return element; // Retorna o elemento original se não encontrou nada melhor
+    }
+    
     // Destacar links (WCAG 1.4.1)
-    function toggleEmphasizeLinks() {
+    function toggleEmphasizeLinks(silent = false) {
         emphasizeLinksEnabled = !emphasizeLinksEnabled;
         
         // Atualiza UI
@@ -1325,18 +1544,54 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (emphasizeLinksEnabled) {
             document.body.classList.add('aguia-emphasize-links');
-            showStatusMessage('Links destacados ativados', 'success');
+            if (!silent) {
+                showStatusMessage('Links destacados ativados', 'success');
+            }
         } else {
             document.body.classList.remove('aguia-emphasize-links');
-            showStatusMessage('Links destacados desativados');
+            if (!silent) {
+                showStatusMessage('Links destacados desativados');
+            }
         }
         
         // Salva preferência
         saveUserPreference('emphasizeLinks', emphasizeLinksEnabled);
     }
     
+    // Destacar cabeçalhos (WCAG 2.4.6)
+    function toggleHeaderHighlight(silent = false) {
+        headerHighlightEnabled = !headerHighlightEnabled;
+        
+        // Atualiza UI
+        const headerBtn = document.getElementById('aguiaHeaderHighlightBtn');
+        if (headerBtn) {
+            if (headerHighlightEnabled) {
+                headerBtn.classList.add('active');
+            } else {
+                headerBtn.classList.remove('active');
+            }
+        }
+        
+        if (headerHighlightEnabled) {
+            // Adiciona uma classe ao body para facilitar aplicação de estilos CSS
+            document.body.classList.add('aguia-highlight-headers');
+            if (!silent) {
+                showStatusMessage('Cabeçalhos destacados ativados', 'success');
+            }
+        } else {
+            // Remove a classe do body
+            document.body.classList.remove('aguia-highlight-headers');
+            if (!silent) {
+                showStatusMessage('Cabeçalhos destacados desativados');
+            }
+        }
+        
+        // Salva preferência
+        saveUserPreference('headerHighlight', headerHighlightEnabled);
+    }
+    
     // Função para ocultar todas as imagens (WCAG 1.1.1)
-    function toggleHideImages() {
+    function toggleHideImages(silent = false) {
         hideImagesEnabled = !hideImagesEnabled;
         
         // Atualiza UI
@@ -1351,10 +1606,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (hideImagesEnabled) {
             document.body.classList.add('aguia-hide-images');
-            showStatusMessage('Ocultação de imagens ativada', 'success');
+            if (!silent) {
+                showStatusMessage('Ocultação de imagens ativada', 'success');
+            }
         } else {
             document.body.classList.remove('aguia-hide-images');
-            showStatusMessage('Ocultação de imagens desativada');
+            if (!silent) {
+                showStatusMessage('Ocultação de imagens desativada');
+            }
         }
         
         // Salva preferência
@@ -1364,133 +1623,240 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para resetar todas as configurações
     function resetAll() {
         // Reset de tamanho de fonte
-        resetFontSize();
+        resetFontSize(true);
         
-        // Reset de contraste
-        if (highContrastEnabled || invertedColorsEnabled) {
-            resetContrast();
-        }
+        // Reset de contraste - forçado mesmo se não estiver ativo
+        resetContrast(true);
         
-        // Reset de ocultação de imagens
+        // Reset de ocultação de imagens - forçado
         if (hideImagesEnabled) {
-            hideImagesEnabled = false;
+            toggleHideImages(true);
+        } else {
+            // Garante que as classes sejam removidas e as preferências atualizadas
             document.body.classList.remove('aguia-hide-images');
-            
-            const hideImagesBtn = document.getElementById('aguiaHideImagesBtn');
-            if (hideImagesBtn) {
-                hideImagesBtn.classList.remove('active');
-            }
-            
-            // Salva preferência
             saveUserPreference('hideImages', false);
         }
         
-        // Reset da máscara de leitura e do cursor personalizado
-        if (readingMaskMode > 0 || customCursorEnabled) {
-            resetReadingMaskAndCursor();
+        // Reset da lupa de conteúdo
+        document.body.classList.remove('aguia-magnifier-active');
+        // Remover a classe active do botão da lupa
+        const menuMagnifierBtn = document.getElementById('aguiaMagnifierBtn');
+        if (menuMagnifierBtn) {
+            menuMagnifierBtn.classList.remove('active');
         }
+        // Remover a classe active do botão da lupa standalone
+        const standaloneButton = document.getElementById('aguia-magnifier-button');
+        if (standaloneButton) {
+            standaloneButton.classList.remove('active');
+        }
+        // Salvar o estado desativado da lupa
+        localStorage.setItem('aguia_magnifier_enabled', 'false');
+        saveUserPreference('magnifier', false);
         
-        // Reset de fontes legíveis e OpenDyslexic
-        if (fontMode !== 0) {
-            // Remover todas as classes de fonte
-            document.body.classList.remove('aguia-readable-fonts', 'aguia-opendyslexic-fonts');
-            
-            // Resetar o botão
-            const fontsBtn = document.getElementById('aguiaReadableFontsBtn');
-            if (fontsBtn) {
-                fontsBtn.classList.remove('active', 'opendyslexic');
-                const textSpan = fontsBtn.querySelector('.text');
-                if (textSpan) {
-                    textSpan.textContent = 'Fontes Legíveis';
-                }
+        // Reset completo de máscaras e cursor
+        resetReadingMaskAndCursor(true);
+        
+        // Força desativação dos novos tipos de máscara
+        horizontalMaskLevel = 0;
+        verticalMaskLevel = 0;
+        document.body.classList.remove('aguia-reading-mask-horizontal');
+        document.body.classList.remove('aguia-reading-mask-horizontal-level-1');
+        document.body.classList.remove('aguia-reading-mask-horizontal-level-2');
+        document.body.classList.remove('aguia-reading-mask-horizontal-level-3');
+        document.body.classList.remove('aguia-reading-mask-vertical');
+        document.body.classList.remove('aguia-reading-mask-vertical-level-1');
+        document.body.classList.remove('aguia-reading-mask-vertical-level-2');
+        document.body.classList.remove('aguia-reading-mask-vertical-level-3');
+        document.body.classList.remove('aguia-custom-cursor');
+        saveUserPreference('horizontalMaskLevel', 0);
+        saveUserPreference('verticalMaskLevel', 0);
+        saveUserPreference('customCursor', false);
+        
+        // Reset dos botões de máscara
+        const horizontalMaskBtn = document.getElementById('aguiaHorizontalMaskBtn');
+        if (horizontalMaskBtn) {
+            horizontalMaskBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+            const textSpan = horizontalMaskBtn.querySelector('.text');
+            if (textSpan) {
+                textSpan.textContent = 'Máscara de Foco Horizontal';
             }
-            
-            // Resetar variáveis
-            fontMode = 0;
-            readableFontsEnabled = false;
-            
-            // Salvar preferências
-            saveUserPreference('readableFonts', false);
-            saveUserPreference('fontMode', 0);
         }
         
-        // Reset de espaçamento entre linhas
-        if (lineSpacingLevel > 0) {
-            // Reseta para zero
-            document.body.classList.remove('aguia-line-spacing-level-1', 'aguia-line-spacing-level-2', 'aguia-line-spacing-level-3');
-            document.body.classList.remove('aguia-spacing-level-1', 'aguia-spacing-level-2', 'aguia-spacing-level-3'); // Para compatibilidade
-            document.body.classList.remove('aguia-increased-spacing'); // Para compatibilidade
-            
-            // Reset do botão
-            const lineSpacingBtn = document.getElementById('aguiaLineSpacingBtn');
-            if (lineSpacingBtn) {
-                lineSpacingBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
-                
-                // Restaura o texto original
-                const textSpan = lineSpacingBtn.querySelector('.text');
-                if (textSpan) {
-                    textSpan.textContent = 'Espaçamento entre Linhas';
-                }
+        const verticalMaskBtn = document.getElementById('aguiaVerticalMaskBtn');
+        if (verticalMaskBtn) {
+            verticalMaskBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+            const textSpan = verticalMaskBtn.querySelector('.text');
+            if (textSpan) {
+                textSpan.textContent = 'Máscara de Foco Vertical';
             }
-            
-            // Reset da variável
-            lineSpacingLevel = 0;
-            
-            // Salva a preferência
-            saveUserPreference('lineSpacing', 0);
         }
         
-        // Reset de espaçamento entre letras
-        if (letterSpacingLevel > 0) {
-            // Reseta para zero
-            document.body.classList.remove('aguia-letter-spacing-level-1', 'aguia-letter-spacing-level-2', 'aguia-letter-spacing-level-3');
-            
-            // Reset do botão
-            const letterSpacingBtn = document.getElementById('aguiaLetterSpacingBtn');
-            if (letterSpacingBtn) {
-                letterSpacingBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
-                
-                // Restaura o texto original
-                const textSpan = letterSpacingBtn.querySelector('.text');
-                if (textSpan) {
-                    textSpan.textContent = 'Espaçamento entre Letras';
-                }
+        const customCursorBtn = document.getElementById('aguiaCustomCursorBtn');
+        if (customCursorBtn) {
+            customCursorBtn.classList.remove('active');
+        }
+        
+        // Esconde as máscaras
+        const maskH = document.getElementById('aguiaReadingMaskH');
+        if (maskH) maskH.style.display = 'none';
+        const maskV = document.getElementById('aguiaReadingMaskV');
+        if (maskV) maskV.style.display = 'none';
+        
+        // Reset de fontes legíveis e OpenDyslexic - forçado
+        // Remover todas as classes de fonte
+        document.body.classList.remove('aguia-readable-fonts', 'aguia-opendyslexic-fonts');
+        
+        // Resetar o botão
+        const fontsBtn = document.getElementById('aguiaReadableFontsBtn');
+        if (fontsBtn) {
+            fontsBtn.classList.remove('active', 'opendyslexic');
+            const textSpan = fontsBtn.querySelector('.text');
+            if (textSpan) {
+                textSpan.textContent = 'Fontes Legíveis';
             }
-            
-            // Reset da variável
-            letterSpacingLevel = 0;
-            
-            // Salva a preferência
-            saveUserPreference('letterSpacing', 0);
         }
         
-        // Reset de texto para fala
+        // Resetar variáveis
+        fontMode = 0;
+        readableFontsEnabled = false;
+        
+        // Salvar preferências
+        saveUserPreference('readableFonts', false);
+        saveUserPreference('fontMode', 0);
+        
+        // Reset de espaçamento entre linhas - forçado
+        // Reseta para zero
+        document.body.classList.remove('aguia-line-spacing-level-1', 'aguia-line-spacing-level-2', 'aguia-line-spacing-level-3');
+        document.body.classList.remove('aguia-spacing-level-1', 'aguia-spacing-level-2', 'aguia-spacing-level-3'); // Para compatibilidade
+        document.body.classList.remove('aguia-increased-spacing'); // Para compatibilidade
+        
+        // Reset do botão
+        const lineSpacingBtn = document.getElementById('aguiaLineSpacingBtn');
+        if (lineSpacingBtn) {
+            lineSpacingBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+            
+            // Restaura o texto original
+            const textSpan = lineSpacingBtn.querySelector('.text');
+            if (textSpan) {
+                textSpan.textContent = 'Espaçamento entre Linhas';
+            }
+        }
+        
+        // Reset da variável
+        lineSpacingLevel = 0;
+        
+        // Salva a preferência
+        saveUserPreference('lineSpacing', 0);
+        
+        // Reset de espaçamento entre letras - forçado
+        // Reseta para zero
+        document.body.classList.remove('aguia-letter-spacing-level-1', 'aguia-letter-spacing-level-2', 'aguia-letter-spacing-level-3');
+        
+        // Reset do botão
+        const letterSpacingBtn = document.getElementById('aguiaLetterSpacingBtn');
+        if (letterSpacingBtn) {
+            letterSpacingBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+            
+            // Restaura o texto original
+            const textSpan = letterSpacingBtn.querySelector('.text');
+            if (textSpan) {
+                textSpan.textContent = 'Espaçamento entre Letras';
+            }
+        }
+        
+        // Reset da variável
+        letterSpacingLevel = 0;
+        
+        // Salva a preferência
+        saveUserPreference('letterSpacing', 0);
+        
+        // Reset de texto para fala - forçado
         if (textToSpeechEnabled) {
-            toggleTextToSpeech();
+            toggleTextToSpeech(true);
+        } else {
+            // Garante que esteja desativado
+            // Para qualquer leitura em andamento
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+            
+            // Remove listeners
+            removeTextToSpeechListeners();
+            
+            // Reset do botão
+            const ttsBtn = document.getElementById('aguiaTextToSpeechBtn');
+            if (ttsBtn) {
+                ttsBtn.classList.remove('active');
+            }
+            
+            saveUserPreference('textToSpeech', false);
         }
         
-        // Reset de auxiliar de leitura
+        // Reset de auxiliar de leitura - forçado
         if (readingHelperEnabled) {
-            toggleReadingHelper();
+            toggleReadingHelper(true);
+        } else {
+            // Garante que esteja desativado
+            const helper = document.getElementById('aguiaReadingHelper');
+            if (helper) {
+                helper.remove();
+            }
+            
+            // Reset do botão
+            const helperBtn = document.getElementById('aguiaReadingHelperBtn');
+            if (helperBtn) {
+                helperBtn.classList.remove('active');
+            }
+            
+            saveUserPreference('readingHelper', false);
         }
         
-        // Reset de destaque de links
+        // Reset de destaque de links - forçado
         if (emphasizeLinksEnabled) {
-            toggleEmphasizeLinks();
+            toggleEmphasizeLinks(true);
+        } else {
+            // Garante que esteja desativado
+            document.body.classList.remove('aguia-emphasize-links');
+            
+            // Reset do botão
+            const linksBtn = document.getElementById('aguiaEmphasizeLinksBtn');
+            if (linksBtn) {
+                linksBtn.classList.remove('active');
+            }
+            
+            saveUserPreference('emphasizeLinks', false);
         }
         
-        // Reset de letras destacadas
+        // Reset de destaque de cabeçalhos - forçado
+        if (headerHighlightEnabled) {
+            toggleHeaderHighlight(true);
+        } else {
+            // Garante que esteja desativado
+            document.body.classList.remove('aguia-highlight-headers');
+            
+            // Reset do botão
+            const headerBtn = document.getElementById('aguiaHeaderHighlightBtn');
+            if (headerBtn) {
+                headerBtn.classList.remove('active');
+            }
+            
+            saveUserPreference('headerHighlight', false);
+        }
+        
+        // Reset de letras destacadas - forçado
         if (highlightedLettersLevel > 0) {
-            // Remove todas as classes
+            toggleHighlightedLetters(true);
+        } else {
+            // Garante que esteja desativado
             document.body.classList.remove('aguia-highlighted-letters', 'level-1', 'level-2', 'level-3');
             
             // Reset do botão
-            const lettersBtn = document.getElementById('aguiaHighlightedLettersBtn');
-            if (lettersBtn) {
-                lettersBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+            const highlightedLettersBtn = document.getElementById('aguiaHighlightedLettersBtn');
+            if (highlightedLettersBtn) {
+                highlightedLettersBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
                 
                 // Restaura o texto original
-                const textSpan = lettersBtn.querySelector('.text');
+                const textSpan = highlightedLettersBtn.querySelector('.text');
                 if (textSpan) {
                     textSpan.textContent = 'Letras Destacadas';
                 }
@@ -1499,34 +1865,41 @@ document.addEventListener('DOMContentLoaded', function() {
             // Reset da variável
             highlightedLettersLevel = 0;
             
-            // Salva a preferência
             saveUserPreference('highlightedLetters', 0);
         }
         
-        // Reset de modo daltonismo - agora com suporte a múltiplos modos
-        // Verifica se há algum modo ativo verificando classes no HTML ou o valor da variável
-        const htmlElement = document.documentElement;
-        const hasColorblindClass = 
-            htmlElement.classList.contains('aguia-colorblind-protanopia') ||
-            htmlElement.classList.contains('aguia-colorblind-deuteranopia') ||
-            htmlElement.classList.contains('aguia-colorblind-tritanopia') ||
-            htmlElement.classList.contains('aguia-colorblind-achromatopsia');
-            
-        if (colorBlindMode !== 'none' || hasColorblindClass) {
-            // Reseta para nenhum filtro de daltonismo
-            setColorBlindModes([]);
-            
-            // Atualiza a UI no painel de daltonismo
-            document.querySelectorAll('#aguiaColorblindPanel .aguia-submenu-option').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.value === 'none') {
-                    btn.classList.add('active');
-                }
-            });
+        // Reset de modo daltonismo - forçado
+        // Reseta para nenhum filtro de daltonismo
+        setColorBlindModes([]);
+        
+        // Remove classes de daltonismo do elemento HTML
+        document.documentElement.classList.remove(
+            'aguia-colorblind-protanopia',
+            'aguia-colorblind-deuteranopia',
+            'aguia-colorblind-tritanopia',
+            'aguia-colorblind-achromatopsia'
+        );
+        
+        // Atualiza a UI no painel de daltonismo
+        document.querySelectorAll('#aguiaColorblindPanel .aguia-submenu-option').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.value === 'none') {
+                btn.classList.add('active');
+            }
+        });
+        
+        // Reset do botão de daltonismo
+        const colorblindBtn = document.getElementById('aguiaColorblindButton');
+        if (colorblindBtn) {
+            colorblindBtn.classList.remove('active');
         }
         
-        // Reset do VLibras se estiver ativo
-        if (typeof vLibrasEnabled !== 'undefined' && vLibrasEnabled) {
+        colorBlindMode = 'none';
+        saveUserPreference('colorblind', 'none');
+        
+        // Reset do VLibras se estiver disponível
+        if (typeof vLibrasEnabled !== 'undefined') {
+            vLibrasEnabled = false;
             if (typeof disableVLibras === 'function') {
                 disableVLibras();
             }
@@ -1536,9 +1909,61 @@ document.addEventListener('DOMContentLoaded', function() {
             if (vLibrasBtn) {
                 vLibrasBtn.classList.remove('active');
             }
+            
+            saveUserPreference('vlibras', false);
         }
         
-        showStatusMessage('Todas as configurações foram resetadas', 'success');
+        // Reset da Lupa de Conteúdo
+        document.body.classList.remove('aguia-magnifier-active');
+        
+        // Reset do botão da lupa no menu
+        const menuLupaBtn = document.getElementById('aguiaMagnifierBtn');
+        if (menuLupaBtn) {
+            menuLupaBtn.classList.remove('active');
+        }
+        
+        // Reset do botão standalone da lupa
+        const standaloneMagnifierBtn = document.getElementById('aguia-magnifier-standalone-button');
+        if (standaloneMagnifierBtn) {
+            standaloneMagnifierBtn.classList.remove('active');
+        }
+        
+        // Esconde o elemento da lupa
+        const magnifier = document.getElementById('aguia-magnifier');
+        if (magnifier) {
+            magnifier.style.display = 'none';
+        }
+        
+        // Se a API AguiaMagnifier estiver disponível, atualiza o estado interno
+        if (window.AguiaMagnifier && typeof window.AguiaMagnifier.saveState === 'function') {
+            window.AguiaMagnifier.saveState(false);
+        } else {
+            // Fallback para localStorage
+            localStorage.setItem('aguia_magnifier_enabled', JSON.stringify(false));
+        }
+        
+        saveUserPreference('magnifier', false);
+        
+        // Garantir que todas as variáveis de controle estão com valores padrão
+        highContrastEnabled = false;
+        invertedColorsEnabled = false;
+        hideImagesEnabled = false;
+        readingMaskMode = 0;
+        customCursorEnabled = false;
+        horizontalMaskLevel = 0;
+        verticalMaskLevel = 0;
+        readableFontsEnabled = false;
+        fontMode = 0;
+        lineSpacingLevel = 0;
+        letterSpacingLevel = 0;
+        textToSpeechEnabled = false;
+        readingHelperEnabled = false;
+        emphasizeLinksEnabled = false;
+        headerHighlightEnabled = false;
+        highlightedLettersLevel = 0;
+        colorBlindMode = 'none';
+        
+        showStatusMessage('AGUIA Resetado', 'success');
     }
     
     // Função para salvar preferências do usuário
@@ -1610,8 +2035,11 @@ document.addEventListener('DOMContentLoaded', function() {
             textToSpeech: getFromLocalStorage('textToSpeech', false),
             readingHelper: getFromLocalStorage('readingHelper', false),
             emphasizeLinks: getFromLocalStorage('emphasizeLinks', false),
+            headerHighlight: getFromLocalStorage('headerHighlight', false),
             colorblind: getFromLocalStorage('colorblind', 'none'),
             readingMaskMode: getFromLocalStorage('readingMaskMode', 0),
+            horizontalMaskLevel: getFromLocalStorage('horizontalMaskLevel', 0),
+            verticalMaskLevel: getFromLocalStorage('verticalMaskLevel', 0),
             customCursor: getFromLocalStorage('customCursor', false)
         };
         
@@ -1835,6 +2263,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
+        // Aplicar destaque de cabeçalho
+        if (preferences.headerHighlight) {
+            headerHighlightEnabled = true;
+            document.body.classList.add('aguia-highlight-headers');
+            
+            // Atualiza botão se existir
+            const headerBtn = document.getElementById('aguiaHeaderHighlightBtn');
+            if (headerBtn) {
+                headerBtn.classList.add('active');
+            }
+        }
+        
         // Aplicar ocultação de imagens
         if (preferences.hideImages) {
             hideImagesEnabled = true;
@@ -1855,22 +2295,102 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Aplicar máscara de leitura
+        // Aplicar máscara de leitura (compatibilidade com versões anteriores)
         if (preferences.readingMaskMode && preferences.readingMaskMode > 0) {
             readingMaskMode = preferences.readingMaskMode;
             
             if (readingMaskMode === 1) {
+                // Se não houver nível específico definido, use o nível 1
+                horizontalMaskLevel = preferences.horizontalMaskLevel || 1;
+                verticalMaskLevel = 0;
+                
                 document.body.classList.add('aguia-reading-mask-horizontal');
+                document.body.classList.add(`aguia-reading-mask-horizontal-level-${horizontalMaskLevel}`);
                 document.body.classList.remove('aguia-reading-mask-vertical');
+                
+                // Atualiza botão horizontal se existir
+                const horizontalMaskBtn = document.getElementById('aguiaHorizontalMaskBtn');
+                if (horizontalMaskBtn) {
+                    horizontalMaskBtn.classList.add('active');
+                    horizontalMaskBtn.classList.add(`level-${horizontalMaskLevel}`);
+                    
+                    // Atualiza o texto do botão
+                    const textSpan = horizontalMaskBtn.querySelector('.text');
+                    if (textSpan) {
+                        const levels = ['Máscara de Foco Horizontal', 'Máscara H. Pequena', 'Máscara H. Média', 'Máscara H. Grande'];
+                        textSpan.textContent = levels[horizontalMaskLevel];
+                    }
+                }
             } else if (readingMaskMode === 2) {
+                // Se não houver nível específico definido, use o nível 1
+                verticalMaskLevel = preferences.verticalMaskLevel || 1;
+                horizontalMaskLevel = 0;
+                
                 document.body.classList.remove('aguia-reading-mask-horizontal');
                 document.body.classList.add('aguia-reading-mask-vertical');
+                document.body.classList.add(`aguia-reading-mask-vertical-level-${verticalMaskLevel}`);
+                
+                // Atualiza botão vertical se existir
+                const verticalMaskBtn = document.getElementById('aguiaVerticalMaskBtn');
+                if (verticalMaskBtn) {
+                    verticalMaskBtn.classList.add('active');
+                    verticalMaskBtn.classList.add(`level-${verticalMaskLevel}`);
+                    
+                    // Atualiza o texto do botão
+                    const textSpan = verticalMaskBtn.querySelector('.text');
+                    if (textSpan) {
+                        const levels = ['Máscara de Foco Vertical', 'Máscara V. Pequena', 'Máscara V. Média', 'Máscara V. Grande'];
+                        textSpan.textContent = levels[verticalMaskLevel];
+                    }
+                }
             }
+        }
+        
+        // Aplicar máscara horizontal (nova implementação)
+        if (preferences.horizontalMaskLevel && preferences.horizontalMaskLevel > 0) {
+            horizontalMaskLevel = preferences.horizontalMaskLevel;
+            verticalMaskLevel = 0; // Garante que apenas uma máscara esteja ativa
+            readingMaskMode = 1; // Para compatibilidade
+            
+            document.body.classList.add('aguia-reading-mask-horizontal');
+            document.body.classList.add(`aguia-reading-mask-horizontal-level-${horizontalMaskLevel}`);
             
             // Atualiza botão se existir
-            const maskBtn = document.getElementById('aguiaReadingMaskCursorBtn');
-            if (maskBtn) {
-                maskBtn.classList.add('active');
+            const horizontalMaskBtn = document.getElementById('aguiaHorizontalMaskBtn');
+            if (horizontalMaskBtn) {
+                horizontalMaskBtn.classList.add('active');
+                horizontalMaskBtn.classList.add(`level-${horizontalMaskLevel}`);
+                
+                // Atualiza o texto do botão
+                const textSpan = horizontalMaskBtn.querySelector('.text');
+                if (textSpan) {
+                    const levels = ['Máscara de Foco Horizontal', 'Máscara H. Pequena', 'Máscara H. Média', 'Máscara H. Grande'];
+                    textSpan.textContent = levels[horizontalMaskLevel];
+                }
+            }
+        }
+        
+        // Aplicar máscara vertical (nova implementação)
+        if (preferences.verticalMaskLevel && preferences.verticalMaskLevel > 0) {
+            verticalMaskLevel = preferences.verticalMaskLevel;
+            horizontalMaskLevel = 0; // Garante que apenas uma máscara esteja ativa
+            readingMaskMode = 2; // Para compatibilidade
+            
+            document.body.classList.add('aguia-reading-mask-vertical');
+            document.body.classList.add(`aguia-reading-mask-vertical-level-${verticalMaskLevel}`);
+            
+            // Atualiza botão se existir
+            const verticalMaskBtn = document.getElementById('aguiaVerticalMaskBtn');
+            if (verticalMaskBtn) {
+                verticalMaskBtn.classList.add('active');
+                verticalMaskBtn.classList.add(`level-${verticalMaskLevel}`);
+                
+                // Atualiza o texto do botão
+                const textSpan = verticalMaskBtn.querySelector('.text');
+                if (textSpan) {
+                    const levels = ['Máscara de Foco Vertical', 'Máscara V. Pequena', 'Máscara V. Média', 'Máscara V. Grande'];
+                    textSpan.textContent = levels[verticalMaskLevel];
+                }
             }
         }
         
@@ -1966,34 +2486,160 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Função para alternar a máscara de leitura e o cursor personalizado
-    function toggleReadingMaskAndCursor() {
-        // Alterna entre os modos: 0 (desativado), 1 (horizontal), 2 (vertical)
-        readingMaskMode = (readingMaskMode + 1) % 3;
-        
-        // Cursor personalizado é mantido independente (não se altera ao mudar a máscara)
-        // A linha abaixo foi removida: customCursorEnabled = readingMaskMode !== 0;
-
-        const maskCursorBtn = document.getElementById('aguiaReadingMaskCursorBtn');
-        if (readingMaskMode === 0) {
-            document.body.classList.remove('aguia-reading-mask-horizontal');
+    // Função antiga mantida por compatibilidade
+    function toggleReadingMaskAndCursor(silent = false) {
+        // Esta função agora redireciona para a função horizontal por padrão
+        toggleHorizontalMask(silent);
+    }
+    
+    // Nova função para alternar níveis da máscara de foco horizontal
+    function toggleHorizontalMask(silent = false) {
+        // Se a máscara vertical estiver ativa, desativamos ela primeiro
+        if (verticalMaskLevel > 0) {
+            verticalMaskLevel = 0;
             document.body.classList.remove('aguia-reading-mask-vertical');
-            showStatusMessage('Máscara de leitura desativada');
-            if (maskCursorBtn) maskCursorBtn.classList.remove('active');
-        } else if (readingMaskMode === 1) {
-            document.body.classList.add('aguia-reading-mask-horizontal');
-            document.body.classList.remove('aguia-reading-mask-vertical');
-            showStatusMessage('Modo de máscara: Foco horizontal', 'success');
-            if (maskCursorBtn) maskCursorBtn.classList.add('active');
-        } else if (readingMaskMode === 2) {
-            document.body.classList.remove('aguia-reading-mask-horizontal');
-            document.body.classList.add('aguia-reading-mask-vertical');
-            showStatusMessage('Modo de máscara: Foco vertical', 'success');
-            if (maskCursorBtn) maskCursorBtn.classList.add('active');
+            document.body.classList.remove('aguia-reading-mask-vertical-level-1');
+            document.body.classList.remove('aguia-reading-mask-vertical-level-2');
+            document.body.classList.remove('aguia-reading-mask-vertical-level-3');
+            const verticalMaskBtn = document.getElementById('aguiaVerticalMaskBtn');
+            if (verticalMaskBtn) {
+                verticalMaskBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+                const textSpan = verticalMaskBtn.querySelector('.text');
+                if (textSpan) {
+                    textSpan.textContent = 'Máscara de Foco Vertical';
+                }
+            }
         }
-
+        
+        // Alterna entre níveis: 0 -> 1 -> 2 -> 3 -> 0
+        horizontalMaskLevel = (horizontalMaskLevel + 1) % 4;
+        
+        // Atualiza o modo de máscara para compatibilidade
+        readingMaskMode = horizontalMaskLevel > 0 ? 1 : 0;
+        
+        const horizontalMaskBtn = document.getElementById('aguiaHorizontalMaskBtn');
+        
+        // Remove todas as classes de nível
+        document.body.classList.remove('aguia-reading-mask-horizontal');
+        document.body.classList.remove('aguia-reading-mask-horizontal-level-1');
+        document.body.classList.remove('aguia-reading-mask-horizontal-level-2');
+        document.body.classList.remove('aguia-reading-mask-horizontal-level-3');
+        
+        if (horizontalMaskBtn) {
+            horizontalMaskBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+        }
+        
+        // Aplica o nível selecionado
+        if (horizontalMaskLevel > 0) {
+            document.body.classList.add('aguia-reading-mask-horizontal');
+            document.body.classList.add(`aguia-reading-mask-horizontal-level-${horizontalMaskLevel}`);
+            
+            const sizes = ['', 'pequena', 'média', 'grande'];
+            if (!silent) {
+                showStatusMessage(`Máscara horizontal ${sizes[horizontalMaskLevel]} ativada`, 'success');
+            }
+            
+            if (horizontalMaskBtn) {
+                horizontalMaskBtn.classList.add('active');
+                horizontalMaskBtn.classList.add(`level-${horizontalMaskLevel}`);
+                
+                // Atualiza o texto do botão
+                const textSpan = horizontalMaskBtn.querySelector('.text');
+                if (textSpan) {
+                    const levels = ['Máscara de Foco Horizontal', 'Máscara H. Pequena', 'Máscara H. Média', 'Máscara H. Grande'];
+                    textSpan.textContent = levels[horizontalMaskLevel];
+                }
+            }
+        } else {
+            if (!silent) {
+                showStatusMessage('Máscara de foco horizontal desativada');
+            }
+            if (horizontalMaskBtn) {
+                const textSpan = horizontalMaskBtn.querySelector('.text');
+                if (textSpan) {
+                    textSpan.textContent = 'Máscara de Foco Horizontal';
+                }
+            }
+        }
+        
         // Salva preferências
-        saveUserPreference('readingMaskMode', readingMaskMode);
-        saveUserPreference('customCursor', customCursorEnabled);
+        saveUserPreference('horizontalMaskLevel', horizontalMaskLevel);
+        saveUserPreference('readingMaskMode', readingMaskMode); // Para compatibilidade
+    }
+    
+    // Nova função para alternar níveis da máscara de foco vertical
+    function toggleVerticalMask(silent = false) {
+        // Se a máscara horizontal estiver ativa, desativamos ela primeiro
+        if (horizontalMaskLevel > 0) {
+            horizontalMaskLevel = 0;
+            document.body.classList.remove('aguia-reading-mask-horizontal');
+            document.body.classList.remove('aguia-reading-mask-horizontal-level-1');
+            document.body.classList.remove('aguia-reading-mask-horizontal-level-2');
+            document.body.classList.remove('aguia-reading-mask-horizontal-level-3');
+            const horizontalMaskBtn = document.getElementById('aguiaHorizontalMaskBtn');
+            if (horizontalMaskBtn) {
+                horizontalMaskBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+                const textSpan = horizontalMaskBtn.querySelector('.text');
+                if (textSpan) {
+                    textSpan.textContent = 'Máscara de Foco Horizontal';
+                }
+            }
+        }
+        
+        // Alterna entre níveis: 0 -> 1 -> 2 -> 3 -> 0
+        verticalMaskLevel = (verticalMaskLevel + 1) % 4;
+        
+        // Atualiza o modo de máscara para compatibilidade
+        readingMaskMode = verticalMaskLevel > 0 ? 2 : 0;
+        
+        const verticalMaskBtn = document.getElementById('aguiaVerticalMaskBtn');
+        
+        // Remove todas as classes de nível
+        document.body.classList.remove('aguia-reading-mask-vertical');
+        document.body.classList.remove('aguia-reading-mask-vertical-level-1');
+        document.body.classList.remove('aguia-reading-mask-vertical-level-2');
+        document.body.classList.remove('aguia-reading-mask-vertical-level-3');
+        
+        if (verticalMaskBtn) {
+            verticalMaskBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+        }
+        
+        // Aplica o nível selecionado
+        if (verticalMaskLevel > 0) {
+            document.body.classList.add('aguia-reading-mask-vertical');
+            document.body.classList.add(`aguia-reading-mask-vertical-level-${verticalMaskLevel}`);
+            
+            const sizes = ['', 'pequena', 'média', 'grande'];
+            if (!silent) {
+                showStatusMessage(`Máscara vertical ${sizes[verticalMaskLevel]} ativada`, 'success');
+            }
+            
+            if (verticalMaskBtn) {
+                verticalMaskBtn.classList.add('active');
+                verticalMaskBtn.classList.add(`level-${verticalMaskLevel}`);
+                
+                // Atualiza o texto do botão
+                const textSpan = verticalMaskBtn.querySelector('.text');
+                if (textSpan) {
+                    const levels = ['Máscara de Foco Vertical', 'Máscara V. Pequena', 'Máscara V. Média', 'Máscara V. Grande'];
+                    textSpan.textContent = levels[verticalMaskLevel];
+                }
+            }
+        } else {
+            if (!silent) {
+                showStatusMessage('Máscara de foco vertical desativada');
+            }
+            if (verticalMaskBtn) {
+                const textSpan = verticalMaskBtn.querySelector('.text');
+                if (textSpan) {
+                    textSpan.textContent = 'Máscara de Foco Vertical';
+                }
+            }
+        }
+        
+        // Salva preferências
+        saveUserPreference('verticalMaskLevel', verticalMaskLevel);
+        saveUserPreference('readingMaskMode', readingMaskMode); // Para compatibilidade
     }
     
     // Função para criar e configurar a máscara de leitura
@@ -2016,17 +2662,47 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         document.addEventListener('mousemove', function(e) {
-            if (readingMaskMode === 1) {
-                // Horizontal
-                const maskHeight = 100;
+            if (horizontalMaskLevel > 0) {
+                // Horizontal - tamanho baseado no nível
+                let maskHeight;
+                
+                switch(horizontalMaskLevel) {
+                    case 1: // Pequeno
+                        maskHeight = 125;
+                        break;
+                    case 2: // Médio
+                        maskHeight = 175;
+                        break;
+                    case 3: // Grande
+                        maskHeight = 225;
+                        break;
+                    default:
+                        maskHeight = 125;
+                }
+                
                 const y = e.clientY;
                 maskH.style.top = (y - maskHeight / 2) + 'px';
                 maskH.style.height = maskHeight + 'px';
                 maskH.style.display = 'block';
                 maskV.style.display = 'none';
-            } else if (readingMaskMode === 2) {
-                // Vertical
-                const maskWidth = 100;
+            } else if (verticalMaskLevel > 0) {
+                // Vertical - tamanho baseado no nível
+                let maskWidth;
+                
+                switch(verticalMaskLevel) {
+                    case 1: // Pequeno
+                        maskWidth = 125;
+                        break;
+                    case 2: // Médio
+                        maskWidth = 175;
+                        break;
+                    case 3: // Grande
+                        maskWidth = 225;
+                        break;
+                    default:
+                        maskWidth = 125;
+                }
+                
                 const x = e.clientX;
                 maskV.style.left = (x - maskWidth / 2) + 'px';
                 maskV.style.width = maskWidth + 'px';
@@ -2040,15 +2716,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Função para alternar o cursor personalizado
-    function toggleCustomCursor() {
+    function toggleCustomCursor(silent = false) {
         customCursorEnabled = !customCursorEnabled;
         
         if (customCursorEnabled) {
             document.body.classList.add('aguia-custom-cursor');
-            showStatusMessage('Cursor personalizado ativado', 'success');
+            if (!silent) {
+                showStatusMessage('Cursor personalizado ativado', 'success');
+            }
         } else {
             document.body.classList.remove('aguia-custom-cursor');
-            showStatusMessage('Cursor personalizado desativado');
+            if (!silent) {
+                showStatusMessage('Cursor personalizado desativado');
+            }
         }
         
         // Atualiza UI
@@ -2066,25 +2746,58 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Função para resetar as novas configurações
-    function resetReadingMaskAndCursor() {
+    function resetReadingMaskAndCursor(silent = false) {
         // Reset dos modos
         readingMaskMode = 0;
+        horizontalMaskLevel = 0;
+        verticalMaskLevel = 0;
         customCursorEnabled = false;
+        
+        // Remove todas as classes
         document.body.classList.remove('aguia-reading-mask-horizontal');
+        document.body.classList.remove('aguia-reading-mask-horizontal-level-1');
+        document.body.classList.remove('aguia-reading-mask-horizontal-level-2');
+        document.body.classList.remove('aguia-reading-mask-horizontal-level-3');
+        
         document.body.classList.remove('aguia-reading-mask-vertical');
+        document.body.classList.remove('aguia-reading-mask-vertical-level-1');
+        document.body.classList.remove('aguia-reading-mask-vertical-level-2');
+        document.body.classList.remove('aguia-reading-mask-vertical-level-3');
+        
         document.body.classList.remove('aguia-custom-cursor');
+        
         // Esconde as máscaras
         const maskH = document.getElementById('aguiaReadingMaskH');
         if (maskH) maskH.style.display = 'none';
         const maskV = document.getElementById('aguiaReadingMaskV');
         if (maskV) maskV.style.display = 'none';
+        
         // Atualiza botões
-        const maskBtn = document.getElementById('aguiaReadingMaskCursorBtn');
-        if (maskBtn) maskBtn.classList.remove('active');
+        const horizontalMaskBtn = document.getElementById('aguiaHorizontalMaskBtn');
+        if (horizontalMaskBtn) {
+            horizontalMaskBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+            const textSpan = horizontalMaskBtn.querySelector('.text');
+            if (textSpan) {
+                textSpan.textContent = 'Máscara de Foco Horizontal';
+            }
+        }
+        
+        const verticalMaskBtn = document.getElementById('aguiaVerticalMaskBtn');
+        if (verticalMaskBtn) {
+            verticalMaskBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+            const textSpan = verticalMaskBtn.querySelector('.text');
+            if (textSpan) {
+                textSpan.textContent = 'Máscara de Foco Vertical';
+            }
+        }
+        
         const cursorBtn = document.getElementById('aguiaCustomCursorBtn');
         if (cursorBtn) cursorBtn.classList.remove('active');
+        
         // Salva preferências
         saveUserPreference('readingMaskMode', 0);
+        saveUserPreference('horizontalMaskLevel', 0);
+        saveUserPreference('verticalMaskLevel', 0);
         saveUserPreference('customCursor', false);
     }    // Cria a máscara de leitura após o carregamento da página
     createReadingMask();
@@ -2107,7 +2820,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Função para alternar letras destacadas
-    function toggleHighlightedLetters() {
+    function toggleHighlightedLetters(silent = false) {
         try {
             // Alterna entre ativado (1) e desativado (0)
             highlightedLettersLevel = highlightedLettersLevel === 0 ? 1 : 0;
@@ -2132,10 +2845,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     textSpan.textContent = 'Letras Destacadas';
                     
                     if (highlightedLettersLevel === 0) {
-                        showStatusMessage('Letras destacadas desativado');
+                        if (!silent) {
+                            showStatusMessage('Letras destacadas desativado');
+                        }
                     } else {
                         highlightedLettersBtn.classList.add('active');
-                        showStatusMessage('Letras destacadas ativado', 'success');
+                        if (!silent) {
+                            showStatusMessage('Letras destacadas ativado', 'success');
+                        }
                         
                         // Aplica a classe correspondente
                         document.body.classList.add('aguia-highlighted-letters');

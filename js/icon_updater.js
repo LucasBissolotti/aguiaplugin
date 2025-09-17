@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateButtonIcons() {
         // Associação de IDs de botões aos seus ícones correspondentes
         const iconMapping = {
-            'aguiaReadingMaskCursorBtn': AguiaIcons.focusMask,
+            'aguiaHorizontalMaskBtn': AguiaIcons.focusMaskHorizontal,
+            'aguiaVerticalMaskBtn': AguiaIcons.focusMaskVertical,
             'aguiaCustomCursorBtn': AguiaIcons.customCursor,
             'aguiaHideImagesBtn': AguiaIcons.hideImages,
             'aguiaReadingGuideBtn': AguiaIcons.readingGuide,
@@ -21,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'aguiaContrastBtn': AguiaIcons.contrast,
             'aguiaInvertBtn': AguiaIcons.invertColors,
             'aguiaColorBlindBtn': AguiaIcons.colorblind,
-            'aguiaFontIncreaseBtn': AguiaIcons.increaseText,
+            'aguiaIncreaseFontBtn': AguiaIcons.increaseText,
             'aguiaReadableFontsBtn': AguiaIcons.readableFont,
             'aguiaSpacingBtn': AguiaIcons.spacing,
             'aguiaEmphasizeLinksBtn': AguiaIcons.emphasizeLinks
@@ -39,10 +40,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Verifica o estado atual das funcionalidades e aplica a classe 'active' se necessário
-        if (document.body.classList.contains('aguia-reading-mask-horizontal') || 
-            document.body.classList.contains('aguia-reading-mask-vertical')) {
-            const maskBtn = document.getElementById('aguiaReadingMaskCursorBtn');
-            if (maskBtn) maskBtn.classList.add('active');
+        if (document.body.classList.contains('aguia-reading-mask-horizontal')) {
+            const horizontalMaskBtn = document.getElementById('aguiaHorizontalMaskBtn');
+            if (horizontalMaskBtn) horizontalMaskBtn.classList.add('active');
+        }
+        
+        if (document.body.classList.contains('aguia-reading-mask-vertical')) {
+            const verticalMaskBtn = document.getElementById('aguiaVerticalMaskBtn');
+            if (verticalMaskBtn) verticalMaskBtn.classList.add('active');
         }
         
         if (document.body.classList.contains('aguia-custom-cursor')) {

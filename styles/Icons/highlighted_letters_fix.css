@@ -1,0 +1,44 @@
+/**
+ * Estilos específicos para corrigir o ícone "Letras Destacadas"
+ *
+ * @package    local_aguiaplugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* Resetar estilos padrão do ícone */
+#aguiaHighlightedLettersBtn .icon {
+    position: static !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: auto !important;
+}
+
+/* Garantir que o ícone tenha tamanho adequado e sem estilos que possam afetar a renderização */
+#aguiaHighlightedLettersBtn .icon svg {
+    width: 36px !important;
+    height: 36px !important;
+    fill: #444444 !important;
+    overflow: visible !important;
+    display: block !important;
+    margin: 0 auto !important;
+    transform: none !important;
+    filter: none !important;
+}
+
+/* Estado ativo com !important para garantir que seja aplicado */
+#aguiaHighlightedLettersBtn.active .icon svg {
+    fill: #2271ff !important;
+}
+
+/* Estado hover com !important para garantir que seja aplicado */
+#aguiaHighlightedLettersBtn:hover .icon svg {
+    transform: scale(1.05) !important;
+}
+
+/* Removendo qualquer elemento que possa estar sobrepondo o ícone */
+#aguiaHighlightedLettersBtn .icon::before,
+#aguiaHighlightedLettersBtn .icon::after {
+    display: none !important;
+    content: none !important;
+}

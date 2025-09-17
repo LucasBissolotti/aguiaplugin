@@ -1,0 +1,48 @@
+/**
+ * Estilos específicos para corrigir o ícone "Ocultar Imagem"
+ *
+ * @package    local_aguiaplugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* Resetar estilos padrão do ícone */
+#aguiaHideImagesBtn .icon {
+    position: static !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: auto !important;
+}
+
+/* Garantir que o ícone tenha tamanho adequado e sem estilos que possam afetar a renderização */
+#aguiaHideImagesBtn .icon svg {
+    width: 32px !important;
+    height: 32px !important;
+    fill: #444444 !important;
+    overflow: visible !important;
+    display: block !important;
+    margin: 0 auto !important;
+    transform: none !important;
+    filter: none !important;
+}
+
+/* Estado ativo com !important para garantir que seja aplicado */
+#aguiaHideImagesBtn.active .icon svg rect,
+#aguiaHideImagesBtn.active .icon svg path,
+#aguiaHideImagesBtn.active .icon svg line,
+#aguiaHideImagesBtn.active .icon svg circle {
+    stroke: #2271ff !important;
+    fill: #2271ff !important;
+}
+
+/* Estado hover com !important para garantir que seja aplicado */
+#aguiaHideImagesBtn:hover .icon svg {
+    transform: scale(1.05) !important;
+}
+
+/* Removendo qualquer elemento que possa estar sobrepondo o ícone */
+#aguiaHideImagesBtn .icon::before,
+#aguiaHideImagesBtn .icon::after {
+    display: none !important;
+    content: none !important;
+}

@@ -1,68 +1,114 @@
 /**
  * Biblioteca de ícones SVG para o plugin AGUIA de Acessibilidade
  * Estes ícones são otimizados para acessibilidade e alta visibilidade
+ * Seguindo as diretrizes WCAG 2.1 e as recomendações da W3C para acessibilidade SVG
  */
 
 // Namespace para os ícones
 const AguiaIcons = {
-    // Ícone para VLibras - tradução para língua brasileira de sinais
-    vLibras: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12.87 15.07l-2.54-2.51l.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35C8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5l3.11 3.11l.76-2.04M18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12m-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>',
+    // Ícones para tipos de daltonismo - Material Design
+    colorblindNone: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Sem filtro de daltonismo</title><path fill="currentColor" d="M2.47 2.47c-.39.39-.39 1.02 0 1.41l2.26 2.26A9.91 9.91 0 0 0 2 12c0 5.52 4.48 10 10 10 2.04 0 3.93-.63 5.49-1.69l2.69 2.69c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L3.87 2.47c-.38-.39-1.01-.39-1.4 0zM12 20c-4.42 0-8-3.58-8-8 0-1.48.42-2.85 1.13-4.03l10.9 10.9c-1.18.71-2.55 1.13-4.03 1.13zm4.51-9.03l-2.9-2.9c1.3-.51 2.73.18 3.25 1.48.22.53.22 1.12 0 1.66-.1.23-.22.44-.35.63zm.03 6.5l-7-7c0-.01-.01-.02-.01-.03a2.99 2.99 0 0 1 4.64-2.5l.01-.01 2.49 2.49-.01.01c.18.56.18 1.16 0 1.72l-.01.01.01.01c-.3.94-1.06 1.62-2.03 1.84l-.03-.03-1.73-1.73c.01 0 .02-.01.04-.01a.79.79 0 1 0-.56-1.36l-.57-.57a.778.778 0 0 0-.38 1.45c.16.07.33.09.5.07l1.74 1.74c-.08 0-.16.02-.24.02-1.25 0-2.26-.93-2.36-2.15l-2.49-2.49c-.18-.56-.19-1.16-.01-1.73l.01-.01-.01-.01c.17-.55.49-1.04.97-1.39l-1.01-1.01c-1.3.9-2.12 2.37-2.12 4.02 0 3.04 2.46 5.5 5.5 5.5 1.65 0 3.11-.73 4.12-1.88z"/></svg>',
     
-    // Ícone para aumentar texto - mais legível
-    increaseText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M9.5 7l5 10h-2l-1-2h-4l-1 2h-2l5-10h.5m-1.25 6h2.5l-1.25-2.5-1.25 2.5M20 14h-4v-2h2v-2h2v4M20 19h-4v-2h4v2z"/></svg>',
+    protanopia: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Protanopia</title><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1" fill="#FF0000"/></svg>',
     
-    // Ícone para fonte legível
-    readableFont: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 4h2v6h4V4h2v14H9v-6H5v6H3V4m14 0h5v2h-5v4h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2m0 8v4h4v-4h-4z"/></svg>',
+    deuteranopia: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Deuteranopia</title><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1" fill="#00FF00"/></svg>',
     
-    // Ícone para espaçamento entre linhas
-    lineSpacing: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 16h18v2H3v-2m0-5h18v2H3v-2m0-5h18v2H3V6z"/></svg>',
+    tritanopia: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Tritanopia</title><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1" fill="#0000FF"/></svg>',
     
-    // Ícone para espaçamento entre letras
-    letterSpacing: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M9.17 15.5h5.64l1.14 3h2.09l-5.11-13h-1.86l-5.11 13h2.09l1.12-3M12 7.98l2.07 5.52H9.93L12 7.98M20 14v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4Z"/></svg>',
+    achromatopsia: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Monocromacia</title><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1" fill="#000000"/></svg>',
+        // Ícone para VLibras - tradução para língua brasileira de sinais
+    vLibras: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>VLibras</title><path fill="currentColor" d="M5 19h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2zM5 7h14v10H5V7zm7-1c-1.1 0-2 .9-2 2 0 .74.4 1.38 1 1.72v1.78c-2 .67-3 2-3 3.5h2c0-1.1.9-2 2-2s2 .9 2 2h2c0-1.5-1-2.83-3-3.5V9.72c.6-.34 1-.98 1-1.72 0-1.1-.9-2-2-2z"/></svg>',
+    
+    // Ícone para texto para fala - Pessoa com ondas sonoras (ondas ajustadas ainda mais para cima)
+    textToSpeech: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Texto para fala</title><path d="M8,10 C8,8.34 9.34,7 11,7 C12.66,7 14,8.34 14,10 C14,11.66 12.66,13 11,13 C9.34,13 8,11.66 8,10 Z" fill="currentColor"/><path d="M6,19 L16,19 C16,16.5 14,14 11,14 C8,14 6,16.5 6,19 Z" fill="currentColor"/><path d="M16,7.5 C16,7.5 17,9 17,10 C17,11 16,12.5 16,12.5" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"/><path d="M18,6 C18,6 20,8 20,10 C20,12 18,14 18,14" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"/></svg>',
+    
+    // Ícone para aumentar texto - Versão limpa de A+
+    increaseText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><text x="4" y="16" font-family="Arial, sans-serif" font-weight="bold" font-size="14">A+</text></svg>',
+    
+    // Ícone para fonte legível - Material Design
+    readableFont: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Fontes legíveis</title><path fill="currentColor" d="M9 8h6v2h-6V8zm0 3h6v2h-6v-2zm0 3h6v2h-6v-2zM5 5h14c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V7c0-1.1.9-2 2-2zm0 2v10h14V7H5z"/></svg>',
+    
+    // Ícone para espaçamento entre linhas - Material Design
+    lineSpacing: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Espaçamento entre linhas</title><path fill="currentColor" d="M6 7h2.5L5 3.5L1.5 7H4v10H1.5L5 20.5L8.5 17H6V7zm4-2v2h12V5H10zm0 14h12v-2H10v2zm0-6h12v-2H10v2z"/></svg>',
+    
+    // Ícone para espaçamento entre letras - Aa com seta abaixo centralizada
+    letterSpacing: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Espaçamento entre letras</title><text x="4" y="12" font-family="Arial, sans-serif" font-weight="bold" font-size="12">A</text><text x="12" y="12" font-family="Arial, sans-serif" font-weight="bold" font-size="12">a</text><path d="M4 18 L19 18 M4 18 L6 16 M19 18 L17 16 M4 18 L6 20 M19 18 L17 20" stroke="#444444" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     
     // Mantém o ícone original por compatibilidade
-    spacing: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 16h18v2H3v-2m0-5h18v2H3v-2m0-5h18v2H3V6z"/></svg>',
+    spacing: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Espaçamento</title><path fill="currentColor" d="M5 21h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2zm0-16h14v2H5V5zm0 4h14v2H5V9zm0 4h14v2H5v-2zm0 4h14v2H5v-2z"/></svg>',
     
-    // Ícone para destacar links
-    emphasizeLinks: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8v2m9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1c0 1.71-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>',
+    // Ícone para destacar links - Estilo flat minimalista
+    emphasizeLinks: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Destacar links</title><rect x="6" y="8" width="12" height="8" rx="2" ry="2" fill="#444444" stroke="none"/><path fill="#FFFFFF" d="M10.5 10 C9.5 10 9 10.7 9 11.5 C9 12.3 9.5 13 10.5 13 L11.2 13 L11.2 12 L10.5 12 C10.2 12 10 11.8 10 11.5 C10 11.2 10.2 11 10.5 11 L11.8 11 L11.8 10 L10.5 10 Z M12.2 11 L12.2 12 L13.5 12 C13.8 12 14 12.2 14 12.5 C14 12.8 13.8 13 13.5 13 L12.2 13 L12.2 14 L13.5 14 C14.5 14 15 13.3 15 12.5 C15 11.7 14.5 11 13.5 11 L12.2 11 Z M11 12.25 L11 12.75 L13 12.75 L13 12.25 L11 12.25 Z"/></svg>',
     
-    // Ícone para alto contraste
-    contrast: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2m0 18a8 8 0 0 1-8-8a8 8 0 0 1 8-8a8 8 0 0 1 8 8a8 8 0 0 1-8 8m4-7c.6 0 1 .4 1 1s-.4 1-1 1s-1-.4-1-1s.4-1 1-1m-8 0c.6 0 1 .4 1 1s-.4 1-1 1s-1-.4-1-1s.4-1 1-1m3.3-4.3l-1.1 2l-1.7.4l1.7.4l1.1 2l1.1-2l1.7-.4l-1.7-.4l-1.1-2"/></svg>',
+    // Ícone para alto contraste - Círculo metade preenchido
+    contrast: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Alto contraste</title><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1" fill="none"/><path fill="currentColor" d="M12,2 A10,10 0 0,1 12,22 A10,10 0 0,1 12,2 z" d="M12,2 A10,10 0 0,1 12,22 A10,10 0 0,1 12,2 z" clip-path="inset(0 50% 0 0)"/></svg>',
     
-    // Ícone para intensidade de cores
-    invertColors: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M17.66 7.93L12 2.27L6.34 7.93c-3.12 3.12-3.12 8.19 0 11.31A7.98 7.98 0 0 0 12 21.58c2.05 0 4.1-.78 5.66-2.34c3.12-3.12 3.12-8.19 0-11.31zM12 19.59c-1.6 0-3.11-.62-4.24-1.76C6.62 16.69 6 15.19 6 13.59s.62-3.11 1.76-4.24L12 5.1v14.49z"/></svg>',
+    // Ícone para intensidade de cores - Gota com metade preenchida
+    colorIntensity: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Intensidade de cores</title><path fill="none" stroke="currentColor" stroke-width="1" d="M12 3.5c-3.8 5.2-7 9.8-7 13.5 0 3.9 3.1 7 7 7s7-3.1 7-7c0-3.7-3.2-8.3-7-13.5z"/><path fill="currentColor" d="M12 3.5c-3.8 5.2-7 9.8-7 13.5 0 3.9 3.1 7 7 7s7-3.1 7-7c0-3.7-3.2-8.3-7-13.5z" clip-path="inset(0 50% 0 0)"/></svg>',
+    
+    // Ícone para inverter cores
+    invertColors: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Inverter cores</title><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8v8h8c0 4.41-3.59 8-8 8z"/></svg>',
     
     // Ícones para os níveis de intensidade de cor
-    colorIntensityLow: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm0 15c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5z"/></svg>',
+    colorIntensityLow: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Intensidade de cor baixa</title><path fill="currentColor" d="M5 19h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2zM5 7h14v10H5V7zm7 8c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"/></svg>',
     
-    colorIntensityHigh: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm0 15c-2.76 0-5-2.24-5-5s2.24-5 5-5s5 2.24 5 5s-2.24 5-5 5zm-1-8h2v6h-2zm0-2h2v2h-2z"/></svg>',
+    colorIntensityHigh: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Intensidade de cor alta</title><path fill="currentColor" d="M5 19h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2zM5 7h14v10H5V7zm7 8c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-1-6h2v4h-2v-4z"/></svg>',
     
-    colorIntensityGray: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93c0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41c0 2.08-.8 3.97-2.1 5.39z"/></svg>',
+    colorIntensityGray: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Escala de cinza</title><path fill="currentColor" d="M5 19h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2zM5 7h14v10H5V7zm5 8h4v-2h-2v-4H8v6z"/></svg>',
     
-    // Ícone para daltonismo
-    colorblind: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M17 13v-2h-1.5A1.5 1.5 0 0 1 14 9.5A1.5 1.5 0 0 1 15.5 8H17V6h-1.5A3.5 3.5 0 0 0 12 9.5c0 .93.37 1.77.96 2.39A2.99 2.99 0 0 0 11 15a3 3 0 0 0 3 3c.75 0 1.44-.28 1.97-.74a3.52 3.52 0 0 0 2.14.74A3.39 3.39 0 0 0 21.5 14.5a3.39 3.39 0 0 0-3.39-3.5c-.36 0-.7.08-1.11.2M15.5 15a1.5 1.5 0 0 1-1.5-1.5A1.5 1.5 0 0 1 15.5 12a1.39 1.39 0 0 1 1.39 1.5a1.39 1.39 0 0 1-1.39 1.5M8.33 7.5l-.66-1.5H5.33l-.67 1.5h3.67m-4.1 1l-1.04 2.39c-.04.09-.2.61.13.61h2.26C5.62 8.67 4.73 8.5 4.23 8.5M9.97 11.5c.19 0 .37-.19.26-.43L8.1 5.5a.62.62 0 0 0-.5-.5H7.12c-.26 0-.4.21-.5.5l-2.12 5.57c-.11.24.06.43.26.43h4.71z"/></svg>',
+    // Ícone para daltonismo - Paleta de tinta
+    colorblind: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Daltonismo</title><path fill="currentColor" d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3 4c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>',
     
-    // Ícone para texto para fala
-    textToSpeech: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M14 3h-4c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h4c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1m-2 11c-.83 0-1.5-.67-1.5-1.5S11.17 11 12 11s1.5.67 1.5 1.5S12.83 14 12 14m2-8H10V4h4v2M4.97 19H9v-5H4.97v5M20 10h-4v5h4v-5m0 9h-4v-2h4v2m-7 0h-4v-2h4v2M15 2c-2.76 0-5 2.24-5 5h2c0-1.66 1.34-3 3-3s3 1.34 3 3h2c0-2.76-2.24-5-5-5"/></svg>',
+    // Ícone para guia de leitura - Material Design
+    readingGuide: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Auxiliar de leitura</title><path fill="currentColor" d="M5 19h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2zM5 7h14v10H5V7zm1 2h12v2H6V9zm0 3h12v1H6v-1zm0 2h8v1H6v-1z"/></svg>',
     
-    // Ícone para guia de leitura
-    readingGuide: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21 4H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 14H3V6h18v12M9 8v8h6V8H9m8 0v2h2V8h-2m-2 0v2h1V8h-1m-9 4h2v-2H6v2m0 4h2v-2H6v2"/></svg>',
+    // Ícone para ocultar imagens - Estilo flat minimalista
+    hideImages: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Ocultar imagens</title><rect x="5" y="5" width="14" height="14" rx="1" ry="1" fill="none" stroke="#444444" stroke-width="1.5"/><circle cx="8" cy="10" r="1.5" fill="#444444"/><path d="M9 14 L12 11 L15 14 L17 12 L17 16 L7 16 L9 14 Z" fill="#444444"/><line x1="4" y1="4" x2="20" y2="20" stroke="#444444" stroke-width="1.5" stroke-linecap="round"/></svg>',
     
-    // Ícone para ocultar imagens
-    hideImages: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M2.28 3L1 4.27L3 6.27V19a2 2 0 0 0 2 2h13.73l2 2L22 21.72L4 3.72L2.28 3M6.09 8L12 13.91l1-1V12h-1.09L8 8.09V9H6.09v-1M19 5a2 2 0 0 1 2 2v11.18l-2-2V17l-2-2l1-1l-1.9-1.9L11 7l-.9-.9L8.82 5H19M16.5 6A1.5 1.5 0 0 0 15 7.5a1.5 1.5 0 0 0 1.5 1.5a1.5 1.5 0 0 0 1.5-1.5A1.5 1.5 0 0 0 16.5 6"/></svg>',
+    // Ícone para máscara de foco (estilo simplificado)
+    focusMask: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Máscara de foco</title><path fill="currentColor" d="M5 19h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2zM5 7h14v10H5V7zm0 3h14v4H5v-4z"/></svg>',
     
-    // Ícone para máscara de foco
-    focusMask: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M2 4h4V2H2a2 2 0 0 0-2 2v4h2V4m20-2h-4v2h4v4h2V4a2 2 0 0 0-2-2M2 16H0v4a2 2 0 0 0 2 2h4v-2H2v-4m20 4h-4v2h4a2 2 0 0 0 2-2v-4h-2v4M5 12h14a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1"/></svg>',
+    // Ícone para máscara de foco horizontal - Estilo flat com retângulos horizontais
+    focusMaskHorizontal: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Máscara de foco horizontal</title><rect x="5" y="6" width="14" height="3" rx="1" ry="1" fill="#444444" stroke="none"/><rect x="5" y="10.5" width="14" height="3" rx="1" ry="1" fill="none" stroke="#444444" stroke-width="1.5"/><rect x="5" y="15" width="14" height="3" rx="1" ry="1" fill="#444444" stroke="none"/></svg>',
     
-    // Ícone para cursor personalizado
-    customCursor: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M13.64 21.97a.99.99 0 0 1-1.33-.47l-2.18-4.74l-2.51 2.02c-.17.14-.38.22-.62.22a.995.995 0 0 1-1-1V3a1 1 0 0 1 1-1c.24 0 .47.09.64.23l.01-.01l11.49 9.64a1.001 1.001 0 0 1-.44 1.78l-3.18.4l2.14 4.73c.24.52 0 1.14-.52 1.38z"/></svg>',
+    // Ícone para máscara de foco vertical - Estilo flat com retângulos verticais
+    focusMaskVertical: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Máscara de foco vertical</title><rect x="6" y="5" width="3" height="14" rx="1" ry="1" fill="#444444" stroke="none"/><rect x="10.5" y="5" width="3" height="14" rx="1" ry="1" fill="none" stroke="#444444" stroke-width="1.5"/><rect x="15" y="5" width="3" height="14" rx="1" ry="1" fill="#444444" stroke="none"/></svg>',
     
-    // Ícone para resetar
-    reset: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 4c2.1 0 4 .8 5.4 2.2l1.6-1.6v5h-5l2-2c-1-1-2.5-1.6-4-1.6C9 6 6 9 6 12s3 6 6 6c2.3 0 4.2-1.2 5.2-3h2.2c-1.2 2.8-3.9 4.8-7.4 4.8-4.4 0-8-3.6-8-8s3.6-8 8-8m0 3c.8 0 1.5.7 1.5 1.5S12.8 10 12 10s-1.5-.7-1.5-1.5S11.2 7 12 7z"/></svg>',
+    // Ícone para cursor personalizado - Estilo flat minimalista
+    customCursor: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Cursor personalizado</title><path fill="#444444" d="M9 3.5 C8.7 3.5 8.5 3.7 8.5 4 L8.5 16 C8.5 16.5 9.1 16.7 9.5 16.4 L12 14.5 L14.5 18 C14.8 18.4 15.4 18.5 15.8 18.2 L16.8 17.5 C17.2 17.2 17.3 16.6 17 16.2 L14.5 12.7 L17.5 12 C18 11.9 18.2 11.3 17.9 10.9 L9.5 3.7 C9.4 3.6 9.2 3.5 9 3.5 Z" stroke="#444444" stroke-width="0.5" stroke-linejoin="round"/></svg>',
     
-    // Ícone para letras destacadas
-    highlightedLetters: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M9.62 12L12 5.67L14.37 12M11 3L5.5 17h2.25l1.12-3h6.25l1.13 3h2.25L13 3h-2z"/></svg>',
+    // Ícone para resetar - Material Design
+    reset: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Resetar configurações</title><path fill="currentColor" d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6c0 2.97-2.17 5.43-5 5.9v2.02c3.95-.49 7-3.85 7-7.92c0-4.41-3.59-8-8-8zM6 13c0-1.65.67-3.15 1.76-4.24L6.34 7.34A8.014 8.014 0 0 0 4 13c0 4.07 3.05 7.43 7 7.92v-2.02c-2.83-.47-5-2.93-5-5.9z"/></svg>',
     
-    // Ícone para lupa de conteúdo
-    magnifier: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5l-1.5 1.5l-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16A6.5 6.5 0 0 1 3 9.5A6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14S14 12 14 9.5S12 5 9.5 5Z"/></svg>'
+    // Ícone para letras destacadas - Material Design
+    highlightedLetters: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><text x="7" y="18" font-family="Arial, sans-serif" font-weight="bold" font-size="18">B</text></svg>',
+    
+    // Ícone para lupa de conteúdo - Design minimalista
+    magnifier: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Lupa de conteúdo</title><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="2" fill="none"/><path stroke="currentColor" stroke-width="2" d="M16 16 L21 21" stroke-linecap="round"/></svg>',
+    
+    // Ícone para destaque de cabeçalhos - Design minimalista com linha grossa
+    headerHighlight: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Destacar cabeçalhos</title><rect x="4" y="4" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" rx="2" ry="2"/><path d="M8 8 L12 8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>',
+    
+    // Novos ícones acessíveis
+    
+    // Ícone para informações de acessibilidade
+    info: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Informações</title><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v-6h-2v6zm0-8h2V6h-2v2z"/></svg>',
+    
+    // Ícone para configurações de acessibilidade
+    settings: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Configurações</title><path fill="currentColor" d="M19.43 12.98c.04-.32.07-.64.07-.98 0-.34-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98 0 .33.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>',
+    
+    // Ícone para menu de acessibilidade
+    menu: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Menu de acessibilidade</title><path fill="currentColor" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>',
+    
+    // Ícone para símbolo universal de acessibilidade
+    accessibilitySymbol: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Símbolo de acessibilidade</title><path fill="currentColor" d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/></svg>',
+    
+    // Ícone para tema escuro
+    darkTheme: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Tema escuro</title><path fill="currentColor" d="M10 2c-1.82 0-3.53.5-5 1.35C7.99 5.08 10 8.3 10 12s-2.01 6.92-5 8.65C6.47 21.5 8.18 22 10 22c5.52 0 10-4.48 10-10S15.52 2 10 2z"/></svg>',
+    
+    // Ícone para tema claro
+    lightTheme: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Tema claro</title><path fill="currentColor" d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>',
+    
+    // Ícone para ajuda
+    help: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Ajuda</title><path fill="currentColor" d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg>'
 };

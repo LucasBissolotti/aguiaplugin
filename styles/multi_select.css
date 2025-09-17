@@ -20,38 +20,25 @@
 /* Estilo para botões com opção de seleção múltipla */
 .aguia-multi-select-option {
     position: relative;
-    padding-left: 40px !important; /* Espaço para o ícone de seleção */
+    padding: 10px 15px !important; /* Espaçamento padronizado */
+    display: flex !important;
+    align-items: center !important;
 }
 
-.aguia-multi-select-option:before {
-    content: '';
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 18px;
-    height: 18px;
-    border: 2px solid #aaa;
-    border-radius: 4px;
-    background-color: white;
-    transition: all 0.2s ease;
+/* Removendo estilos que podem interferir com nossos novos estilos definidos no lib.php */
+.aguia-multi-select-option:before,
+.aguia-multi-select-option:after {
+    display: none !important;
+    content: none !important;
 }
 
-/* Indicador de seleção */
-.aguia-multi-select-option.active:before {
-    background-color: #2196f3;
-    border-color: #2196f3;
-}
-
-/* Marca de verificação */
-.aguia-multi-select-option.active:after {
-    content: '✓';
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: white;
-    font-size: 14px;
+/* Exceções para os botões de daltonismo que têm seus próprios estilos definidos no lib.php */
+.aguia-multi-select-option[data-value="protanopia"]:before,
+.aguia-multi-select-option[data-value="deuteranopia"]:before,
+.aguia-multi-select-option[data-value="tritanopia"]:before,
+.aguia-multi-select-option[data-value="achromatopsia"]:before,
+.aguia-multi-select-option[data-value="none"]:before {
+    display: inline-block !important;
 }
 
 /* Exceção para o botão "Nenhum" */
