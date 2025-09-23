@@ -1,12 +1,12 @@
 /**
- * Estilos específicos para corrigir o ícone "Espaçamento entre Letras"
+ * Estilos específicos para corrigir o ícone "Espaçamento entre Linhas"
  *
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /* Resetar estilos padrão do ícone */
-#aguiaLetterSpacingBtn .icon {
+#aguiaLineSpacingBtn .icon {
     position: static !important;
     display: flex !important;
     justify-content: center !important;
@@ -15,31 +15,36 @@
 }
 
 /* Garantir que o ícone tenha tamanho adequado e sem estilos que possam afetar a renderização */
-#aguiaLetterSpacingBtn .icon svg {
-    width: 38px !important;
-    height: 38px !important;
-    padding-bottom: 2px !important;
-    fill: #444444 !important;
+#aguiaLineSpacingBtn .icon svg {
+    width: 36px !important;
+    height: 36px !important;
     overflow: visible !important;
     display: block !important;
     margin: 0 auto !important;
     transform: none !important;
     filter: none !important;
+    /* Garantir que o SVG tenha espaço suficiente */
+    padding: 2px !important;
 }
 
 /* Estado ativo com !important para garantir que seja aplicado */
-#aguiaLetterSpacingBtn.active .icon svg {
-    fill: #2271ff !important;
+#aguiaLineSpacingBtn.active .icon svg path {
+    stroke: #2271ff !important;
+}
+
+#aguiaLineSpacingBtn.active .icon svg rect,
+#aguiaLineSpacingBtn.active .icon svg line {
+    stroke: #2271ff !important;
 }
 
 /* Estado hover com !important para garantir que seja aplicado */
-#aguiaLetterSpacingBtn:hover .icon svg {
+#aguiaLineSpacingBtn:hover .icon svg {
     transform: scale(1.05) !important;
 }
 
 /* Removendo qualquer elemento que possa estar sobrepondo o ícone */
-#aguiaLetterSpacingBtn .icon::before,
-#aguiaLetterSpacingBtn .icon::after {
+#aguiaLineSpacingBtn .icon::before,
+#aguiaLineSpacingBtn .icon::after {
     display: none !important;
     content: none !important;
 }

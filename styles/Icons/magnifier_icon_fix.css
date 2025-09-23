@@ -16,8 +16,8 @@
 
 /* Garantir que o ícone tenha tamanho adequado e sem estilos que possam afetar a renderização */
 #aguiaMagnifierBtn .icon svg {
-    width: 32px !important;
-    height: 32px !important;
+    width: 36px !important;
+    height: 36px !important;
     overflow: visible !important;
     display: block !important;
     margin: 0 auto !important;
@@ -41,4 +41,24 @@
 #aguiaMagnifierBtn .icon::after {
     display: none !important;
     content: none !important;
+}
+
+/**
+ * Configurações para ocultar o botão da lupa standalone
+ */
+
+/* Ocultar completamente o botão standalone da lupa */
+#aguia-magnifier-standalone-button {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Ocultar qualquer versão adicional do botão */
+.aguia-standalone-button {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }

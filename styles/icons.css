@@ -1,8 +1,8 @@
 /* Estilos para os ícones SVG nos botões de acessibilidade */
 
 .aguia-option .icon svg {
-    width: 38px; /* Tamanho maior para melhor visibilidade como na imagem */
-    height: 38px;
+    width: 36px !important; /* Padronizado para 36px */
+    height: 36px !important;
     vertical-align: middle;
     fill: #444444; /* Cor mais escura para melhor contraste */
     stroke-width: 0; /* Remover stroke para melhorar legibilidade */
@@ -141,8 +141,8 @@
 /* Estilos específicos para o ícone de Aumentar Texto */
 .aguia-option[id="aguiaIncreaseFontBtn"] .icon svg {
     fill: #333333;
-    width: 32px; /* Tamanho reduzido para melhor exibição */
-    height: 32px;
+    width: 36px !important; /* Padronizado para 36px */
+    height: 36px !important;
 }
 
 .aguia-option[id="aguiaIncreaseFontBtn"].active .icon svg {

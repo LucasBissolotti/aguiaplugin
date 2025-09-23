@@ -279,8 +279,8 @@ button#aguiaButton.aguia-button:hover::before {
 }
 
 .aguia-option span.icon svg {
-    width: 36px;
-    height: 36px;
+    width: 36px !important;
+    height: 36px !important;
     fill: #333333;
     color: #333333;
     transition: all 0.2s ease;
@@ -805,9 +805,9 @@ input:checked + .aguia-switch-slider:before {
     background-color: var(--aguia-background-light);
     border: 1px solid #ddd;
     border-radius: var(--aguia-border-radius);
-    padding: 15px;
+    padding: 20px;
     box-shadow: var(--aguia-box-shadow);
-    width: 300px;
+    width: 350px;
     z-index: 9999;
     max-height: 80vh;
     overflow-y: auto;
@@ -843,6 +843,13 @@ input:checked + .aguia-switch-slider:before {
     color: var(--aguia-text-dark);
 }
 
+.aguia-submenu-description {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
 .aguia-submenu-content {
     display: flex;
     flex-direction: column;
@@ -852,7 +859,7 @@ input:checked + .aguia-switch-slider:before {
 .aguia-submenu-option {
     display: flex;
     align-items: center;
-    padding: 12px;
+    padding: 12px 15px;
     border: 1px solid #ddd;
     border-radius: var(--aguia-border-radius);
     background-color: var(--aguia-background-light);
@@ -861,6 +868,7 @@ input:checked + .aguia-switch-slider:before {
     color: var(--aguia-text-dark);
     text-align: left;
     font-size: 16px;
+    position: relative;
 }
 
 .aguia-submenu-option:hover {
@@ -874,12 +882,25 @@ input:checked + .aguia-switch-slider:before {
 }
 
 .aguia-submenu-option .aguia-icon {
-    margin-right: 10px;
+    margin-right: 15px;
     font-size: 20px;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
+    min-width: 36px;
+}
+
+.aguia-submenu-option .aguia-icon svg {
+    width: 36px;
+    height: 36px;
+    display: block;
+}
+
+.aguia-submenu-option .option-text {
+    font-size: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1.2;
 }
 
 /* Garantir que o botão de acessibilidade não seja afetado pelos filtros de daltonismo */
@@ -915,8 +936,8 @@ button#aguiaButton.aguia-button {
 }
 
 button#aguiaButton.aguia-button img.aguia-logo {
-    width: 34px !important;
-    height: 34px !important;
+    width: 36px !important;
+    height: 36px !important;
     border-radius: 8px !important;
     object-fit: cover !important;
     display: block !important;

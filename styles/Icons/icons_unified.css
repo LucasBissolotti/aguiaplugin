@@ -24,8 +24,8 @@
 .aguia-option .icon svg,
 .aguia-button .icon svg,
 .aguia-wcag-button .icon svg {
-    width: 32px !important;
-    height: 32px !important;
+    width: 36px !important;
+    height: 36px !important;
     overflow: visible !important;
     display: block !important;
     margin: 0 auto !important;
@@ -94,4 +94,12 @@
 /* Ajuste para o padding específico do ícone de espaçamento de letras */
 #aguiaLetterSpacingBtn .icon svg {
     padding: 2px !important;
+}
+
+/* Espaçamento entre linhas - Cores específicas quando ativo */
+#aguiaLineSpacingBtn.active .icon svg path,
+#aguiaLineSpacingBtn.active .icon svg rect,
+#aguiaLineSpacingBtn.active .icon svg line {
+    stroke: #2271ff !important;
+    fill: none !important;
 }

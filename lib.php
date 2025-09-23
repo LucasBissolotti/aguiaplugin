@@ -69,8 +69,8 @@ function local_aguiaplugin_require_js() {
             height: 40px !important; /* Tamanho reduzido para 40px conforme solicitado */
         }
         .aguia-logo {
-            width: 34px !important;
-            height: 34px !important;
+            width: 36px !important;
+            height: 36px !important;
             border-radius: 8px !important;
             object-fit: cover !important;
             margin: 0 !important;
@@ -312,7 +312,7 @@ function local_aguiaplugin_before_standard_html_head() {
     $cssopendyslexic = new moodle_url('/local/aguiaplugin/styles/opendyslexic.css');
     $csscontentmagnifier = new moodle_url('/local/aguiaplugin/styles/content_magnifier.css');
     $cssmagnifierfix = new moodle_url('/local/aguiaplugin/styles/magnifier_fix.css');
-    $csshidemagnifierbutton = new moodle_url('/local/aguiaplugin/styles/hide_magnifier_button.css');
+    // $csshidemagnifierbutton já está incorporado em magnifier_icon_fix.css
     $csstextsizefix = new moodle_url('/local/aguiaplugin/styles/text_size_fix.css');
     $csshighlightedlettersfix = new moodle_url('/local/aguiaplugin/styles/highlighted_letters_fix.css');
     $cssletterspacingfix = new moodle_url('/local/aguiaplugin/styles/letter_spacing_fix.css');
@@ -324,10 +324,11 @@ function local_aguiaplugin_before_standard_html_head() {
     $csscustomcursorfix = new moodle_url('/local/aguiaplugin/styles/custom_cursor_fix.css');
     $csshideimagesfix = new moodle_url('/local/aguiaplugin/styles/hide_images_fix.css');
     $cssemphasizelinksfix = new moodle_url('/local/aguiaplugin/styles/emphasize_links_fix.css');
-    $cssletterspacingiconfix = new moodle_url('/local/aguiaplugin/styles/letter_spacing_icon_fix.css');
-    $cssmagifiericonfix = new moodle_url('/local/aguiaplugin/styles/magnifier_icon_fix.css');
-    $cssheaderhighlighticonfix = new moodle_url('/local/aguiaplugin/styles/header_highlight_icon_fix.css');
-    $cssiconsstandardization = new moodle_url('/local/aguiaplugin/styles/icon_size_standardization.css');
+    $cssletterspacingiconfix = new moodle_url('/local/aguiaplugin/styles/Icons/letter_spacing_icon_fix.css');
+    $cssmagifiericonfix = new moodle_url('/local/aguiaplugin/styles/Icons/magnifier_icon_fix.css');
+    $cssheaderhighlighticonfix = new moodle_url('/local/aguiaplugin/styles/Icons/header_highlight_icon_fix.css');
+    $cssiconsstandardization = new moodle_url('/local/aguiaplugin/styles/Icons/icon_size_standardization.css');
+    $cssiconsunified = new moodle_url('/local/aguiaplugin/styles/Icons/icons_unified.css');
     
     return "
         <link rel='stylesheet' type='text/css' href='{$cssbase}'>
@@ -347,7 +348,7 @@ function local_aguiaplugin_before_standard_html_head() {
         <link rel='stylesheet' type='text/css' href='{$cssopendyslexic}'>
         <link rel='stylesheet' type='text/css' href='{$csscontentmagnifier}'>
         <link rel='stylesheet' type='text/css' href='{$cssmagnifierfix}'>
-        <link rel='stylesheet' type='text/css' href='{$csshidemagnifierbutton}'>
+        <!-- A referência ao hide_magnifier_button.css foi removida, pois o conteúdo já está em magnifier_icon_fix.css -->
         <link rel='stylesheet' type='text/css' href='{$csstextsizefix}'>
         <link rel='stylesheet' type='text/css' href='{$csshighlightedlettersfix}'>
         <link rel='stylesheet' type='text/css' href='{$cssletterspacingfix}'>
@@ -363,5 +364,6 @@ function local_aguiaplugin_before_standard_html_head() {
         <link rel='stylesheet' type='text/css' href='{$cssmagifiericonfix}'>
         <link rel='stylesheet' type='text/css' href='{$cssheaderhighlighticonfix}'>
         <link rel='stylesheet' type='text/css' href='{$cssiconsstandardization}'>
+        <link rel='stylesheet' type='text/css' href='{$cssiconsunified}'>
     ";
 }

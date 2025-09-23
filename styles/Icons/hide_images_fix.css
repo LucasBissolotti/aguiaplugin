@@ -16,8 +16,8 @@
 
 /* Garantir que o ícone tenha tamanho adequado e sem estilos que possam afetar a renderização */
 #aguiaHideImagesBtn .icon svg {
-    width: 32px !important;
-    height: 32px !important;
+    width: 36px !important;
+    height: 36px !important;
     fill: #444444 !important;
     overflow: visible !important;
     display: block !important;

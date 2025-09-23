@@ -75,8 +75,8 @@ document.addEventListener('DOMContentLoaded', function() {
         img.alt = 'Logo AGUIA - Acessibilidade';
         img.className = 'aguia-logo';
         // Aplicar estilo diretamente à imagem para garantir que não tenha margem branca
-        img.style.width = '34px';
-        img.style.height = '34px';
+        img.style.width = '36px';
+        img.style.height = '36px';
         img.style.borderRadius = '8px';
         img.style.objectFit = 'cover';
         img.style.padding = '0';

@@ -107,6 +107,12 @@ function createColorblindPanel() {
         // Esvaziar o conteúdo do botão para garantir que não haja texto indefinido
         optionButton.innerHTML = '';
         
+        // Criar elemento para o ícone
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'aguia-icon';
+        iconSpan.innerHTML = option.iconSvg;
+        optionButton.appendChild(iconSpan);
+        
         // Criar elemento span para o texto
         const textSpan = document.createElement('span');
         textSpan.textContent = option.text;

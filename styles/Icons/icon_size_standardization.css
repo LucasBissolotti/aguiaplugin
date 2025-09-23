@@ -7,8 +7,8 @@
 
 /* Padronização global de tamanho de ícones */
 .aguia-option .icon svg {
-    width: 32px !important;
-    height: 32px !important;
+    width: 36px !important;
+    height: 36px !important;
     overflow: visible !important;
     display: block !important;
     margin: 0 auto !important;
@@ -27,6 +27,6 @@
 .aguia-wcag-button .icon svg,
 [id^="aguia"] .icon svg,
 [class^="aguia"] .icon svg {
-    width: 32px !important;
-    height: 32px !important;
+    width: 36px !important;
+    height: 36px !important;
 }
