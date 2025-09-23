@@ -15,31 +15,29 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * External API para recuperar preferências
+ * Serviço externo para recuperar preferências
  *
  * @package    local_aguiaplugin
  * @copyright  2025 AGUIA
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_aguiaplugin\external;
+namespace local_aguiaplugin\preferences;
 
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/externallib.php");
-require_once("$CFG->dirroot/local/aguiaplugin/classes/preferences_manager.php");
+require_once("$CFG->dirroot/local/aguiaplugin/preferences/api.php");
 
 use external_api;
 use external_function_parameters;
-use external_multiple_structure;
 use external_single_structure;
 use external_value;
-use local_aguiaplugin\preferences_manager;
 
 /**
- * Classe que implementa os serviços web para o plugin de acessibilidade
+ * Classe que implementa os serviços web para obter preferências
  */
-class get_preferences extends external_api {
+class external_get extends external_api {
 
     /**
      * Parâmetros de entrada para obter preferências
@@ -60,7 +58,8 @@ class get_preferences extends external_api {
             'readablefonts' => new external_value(PARAM_INT, 'Fontes mais legíveis'),
             'linespacing' => new external_value(PARAM_INT, 'Espaçamento entre linhas'),
             'speech' => new external_value(PARAM_INT, 'Leitura de texto ativada'),
-            'texthelper' => new external_value(PARAM_INT, 'Auxiliar de leitura')
+            'texthelper' => new external_value(PARAM_INT, 'Auxiliar de leitura'),
+            'colorblind' => new external_value(PARAM_ALPHA, 'Modo de daltonismo')
         ]);
     }
 
@@ -76,7 +75,7 @@ class get_preferences extends external_api {
         self::validate_context($context);
         
         // Recupera as preferências
-        $preferences = preferences_manager::get_user_preferences();
+        $preferences = api::get_user_preferences();
         
         // Retorna apenas os dados necessários
         return [
@@ -85,7 +84,8 @@ class get_preferences extends external_api {
             'readablefonts' => (int)$preferences->readablefonts,
             'linespacing' => (int)$preferences->linespacing,
             'speech' => (int)$preferences->speech,
-            'texthelper' => (int)$preferences->texthelper
+            'texthelper' => (int)$preferences->texthelper,
+            'colorblind' => $preferences->colorblind
         ];
     }
 }

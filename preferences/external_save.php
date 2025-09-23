@@ -15,32 +15,30 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * External API para salvar preferências
+ * Serviço externo para salvar preferências
  *
  * @package    local_aguiaplugin
  * @copyright  2025 AGUIA
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_aguiaplugin\external;
+namespace local_aguiaplugin\preferences;
 
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->libdir/externallib.php");
-require_once("$CFG->dirroot/local/aguiaplugin/classes/preferences_manager.php");
+require_once("$CFG->dirroot/local/aguiaplugin/preferences/api.php");
 
 use external_api;
 use external_function_parameters;
-use external_multiple_structure;
 use external_single_structure;
 use external_value;
-use local_aguiaplugin\preferences_manager;
 use moodle_exception;
 
 /**
- * Classe que implementa os serviços web para o plugin de acessibilidade
+ * Classe que implementa os serviços web para salvar preferências
  */
-class save_preferences extends external_api {
+class external_save extends external_api {
 
     /**
      * Parâmetros de entrada para salvar preferências
@@ -53,7 +51,8 @@ class save_preferences extends external_api {
             'readablefonts' => new external_value(PARAM_INT, 'Fontes mais legíveis', VALUE_DEFAULT, 0),
             'linespacing' => new external_value(PARAM_INT, 'Espaçamento entre linhas', VALUE_DEFAULT, 100),
             'speech' => new external_value(PARAM_INT, 'Leitura de texto ativada', VALUE_DEFAULT, 0),
-            'texthelper' => new external_value(PARAM_INT, 'Auxiliar de leitura', VALUE_DEFAULT, 0)
+            'texthelper' => new external_value(PARAM_INT, 'Auxiliar de leitura', VALUE_DEFAULT, 0),
+            'colorblind' => new external_value(PARAM_ALPHA, 'Modo de daltonismo', VALUE_DEFAULT, 'none')
         ]);
     }
 
@@ -76,10 +75,11 @@ class save_preferences extends external_api {
      * @param int $linespacing Espaçamento entre linhas
      * @param int $speech Leitura de texto
      * @param int $texthelper Auxiliar de leitura
+     * @param string $colorblind Modo de daltonismo
      * @return array Com status e mensagem
      */
     public static function execute($fontsize = 100, $contrast = 'normal', $readablefonts = 0, 
-                                  $linespacing = 100, $speech = 0, $texthelper = 0) {
+                                  $linespacing = 100, $speech = 0, $texthelper = 0, $colorblind = 'none') {
         global $USER;
 
         // Validação de contexto e permissão
@@ -95,9 +95,10 @@ class save_preferences extends external_api {
         $preferences->linespacing = $linespacing;
         $preferences->speech = $speech;
         $preferences->texthelper = $texthelper;
+        $preferences->colorblind = $colorblind;
 
         try {
-            $result = preferences_manager::save_user_preferences($preferences);
+            $result = api::save_user_preferences($preferences);
             
             if ($result) {
                 return [

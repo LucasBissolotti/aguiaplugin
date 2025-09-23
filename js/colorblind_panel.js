@@ -199,6 +199,10 @@ function toggleColorblindPanel() {
 
 // Função para obter valor do localStorage
 function getFromLocalStorage(key, defaultValue) {
-    const value = localStorage.getItem(key);
-    return value !== null ? value : defaultValue;
+    if (window.AguiaAPI && typeof window.AguiaAPI.getFromLocalStorage === 'function') {
+        return window.AguiaAPI.getFromLocalStorage(key, defaultValue);
+    } else {
+        const value = localStorage.getItem(key);
+        return value !== null ? value : defaultValue;
+    }
 }

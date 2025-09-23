@@ -44,6 +44,7 @@ function local_aguiaplugin_require_js() {
     $PAGE->requires->js('/local/aguiaplugin/js/error_detection.js'); // Carrega primeiro o detector de erros
     $PAGE->requires->js('/local/aguiaplugin/js/memory_management.js'); // Carrega o gerenciador de memória
     $PAGE->requires->js('/local/aguiaplugin/js/accessibility_icons.js');
+    $PAGE->requires->js('/local/aguiaplugin/preferences/api.js'); // Nova API centralizada de preferências
     $PAGE->requires->js('/local/aguiaplugin/js/accessibility_wcag.js');
     $PAGE->requires->js('/local/aguiaplugin/js/colorblind_panel.js');
     $PAGE->requires->js('/local/aguiaplugin/js/initialize_colorblind.js');

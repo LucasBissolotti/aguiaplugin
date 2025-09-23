@@ -1968,93 +1968,160 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Função para salvar preferências do usuário
     function saveUserPreference(preference, value) {
-        // Se o usuário estiver logado no Moodle, salva via AJAX
-        if (typeof M !== 'undefined' && M.cfg && M.cfg.sesskey) {
-            // Usando o webservice para salvar preferências
-            const data = {
-                preference: preference,
-                value: value
-            };
-            
-            fetch(M.cfg.wwwroot + '/local/aguiaplugin/save_preference.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Moodle-Sesskey': M.cfg.sesskey
-                },
-                body: JSON.stringify(data)
-            })
-            .catch(function(error) {
-                console.error('Erro ao salvar preferência:', error);
-            });
+        // Usa a API AGUIA para salvar a preferência
+        if (window.AguiaAPI && typeof window.AguiaAPI.savePreference === 'function') {
+            window.AguiaAPI.savePreference(preference, value)
+                .then(() => {
+                    // Sucesso silencioso
+                })
+                .catch(error => {
+                    console.error('Erro ao salvar preferência:', error);
+                    // Sempre salvar no localStorage como backup
+                    localStorage.setItem('aguia_' + preference, JSON.stringify(value));
+                });
         } else {
-            // Fallback para localStorage quando não estiver logado
-            localStorage.setItem('aguia_' + preference, JSON.stringify(value));
+            // Fallback para o caso da API não estar disponível
+            if (typeof M !== 'undefined' && M.cfg && M.cfg.sesskey) {
+                // Usando o webservice para salvar preferências
+                const data = {
+                    preference: preference,
+                    value: value
+                };
+                
+                fetch(M.cfg.wwwroot + '/local/aguiaplugin/preferences/save.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Moodle-Sesskey': M.cfg.sesskey
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    // Verificar se a resposta é JSON
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return response.json();
+                    } else {
+                        // Se não for JSON, salvar no localStorage e registrar o erro
+                        console.error('Resposta não-JSON do servidor ao salvar preferência');
+                        localStorage.setItem('aguia_' + preference, JSON.stringify(value));
+                        throw new Error('Resposta não-JSON do servidor');
+                    }
+                })
+                .then(data => {
+                    if (!data.success) {
+                        // Se não foi bem sucedido, salvar no localStorage
+                        console.warn('Servidor retornou erro ao salvar preferência:', data.message);
+                        localStorage.setItem('aguia_' + preference, JSON.stringify(value));
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Erro ao salvar preferência:', error);
+                    // Sempre salvar no localStorage como backup em caso de erro
+                    localStorage.setItem('aguia_' + preference, JSON.stringify(value));
+                });
+            } else {
+                // Fallback para localStorage quando não estiver logado
+                localStorage.setItem('aguia_' + preference, JSON.stringify(value));
+            }
         }
     }
     
     // Função para carregar preferências do usuário
     function loadUserPreferences() {
-        // Primeiro tenta carregar do Moodle para usuários logados
-        if (typeof M !== 'undefined' && M.cfg && M.cfg.sesskey) {
-            fetch(M.cfg.wwwroot + '/local/aguiaplugin/get_preferences.php', {
-                method: 'GET',
-                headers: {
-                    'X-Moodle-Sesskey': M.cfg.sesskey
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data && data.preferences) {
-                    applyUserPreferences(data.preferences);
-                } else {
-                    // Se não houver preferências no Moodle, tenta carregar do localStorage
+        // Usa a API AGUIA para carregar as preferências
+        if (window.AguiaAPI && typeof window.AguiaAPI.loadPreferences === 'function') {
+            window.AguiaAPI.loadPreferences()
+                .then(preferences => {
+                    applyUserPreferences(preferences);
+                })
+                .catch(() => {
+                    // Em caso de erro, carrega do localStorage usando a função compatível
                     loadFromLocalStorage();
-                }
-            })
-            .catch(function() {
-                // Em caso de erro, tenta carregar do localStorage
-                loadFromLocalStorage();
-            });
+                });
         } else {
-            // Para usuários não logados, carrega do localStorage
-            loadFromLocalStorage();
+            // Fallback para o caso da API não estar disponível
+            if (typeof M !== 'undefined' && M.cfg && M.cfg.sesskey) {
+                fetch(M.cfg.wwwroot + '/local/aguiaplugin/preferences/get.php', {
+                    method: 'GET',
+                    headers: {
+                        'X-Moodle-Sesskey': M.cfg.sesskey
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.preferences) {
+                        applyUserPreferences(data.preferences);
+                    } else {
+                        // Se não houver preferências no Moodle, tenta carregar do localStorage
+                        loadFromLocalStorage();
+                    }
+                })
+                .catch(function() {
+                    // Em caso de erro, tenta carregar do localStorage
+                    loadFromLocalStorage();
+                });
+            } else {
+                // Para usuários não logados, carrega do localStorage
+                loadFromLocalStorage();
+            }
         }
     }
     
     // Função para carregar preferências do localStorage
     function loadFromLocalStorage() {
-        const preferences = {
-            fontSize: getFromLocalStorage('fontSize', 100),
-            highContrast: getFromLocalStorage('highContrast', false),
-            colorIntensityMode: getFromLocalStorage('colorIntensityMode', 0),
-            readableFonts: getFromLocalStorage('readableFonts', false),
-            fontMode: getFromLocalStorage('fontMode', 0),
-            lineSpacing: getFromLocalStorage('lineSpacing', 0),
-            letterSpacing: getFromLocalStorage('letterSpacing', 0),
-            textToSpeech: getFromLocalStorage('textToSpeech', false),
-            readingHelper: getFromLocalStorage('readingHelper', false),
-            emphasizeLinks: getFromLocalStorage('emphasizeLinks', false),
-            headerHighlight: getFromLocalStorage('headerHighlight', false),
-            colorblind: getFromLocalStorage('colorblind', 'none'),
-            readingMaskMode: getFromLocalStorage('readingMaskMode', 0),
-            horizontalMaskLevel: getFromLocalStorage('horizontalMaskLevel', 0),
-            verticalMaskLevel: getFromLocalStorage('verticalMaskLevel', 0),
-            customCursor: getFromLocalStorage('customCursor', false)
-        };
-        
-        // Compatibilidade com versões anteriores
-        if (getFromLocalStorage('invertedColors', false) === true) {
-            preferences.colorIntensityMode = 3; // Escala de cinza é o mais próximo das cores invertidas
+        // Usa a API AGUIA para carregar preferências do localStorage
+        if (window.AguiaAPI && typeof window.AguiaAPI.loadFromLocalStorage === 'function') {
+            const preferences = window.AguiaAPI.loadFromLocalStorage();
+            applyUserPreferences(preferences);
+        } else {
+            // Fallback para implementação local
+            const getFromLocalStorage = function(key, defaultValue) {
+                const item = localStorage.getItem('aguia_' + key);
+                if (item === null) return defaultValue;
+                try {
+                    return JSON.parse(item);
+                } catch (e) {
+                    return defaultValue;
+                }
+            };
+            
+            const preferences = {
+                fontSize: getFromLocalStorage('fontSize', 100),
+                highContrast: getFromLocalStorage('highContrast', false),
+                colorIntensityMode: getFromLocalStorage('colorIntensityMode', 0),
+                readableFonts: getFromLocalStorage('readableFonts', false),
+                fontMode: getFromLocalStorage('fontMode', 0),
+                lineSpacing: getFromLocalStorage('lineSpacing', 0),
+                letterSpacing: getFromLocalStorage('letterSpacing', 0),
+                textToSpeech: getFromLocalStorage('textToSpeech', false),
+                readingHelper: getFromLocalStorage('readingHelper', false),
+                emphasizeLinks: getFromLocalStorage('emphasizeLinks', false),
+                headerHighlight: getFromLocalStorage('headerHighlight', false),
+                colorblind: getFromLocalStorage('colorblind', 'none'),
+                readingMaskMode: getFromLocalStorage('readingMaskMode', 0),
+                horizontalMaskLevel: getFromLocalStorage('horizontalMaskLevel', 0),
+                verticalMaskLevel: getFromLocalStorage('verticalMaskLevel', 0),
+                customCursor: getFromLocalStorage('customCursor', false)
+            };
+            
+            // Compatibilidade com versões anteriores
+            if (getFromLocalStorage('invertedColors', false) === true) {
+                preferences.colorIntensityMode = 3; // Escala de cinza é o mais próximo das cores invertidas
+            }
+            
+            applyUserPreferences(preferences);
         }
-        
-        applyUserPreferences(preferences);
     }
     
     // Função auxiliar para obter valores do localStorage
     function getFromLocalStorage(key, defaultValue) {
-        const stored = localStorage.getItem('aguia_' + key);
-        return stored ? JSON.parse(stored) : defaultValue;
+        if (window.AguiaAPI && typeof window.AguiaAPI.getFromLocalStorage === 'function') {
+            return window.AguiaAPI.getFromLocalStorage(key, defaultValue);
+        } else {
+            const stored = localStorage.getItem('aguia_' + key);
+            return stored ? JSON.parse(stored) : defaultValue;
+        }
     }
     
     // Função para aplicar preferências carregadas

@@ -24,9 +24,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_aguiaplugin';
-$plugin->version = 2025080402;  // Data e versão (YYYYMMDD00)
-$plugin->requires = 2022041900;  // Versão mínima (4.0) - muito mais flexível
+$plugin->version = 2025092301;  // Data e versão (YYYYMMDD00)
+$plugin->requires = 2022041900;  // Versão mínima (4.0)
 $plugin->maturity = MATURITY_BETA;
-$plugin->release = 'v1.3.0'; // Consolidação em um único arquivo JS
-$plugin->release = 'v1.2.1';
-$plugin->release = 'v1.2';
+$plugin->release = 'v1.5.0';

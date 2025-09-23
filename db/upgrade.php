@@ -33,6 +33,19 @@ function xmldb_local_aguiaplugin_upgrade($oldversion) {
     global $DB, $CFG;
     $dbman = $DB->get_manager();
     
+    if ($oldversion < 2025080400) {
+        // Adicionar campo colorblind para modos de daltonismo
+        $table = new xmldb_table('local_aguiaplugin_prefs');
+        $field = new xmldb_field('colorblind', XMLDB_TYPE_CHAR, '20', null, null, null, 'none', 'texthelper');
+        
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        
+        // Salvar nova versão
+        upgrade_plugin_savepoint(true, 2025080400, 'local', 'aguiaplugin');
+    }
+    
     if ($oldversion < 2025080401) {
         // Remove a configuração de estilo obsoleta
         unset_config('use_legacy_style', 'local_aguiaplugin');
@@ -47,19 +60,6 @@ function xmldb_local_aguiaplugin_upgrade($oldversion) {
         
         // Salvar nova versão
         upgrade_plugin_savepoint(true, 2025080402, 'local', 'aguiaplugin');
-    }
-
-    if ($oldversion < 2025080400) {
-        // Adicionar campo colorblind para modos de daltonismo
-        $table = new xmldb_table('local_aguiaplugin_prefs');
-        $field = new xmldb_field('colorblind', XMLDB_TYPE_CHAR, '20', null, null, null, 'none', 'texthelper');
-        
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
-        }
-        
-        // Salvar nova versão
-        upgrade_plugin_savepoint(true, 2025080400, 'local', 'aguiaplugin');
     }
 
     if ($oldversion < 2025070100) {

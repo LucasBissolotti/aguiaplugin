@@ -99,6 +99,9 @@ const AguiaMagnifier = {
             return;
         }
         
+        // Criar o botão flutuante
+        const button = document.createElement('button');
+        
         // Criar o botão flutuante principal se ele ainda não existir
         let aguiaButton = document.querySelector('.aguia-button');
         if (!aguiaButton) {

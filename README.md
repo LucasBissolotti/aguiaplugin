@@ -1,7 +1,7 @@
 # AGUIA Plugin de Acessibilidade para Moodle
 
-![Versão](https://img.shields.io/badge/versão-1.3.0-blue.svg)
-![Moodle](https://img.shields.io/badge/Moodle-4.1+-orange.svg)
+![Versão](https://img.shields.io/badge/versão-1.5.0-blue.svg)
+![Moodle](https://img.shields.io/badge/Moodle-4.0+-orange.svg)
 ![Licença](https://img.shields.io/badge/licença-GPL%20v3-green.svg)
 
 O plugin AGUIA (Acessibilidade e guia para pessoas com deficiência visual) é uma ferramenta de acessibilidade para o Moodle, especialmente projetada para pessoas com deficiência visual. O plugin oferece diversas funcionalidades que seguem as diretrizes de acessibilidade WCAG 2.1 nível AA, melhorando a experiência de uso da plataforma Moodle para todos os usuários.
@@ -21,11 +21,12 @@ O plugin AGUIA (Acessibilidade e guia para pessoas com deficiência visual) é u
 - **Auxiliar de leitura (WCAG 2.4.8)**: Realça a linha de texto onde o cursor está posicionado.
 - **Destaque para links (WCAG 1.4.1)**: Permite destacar visualmente os links para melhor identificação.
 - **Foco visível (WCAG 2.4.7)**: Destaca claramente os elementos com foco durante a navegação por teclado.
+- **Lupa de conteúdo**: Amplia o texto sob o cursor para facilitar a leitura de conteúdos específicos.
 - **Persistência de configurações**: Todas as preferências do usuário são salvas no banco de dados e restauradas automaticamente quando o usuário faz login novamente.
 
 ## Compatibilidade
 
-- Moodle 4.1+ (versão 2022112800 ou superior)
+- Moodle 4.0+ (versão 2022041900 ou superior)
 
 ## Instalação
 
@@ -64,15 +65,17 @@ As preferências do usuário são salvas automaticamente no banco de dados e apl
 
 ```
 aguiaplugin/
-├── amd/               # Módulos JavaScript AMD
-├── classes/           # Classes PHP do plugin
-│   └── external/      # Classes para funções externas da API
-├── db/                # Definições de banco de dados
+├── index.php          # Página principal do plugin
+├── init.php           # Inicialização do plugin
+├── lib.php            # Funções principais e hooks do Moodle
+├── settings.php       # Configurações administrativas
+├── version.php        # Informações de versão e compatibilidade
+├── db/                # Banco de dados
 ├── js/                # Scripts JavaScript
+├── preferences/       # Sistema de preferências
 ├── lang/              # Arquivos de idioma
-│   └── en/            # Inglês
 ├── pix/               # Imagens do plugin
-└── styles/            # Arquivos CSS
+├── styles/            # Arquivos CSS
 ```
 
 ## Conformidade com WCAG 2.1 Nível AA
@@ -94,6 +97,17 @@ O plugin atende às seguintes diretrizes de acessibilidade:
   - 2.4.7 Foco Visível (AA)
   - 2.4.8 Localização (AAA)
 
+- **Princípio 3: Compreensível**
+  - 3.1.1 Idioma da Página (A)
+  - 3.1.2 Idioma das Partes (AA)
+  - 3.2.1 Em Foco (A)
+  - 3.2.2 Em Entrada (A)
+  - 3.2.3 Navegação Consistente (AA)
+  - 3.2.4 Identificação Consistente (AA)
+  - 3.3.1 Identificação do Erro (A)
+  - 3.3.2 Etiquetas ou Instruções (A)
+  - 3.3.3 Sugestão de Erro (AA)
+
 - **Princípio 4: Robusto**
   - 4.1.3 Mensagens de Status (AA)
 
@@ -101,8 +115,11 @@ O plugin atende às seguintes diretrizes de acessibilidade:
 
 Planejamos adicionar as seguintes funcionalidades em versões futuras:
 - Opções de navegação simplificada
-- Suporte a mais idiomas
+- Suporte a mais idiomas (incluindo espanhol e inglês completo)
 - Integrações com tecnologias assistivas adicionais
+- Reconhecimento de voz para controle de funções
+- Melhoria na detecção automática de necessidades de acessibilidade
+- Relatórios de uso e eficácia das ferramentas
 
 ## Como contribuir
 
