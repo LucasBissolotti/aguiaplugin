@@ -41,19 +41,18 @@ function local_aguiaplugin_require_js() {
     }
     
     // Carrega os scripts JavaScript
-    $PAGE->requires->js('/local/aguiaplugin/js/error_detection.js'); // Carrega primeiro o detector de erros
-    $PAGE->requires->js('/local/aguiaplugin/js/memory_management.js'); // Carrega o gerenciador de memória
-    $PAGE->requires->js('/local/aguiaplugin/js/accessibility_icons.js');
-    $PAGE->requires->js('/local/aguiaplugin/preferences/api.js'); // Nova API centralizada de preferências
-    $PAGE->requires->js('/local/aguiaplugin/js/accessibility_wcag.js');
-    $PAGE->requires->js('/local/aguiaplugin/js/colorblind_panel.js');
-    $PAGE->requires->js('/local/aguiaplugin/js/initialize_colorblind.js');
-    $PAGE->requires->js('/local/aguiaplugin/js/icon_updater.js');
-    $PAGE->requires->js('/local/aguiaplugin/js/highlighted_letters.js');
-    $PAGE->requires->js('/local/aguiaplugin/js/display_fix.js'); // Carrega primeiro o script para corrigir problemas de exibição
-    $PAGE->requires->js('/local/aguiaplugin/js/content_magnifier.js'); // Carrega a lupa de conteúdo
-    $PAGE->requires->js('/local/aguiaplugin/js/magnifier_standalone.js'); // Carrega a versão independente da lupa
-    $PAGE->requires->js('/local/aguiaplugin/js/remove_magnifier_button.js'); // Remove o botão da lupa visualmente
+    $PAGE->requires->js('/local/aguiaplugin/js/detecao_erros.js'); // Carrega primeiro o detector de erros
+    $PAGE->requires->js('/local/aguiaplugin/js/gerenciamento_memoria.js'); // Carrega o gerenciador de memória
+    $PAGE->requires->js('/local/aguiaplugin/js/icones_acessibilidade.js');
+    $PAGE->requires->js('/local/aguiaplugin/preferences/api_preferencias.js'); // Nova API centralizada de preferências
+    $PAGE->requires->js('/local/aguiaplugin/js/acessibilidade_wcag.js');
+    $PAGE->requires->js('/local/aguiaplugin/js/painel_daltonismo.js');
+    $PAGE->requires->js('/local/aguiaplugin/js/inicializar_daltonismo.js');
+    $PAGE->requires->js('/local/aguiaplugin/js/atualizador_icones.js');
+    $PAGE->requires->js('/local/aguiaplugin/js/letras_destaque.js');
+    $PAGE->requires->js('/local/aguiaplugin/js/ajuste_exibicao.js'); // Carrega primeiro o script para corrigir problemas de exibição
+    $PAGE->requires->js('/local/aguiaplugin/js/ampliador_conteudo.js'); // Carrega a lupa de conteúdo
+    $PAGE->requires->js('/local/aguiaplugin/js/ampliador_autonomo.js'); // Carrega a versão independente da lupa
     
     // Adiciona CSS personalizado para garantir a posição fixa do botão
     echo '<style>
@@ -140,61 +139,7 @@ function local_aguiaplugin_require_js() {
         }
         
         /* Estilos para os círculos coloridos de daltonismo */
-        .aguia-submenu-option[data-value="protanopia"]::before {
-            content: "" !important;
-            display: inline-block !important;
-            width: 20px !important;
-            height: 20px !important;
-            min-width: 20px !important;
-            background-color: #FF0000 !important;
-            border-radius: 50% !important;
-            margin-right: 10px !important;
-            border: 1px solid #444 !important;
-            vertical-align: middle !important;
-            flex-shrink: 0 !important;
-        }
-        
-        .aguia-submenu-option[data-value="deuteranopia"]::before {
-            content: "" !important;
-            display: inline-block !important;
-            width: 20px !important;
-            height: 20px !important;
-            min-width: 20px !important;
-            background-color: #00FF00 !important;
-            border-radius: 50% !important;
-            margin-right: 10px !important;
-            border: 1px solid #444 !important;
-            vertical-align: middle !important;
-            flex-shrink: 0 !important;
-        }
-        
-        .aguia-submenu-option[data-value="tritanopia"]::before {
-            content: "" !important;
-            display: inline-block !important;
-            width: 20px !important;
-            height: 20px !important;
-            min-width: 20px !important;
-            background-color: #0000FF !important;
-            border-radius: 50% !important;
-            margin-right: 10px !important;
-            border: 1px solid #444 !important;
-            vertical-align: middle !important;
-            flex-shrink: 0 !important;
-        }
-        
-        .aguia-submenu-option[data-value="achromatopsia"]::before {
-            content: "" !important;
-            display: inline-block !important;
-            width: 20px !important;
-            height: 20px !important;
-            min-width: 20px !important;
-            background-color: #000000 !important;
-            border-radius: 50% !important;
-            margin-right: 10px !important;
-            border: 1px solid #444 !important;
-            vertical-align: middle !important;
-            flex-shrink: 0 !important;
-        }
+        /* Removidos estilos de daltonismo antigos que usavam ::before */
         
         .aguia-submenu-option[data-value="none"]::before {
             content: "✓" !important;
@@ -294,77 +239,46 @@ function local_aguiaplugin_before_standard_html_head() {
         return '';
     }
     
-    // Adiciona os arquivos CSS no cabeçalho HTML
-    $cssbase = new moodle_url('/local/aguiaplugin/styles/base.css');
-    $csswcag = new moodle_url('/local/aguiaplugin/styles/wcag.css');
-    $csscolorblind = new moodle_url('/local/aguiaplugin/styles/colorblind.css');
-    $csscolorintensity = new moodle_url('/local/aguiaplugin/styles/color_intensity.css');
-    $cssreadingmask = new moodle_url('/local/aguiaplugin/styles/reading_mask_cursor.css');
-    $cssicons = new moodle_url('/local/aguiaplugin/styles/icons.css');
-    // Removendo o multi_select.css para evitar conflitos
-    $cssbutton = new moodle_url('/local/aguiaplugin/styles/button_styles.css');
-    $cssvlibras = new moodle_url('/local/aguiaplugin/styles/vlibras.css');
-    $cssheaderhighlight = new moodle_url('/local/aguiaplugin/styles/header_highlight.css');
-    $cssspacing = new moodle_url('/local/aguiaplugin/styles/spacing_indicators.css');
-    $cssspacing_add = new moodle_url('/local/aguiaplugin/styles/spacing_additional.css');
-    $cssspacing_separated = new moodle_url('/local/aguiaplugin/styles/spacing_separated.css');
-    $csshandtalk = new moodle_url('/local/aguiaplugin/styles/handtalk_spacing.css');
-    $csshighlightedletters = new moodle_url('/local/aguiaplugin/styles/highlighted_letters.css');
-    $cssopendyslexic = new moodle_url('/local/aguiaplugin/styles/opendyslexic.css');
-    $csscontentmagnifier = new moodle_url('/local/aguiaplugin/styles/content_magnifier.css');
-    $cssmagnifierfix = new moodle_url('/local/aguiaplugin/styles/magnifier_fix.css');
-    // $csshidemagnifierbutton já está incorporado em magnifier_icon_fix.css
-    $csstextsizefix = new moodle_url('/local/aguiaplugin/styles/text_size_fix.css');
-    $csshighlightedlettersfix = new moodle_url('/local/aguiaplugin/styles/highlighted_letters_fix.css');
-    $cssletterspacingfix = new moodle_url('/local/aguiaplugin/styles/letter_spacing_fix.css');
-    $csshighcontrastfix = new moodle_url('/local/aguiaplugin/styles/high_contrast_fix.css');
-    $csscolorintensityfix = new moodle_url('/local/aguiaplugin/styles/color_intensity_fix.css');
-    $csstexttospeechfix = new moodle_url('/local/aguiaplugin/styles/text_to_speech_fix.css');
-    $cssfocusmaskhorizontalfix = new moodle_url('/local/aguiaplugin/styles/focus_mask_horizontal_fix.css');
-    $cssfocusmaskverticalfix = new moodle_url('/local/aguiaplugin/styles/focus_mask_vertical_fix.css');
-    $csscustomcursorfix = new moodle_url('/local/aguiaplugin/styles/custom_cursor_fix.css');
-    $csshideimagesfix = new moodle_url('/local/aguiaplugin/styles/hide_images_fix.css');
-    $cssemphasizelinksfix = new moodle_url('/local/aguiaplugin/styles/emphasize_links_fix.css');
-    $cssletterspacingiconfix = new moodle_url('/local/aguiaplugin/styles/Icons/letter_spacing_icon_fix.css');
-    $cssmagifiericonfix = new moodle_url('/local/aguiaplugin/styles/Icons/magnifier_icon_fix.css');
-    $cssheaderhighlighticonfix = new moodle_url('/local/aguiaplugin/styles/Icons/header_highlight_icon_fix.css');
-    $cssiconsstandardization = new moodle_url('/local/aguiaplugin/styles/Icons/icon_size_standardization.css');
-    $cssiconsunified = new moodle_url('/local/aguiaplugin/styles/Icons/icons_unified.css');
-    
-    return "
-        <link rel='stylesheet' type='text/css' href='{$cssbase}'>
-        <link rel='stylesheet' type='text/css' href='{$csswcag}'>
-        <link rel='stylesheet' type='text/css' href='{$csscolorblind}'>
-        <link rel='stylesheet' type='text/css' href='{$csscolorintensity}'>
-        <link rel='stylesheet' type='text/css' href='{$cssreadingmask}'>
-        <link rel='stylesheet' type='text/css' href='{$cssicons}'>
-        <link rel='stylesheet' type='text/css' href='{$cssbutton}'>
-        <link rel='stylesheet' type='text/css' href='{$cssvlibras}'>
-        <link rel='stylesheet' type='text/css' href='{$cssheaderhighlight}'>
-        <link rel='stylesheet' type='text/css' href='{$cssspacing}'>
-        <link rel='stylesheet' type='text/css' href='{$cssspacing_add}'>
-        <link rel='stylesheet' type='text/css' href='{$cssspacing_separated}'>
-        <link rel='stylesheet' type='text/css' href='{$csshandtalk}'>
-        <link rel='stylesheet' type='text/css' href='{$csshighlightedletters}'>
-        <link rel='stylesheet' type='text/css' href='{$cssopendyslexic}'>
-        <link rel='stylesheet' type='text/css' href='{$csscontentmagnifier}'>
-        <link rel='stylesheet' type='text/css' href='{$cssmagnifierfix}'>
-        <!-- A referência ao hide_magnifier_button.css foi removida, pois o conteúdo já está em magnifier_icon_fix.css -->
-        <link rel='stylesheet' type='text/css' href='{$csstextsizefix}'>
-        <link rel='stylesheet' type='text/css' href='{$csshighlightedlettersfix}'>
-        <link rel='stylesheet' type='text/css' href='{$cssletterspacingfix}'>
-        <link rel='stylesheet' type='text/css' href='{$csshighcontrastfix}'>
-        <link rel='stylesheet' type='text/css' href='{$csscolorintensityfix}'>
-        <link rel='stylesheet' type='text/css' href='{$csstexttospeechfix}'>
-        <link rel='stylesheet' type='text/css' href='{$cssfocusmaskhorizontalfix}'>
-        <link rel='stylesheet' type='text/css' href='{$cssfocusmaskverticalfix}'>
-        <link rel='stylesheet' type='text/css' href='{$csscustomcursorfix}'>
-        <link rel='stylesheet' type='text/css' href='{$csshideimagesfix}'>
-        <link rel='stylesheet' type='text/css' href='{$cssemphasizelinksfix}'>
-        <link rel='stylesheet' type='text/css' href='{$cssletterspacingiconfix}'>
-        <link rel='stylesheet' type='text/css' href='{$cssmagifiericonfix}'>
-        <link rel='stylesheet' type='text/css' href='{$cssheaderhighlighticonfix}'>
-        <link rel='stylesheet' type='text/css' href='{$cssiconsstandardization}'>
-        <link rel='stylesheet' type='text/css' href='{$cssiconsunified}'>
-    ";
+    // Lista de estilos carregados pelo plugin (todos em português)
+    $arquivoscss = [
+        'base.css',
+        'wcag.css',
+        'daltonismo.css',
+        'painel_daltonismo.css',
+        'intensidade_cores.css',
+        'mascara_leitura_cursor.css',
+        'icones.css',
+        'interacoes_botoes.css',
+        'estilos_botoes.css',
+        'destaque_cabecalho.css',
+        'espacamento_adicional.css',
+        'espacamento_separado.css',
+        'letras_destaque.css',
+        'fonte_opendyslexic.css',
+        'ampliador_conteudo.css',
+    'icons/padronizacao_tamanho_icones.css',
+    'icons/icones_unificados.css',
+    'icons/ajuste_letras_destaque.css',
+    'icons/ajuste_icone_espacamento_letras.css',
+    'icons/ajuste_icone_ampliador.css',
+    'icons/ajuste_icone_destaque_cabecalho.css',
+    'icons/ajuste_intensidade_cor.css',
+    'icons/ajuste_texto_para_fala.css',
+    'icons/ajuste_ocultar_imagens.css',
+    'icons/ajuste_tamanho_texto.css',
+    'icons/ajuste_altura_linha.css',
+    'icons/ajuste_destaque_links.css',
+    'icons/ajuste_mascara_foco_horizontal.css',
+    'icons/ajuste_mascara_foco_vertical.css',
+    'icons/ajuste_alto_contraste.css',
+    'icons/correcao_cursor_personalizado.css',
+    ];
+
+    $links = [];
+    foreach ($arquivoscss as $arquivo) {
+        $url = new moodle_url('/local/aguiaplugin/styles/' . $arquivo);
+        $links[] = "<link rel='stylesheet' type='text/css' href='{$url}'>";
+    }
+
+    return implode("\n        ", $links);
 }

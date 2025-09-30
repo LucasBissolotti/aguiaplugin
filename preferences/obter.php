@@ -51,13 +51,13 @@ function aguia_log_error($message, $exception = null) {
 // Função para buscar o config.php do Moodle
 function find_moodle_config() {
     $possible_paths = [
-        '../../config.php',                  // Caminho relativo padrão
-        '../../../config.php',               // Um nível acima
-        '../../../../config.php',            // Dois níveis acima
-        $_SERVER['DOCUMENT_ROOT'] . '/config.php',            // Root do servidor web
-        $_SERVER['DOCUMENT_ROOT'] . '/moodle/config.php',     // Subdiretório moodle
-        dirname(dirname(dirname(__FILE__))) . '/config.php',  // Baseado no caminho atual
-        dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php', // Um nível acima
+        '../../config.php',
+        '../../../config.php',
+        '../../../../config.php',
+        $_SERVER['DOCUMENT_ROOT'] . '/config.php',
+        $_SERVER['DOCUMENT_ROOT'] . '/moodle/config.php',
+        dirname(dirname(dirname(__FILE__))) . '/config.php',
+        dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php',
     ];
     
     foreach ($possible_paths as $path) {
@@ -82,13 +82,11 @@ if ($moodleConfigExists) {
             $api_path = $CFG->dirroot . '/local/aguiaplugin/preferences/api_preferencias.php';
             $check_tables_path = $CFG->dirroot . '/local/aguiaplugin/preferences/check_tables.php';
             $helpers_path = $CFG->dirroot . '/local/aguiaplugin/preferences/auxiliares.php';
-            $file_storage_path = $CFG->dirroot . '/local/aguiaplugin/preferences/armazenamento_arquivos.php';
-
-            if (file_exists($api_path) && file_exists($check_tables_path) && file_exists($helpers_path) && file_exists($file_storage_path)) {
+            
+            if (file_exists($api_path) && file_exists($check_tables_path) && file_exists($helpers_path)) {
                 require_once($api_path);
                 require_once($check_tables_path);
                 require_once($helpers_path);
-                require_once($file_storage_path);
             } else {
                 aguia_log_error("Arquivos do plugin não encontrados em: $CFG->dirroot/local/aguiaplugin/");
                 $moodleConfigExists = false;
@@ -119,7 +117,6 @@ $fileSuccess = false;
 // Tenta autenticar com o Moodle se disponível
 if ($moodleConfigExists) {
     try {
-        // Verificar sessão do Moodle - mas não interrompemos se falhar
         require_login();
         require_sesskey();
         global $USER;
@@ -127,11 +124,9 @@ if ($moodleConfigExists) {
         aguia_log_error("Usuário autenticado: $userid");
     } catch (Exception $e) {
         aguia_log_error("Usuário não autenticado: " . $e->getMessage());
-        // Continua com $userid = 0
     }
 }
 
-// Valores padrão para preferências se nada for encontrado
 $defaultPreferences = [
     'fontSize' => 100,
     'highContrast' => false,
@@ -139,56 +134,49 @@ $defaultPreferences = [
     'textToSpeech' => false,
     'readingHelper' => false,
     'colorblind' => 'none',
-    'lineSpacing' => 0 // Nível 0 = 100%
+    'lineSpacing' => 0
 ];
 
 $preferences = $defaultPreferences;
 $source = 'default';
 
-// Estratégia #1: Tenta buscar do banco de dados do Moodle
 if ($moodleConfigExists) {
     try {
-        // Verificar e criar tabelas se necessário
         $tablesExist = local_aguiaplugin_check_tables();
-        aguia_log_error("Verificação de tabelas: " . ($tablesExist ? "OK" : "Falha"));
+        aguia_log_error('Verificação de tabelas: ' . ($tablesExist ? 'OK' : 'Falha'));
         
         if ($tablesExist) {
-            // Buscar preferências do usuário
             $dbPreferences = \local_aguiaplugin\preferences\ApiPreferencias::buscar_preferencias_usuario($userid);
             
             if ($dbPreferences) {
-                // Converter preferências do banco para o formato esperado pelo JavaScript
                 $preferences = \local_aguiaplugin\preferences\ApiPreferencias::converter_banco_para_js($dbPreferences);
                 $dbSuccess = true;
                 $source = 'database';
-                aguia_log_error("Preferências obtidas do banco com sucesso");
+                aguia_log_error('Preferências obtidas do banco com sucesso');
             }
         }
     } catch (Exception $e) {
-        aguia_log_error("Erro ao obter preferências do banco", $e);
+        aguia_log_error('Erro ao obter preferências do banco', $e);
         $dbSuccess = false;
     }
 }
 
-// Estratégia #2: Tenta buscar do arquivo se não conseguiu do banco
 if (!$dbSuccess) {
     try {
-        $filePreferences = aguia_obter_preferencias_arquivo($userid);
+    $filePreferences = aguia_obter_preferencias_arquivo($userid);
         
         if ($filePreferences && is_array($filePreferences)) {
-            // Mescla com os valores padrão para garantir que todos os campos existam
             $preferences = array_merge($defaultPreferences, $filePreferences);
             $fileSuccess = true;
             $source = 'file';
-            aguia_log_error("Preferências obtidas do arquivo com sucesso");
+            aguia_log_error('Preferências obtidas do arquivo com sucesso');
         }
     } catch (Exception $e) {
-        aguia_log_error("Erro ao obter preferências do arquivo", $e);
+        aguia_log_error('Erro ao obter preferências do arquivo', $e);
         $fileSuccess = false;
     }
 }
 
-// Responder ao cliente com as preferências obtidas
 echo json_encode([
     'success' => ($dbSuccess || $fileSuccess),
     'preferences' => $preferences,

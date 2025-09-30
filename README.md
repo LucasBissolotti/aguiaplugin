@@ -4,7 +4,7 @@
 ![Moodle](https://img.shields.io/badge/Moodle-4.0+-orange.svg)
 ![Licença](https://img.shields.io/badge/licença-GPL%20v3-green.svg)
 
-O plugin AGUIA (Acessibilidade e guia para pessoas com deficiência visual) é uma ferramenta de acessibilidade para o Moodle, especialmente projetada para pessoas com deficiência visual. O plugin oferece diversas funcionalidades que seguem as diretrizes de acessibilidade WCAG 2.1 nível AA, melhorando a experiência de uso da plataforma Moodle para todos os usuários.
+O plugin AGUIA (Acessibilidade e Guia para Inclusão e Aprendizagem) é uma ferramenta de acessibilidade para o Moodle, especialmente projetada para pessoas com deficiência visual. O plugin oferece diversas funcionalidades que seguem as diretrizes de acessibilidade WCAG 2.1 nível AA, melhorando a experiência de uso da plataforma Moodle para todos os usuários.
 
 ## Características
 
@@ -65,18 +65,38 @@ As preferências do usuário são salvas automaticamente no banco de dados e apl
 
 ```
 aguiaplugin/
-├── index.php          # Página principal do plugin
-├── init.php           # Inicialização do plugin
-├── lib.php            # Funções principais e hooks do Moodle
-├── settings.php       # Configurações administrativas
-├── version.php        # Informações de versão e compatibilidade
-├── db/                # Banco de dados
-├── js/                # Scripts JavaScript
-├── preferences/       # Sistema de preferências
-├── lang/              # Arquivos de idioma
-├── pix/               # Imagens do plugin
-├── styles/            # Arquivos CSS
+├── index.php                # Página principal do plugin
+├── init.php                 # Inicialização do plugin
+├── lib.php                  # Funções principais e hooks do Moodle
+├── settings.php             # Configurações administrativas
+├── version.php              # Informações de versão e compatibilidade
+├── db/                      # Estrutura de banco de dados
+├── js/                      # Ferramentas de acessibilidade
+├── preferences/             # Salvar preferênciais via API
+├── lang/                    # Idiomas do plugin
+├── pix/                     # Logotipo do plugin
+├── styles/                  # Arquivos de estilos css do plugin
+│   └── icons/               # Icones das ferramentas de acessibilidade
+└── README.md
 ```
+
+### Descrição das pastas principais
+
+- `db/`: define estrutura de banco de dados, upgrades e serviços externos usados pelo Moodle.
+- `js/`: concentra os módulos JavaScript em português responsáveis pelas ferramentas de acessibilidade.
+- `preferences/`: expõe API PHP/JS, endpoints internos/externos e fallback em arquivo para salvar preferências.
+- `lang/`: armazena strings de idioma (inglês por padrão) exigidas pelo Moodle.
+- `pix/`: contém os recursos visuais do plugin, incluindo o logotipo exibido no botão flutuante.
+- `styles/`: reúne as folhas de estilo base e o diretório `styles/icons/` com ajustes específicos para os ícones.
+
+## Armazenamento de preferências
+
+O AGUIA persiste as escolhas dos usuários de duas formas:
+
+- **Banco de dados Moodle**: a API `\local_aguiaplugin\preferences\ApiPreferencias` grava e atualiza as preferências na tabela `local_aguiaplugin_prefs`.
+- **Fallback em arquivo**: quando o banco não está disponível, `preferences/armazenamento_arquivos.php` registra JSONs no diretório `preferences/data/` para manter a experiência consistente.
+
+Os arquivos `preferences/obter.php` e `preferences/salvar.php` são utilizados pelo front-end (`preferences/api_preferencias.js`) para recuperar e atualizar preferências via `fetch`. Endpoints externos equivalentes (`externo_obter.php` e `externo_salvar.php`) estão registrados em `db/services.php` para consumo por webservices.
 
 ## Conformidade com WCAG 2.1 Nível AA
 

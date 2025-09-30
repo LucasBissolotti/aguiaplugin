@@ -35,7 +35,7 @@ if (!defined('MOODLE_INTERNAL')) {
  * @param array $preferences Array associativo com as preferências
  * @return bool True se salvou com sucesso
  */
-function aguia_file_save_preferences($userid, $preferences) {
+function aguia_salvar_preferencias_arquivo($userid, $preferences) {
     $dir = dirname(__FILE__) . '/../data';
     $file = $dir . '/user_' . $userid . '.json';
     
@@ -66,7 +66,7 @@ function aguia_file_save_preferences($userid, $preferences) {
  * @param int $userid ID do usuário
  * @return array|null Array associativo com as preferências ou null se não existir
  */
-function aguia_file_get_preferences($userid) {
+function aguia_obter_preferencias_arquivo($userid) {
     $file = dirname(__FILE__) . '/../data/user_' . $userid . '.json';
     
     if (!file_exists($file)) {
@@ -94,9 +94,9 @@ function aguia_file_get_preferences($userid) {
  * @param mixed $value Valor da preferência
  * @return bool True se atualizou com sucesso
  */
-function aguia_file_update_preference($userid, $key, $value) {
+function aguia_atualizar_preferencia_arquivo($userid, $key, $value) {
     // Carrega as preferências existentes
-    $preferences = aguia_file_get_preferences($userid);
+    $preferences = aguia_obter_preferencias_arquivo($userid);
     
     // Se não existir, inicializa um array vazio
     if ($preferences === null) {
@@ -107,5 +107,5 @@ function aguia_file_update_preference($userid, $key, $value) {
     $preferences[$key] = $value;
     
     // Salva as preferências atualizadas
-    return aguia_file_save_preferences($userid, $preferences);
+    return aguia_salvar_preferencias_arquivo($userid, $preferences);
 }

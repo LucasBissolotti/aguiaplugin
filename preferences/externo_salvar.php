@@ -18,8 +18,6 @@
  * Serviço externo para salvar preferências
  *
  * @package    local_aguiaplugin
- * @copyright  2025 AGUIA
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace local_aguiaplugin\preferences;
@@ -69,25 +67,13 @@ class ExternoSalvar extends external_api {
 
     /**
      * Salva as preferências do usuário
-     * @param int $fontsize Tamanho da fonte
-     * @param string $contrast Tipo de contraste
-     * @param int $readablefonts Fontes mais legíveis
-     * @param int $linespacing Espaçamento entre linhas
-     * @param int $speech Leitura de texto
-     * @param int $texthelper Auxiliar de leitura
-     * @param string $colorblind Modo de daltonismo
-     * @return array Com status e mensagem
      */
-    public static function execute($fontsize = 100, $contrast = 'normal', $readablefonts = 0, 
+    public static function execute($fontsize = 100, $contrast = 'normal', $readablefonts = 0,
                                   $linespacing = 100, $speech = 0, $texthelper = 0, $colorblind = 'none') {
-        global $USER;
-
-        // Validação de contexto e permissão
         $context = \context_system::instance();
         self::validate_context($context);
         require_capability('moodle/user:editownprofile', $context);
 
-        // Organiza os dados
         $preferences = new \stdClass();
         $preferences->fontsize = $fontsize;
         $preferences->contrast = $contrast;
@@ -98,19 +84,19 @@ class ExternoSalvar extends external_api {
         $preferences->colorblind = $colorblind;
 
         try {
-            $result = ApiPreferencias::salvar_preferencias_usuario($preferences);
-            
-            if ($result) {
+            $resultado = ApiPreferencias::salvar_preferencias_usuario($preferences);
+
+            if ($resultado) {
                 return [
                     'success' => true,
                     'message' => 'Preferências salvas com sucesso'
                 ];
-            } else {
-                return [
-                    'success' => false,
-                    'message' => 'Erro ao salvar preferências'
-                ];
             }
+
+            return [
+                'success' => false,
+                'message' => 'Erro ao salvar preferências'
+            ];
         } catch (moodle_exception $e) {
             return [
                 'success' => false,

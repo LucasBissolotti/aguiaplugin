@@ -38,17 +38,17 @@ $services = [
 
 $functions = [
     'local_aguiaplugin_get_preferences' => [
-        'classname' => 'local_aguiaplugin\preferences\external_get',
+        'classname' => 'local_aguiaplugin\preferences\ExternoObter',
         'methodname' => 'execute',
-        'classpath' => 'local/aguiaplugin/preferences/external_get.php',
+        'classpath' => 'local/aguiaplugin/preferences/externo_obter.php',
         'description' => 'Retorna as preferências de acessibilidade do usuário',
         'type' => 'read',
         'ajax' => true
     ],
     'local_aguiaplugin_save_preferences' => [
-        'classname' => 'local_aguiaplugin\preferences\external_save',
+        'classname' => 'local_aguiaplugin\preferences\ExternoSalvar',
         'methodname' => 'execute',
-        'classpath' => 'local/aguiaplugin/preferences/external_save.php',
+        'classpath' => 'local/aguiaplugin/preferences/externo_salvar.php',
         'description' => 'Salva as preferências de acessibilidade do usuário',
         'type' => 'write',
         'ajax' => true

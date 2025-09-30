@@ -2,7 +2,7 @@
  * Plugin AGUIA de Acessibilidade
  * Módulo para gerenciamento das funcionalidades de daltonismo
  * 
- * @module     local_aguiaplugin/colorblind_panel
+ * @module     local_aguiaplugin/painel_daltonismo
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -10,7 +10,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     // Garantir que os ícones estão disponíveis
     if (typeof AguiaIcons === 'undefined') {
-        console.error('AguiaIcons não está definido. Verifique se accessibility_icons.js foi carregado antes de colorblind_panel.js');
+    console.error('AguiaIcons não está definido. Verifique se icones_acessibilidade.js foi carregado antes de painel_daltonismo.js');
         return;
     }
     
@@ -74,20 +74,45 @@ function createColorblindPanel() {
     selectionHelp.textContent = 'Você pode selecionar múltiplos tipos de daltonismo simultaneamente';
     colorblindPanel.appendChild(selectionHelp);
     
-    // Opções para o painel de daltonismo
+    // Definir opções do painel com textos fixos e cores correspondentes
     const colorblindOptions = [
-        { value: 'none', text: 'Nenhum (Resetar)', iconSvg: AguiaIcons.colorblindNone },
-        { value: 'protanopia', text: 'Protanopia (sem vermelho)', iconSvg: AguiaIcons.protanopia },
-        { value: 'deuteranopia', text: 'Deuteranopia (sem verde)', iconSvg: AguiaIcons.deuteranopia },
-        { value: 'tritanopia', text: 'Tritanopia (sem azul)', iconSvg: AguiaIcons.tritanopia },
-        { value: 'achromatopsia', text: 'Monocromacia (sem cores)', iconSvg: AguiaIcons.achromatopsia }
+        {
+            value: 'none',
+            text: 'Nenhum (Resetar)',
+            color: '#FFFFFF',
+            hasStroke: true
+        },
+        {
+            value: 'protanopia',
+            text: 'Protanopia (sem vermelho)',
+            color: '#FF0000',
+            hasStroke: false
+        },
+        {
+            value: 'deuteranopia',
+            text: 'Deuteranopia (sem verde)',
+            color: '#00FF00',
+            hasStroke: false
+        },
+        {
+            value: 'tritanopia',
+            text: 'Tritanopia (sem azul)',
+            color: '#0000FF',
+            hasStroke: false
+        },
+        {
+            value: 'achromatopsia',
+            text: 'Monocromacia (sem cores)',
+            color: '#000000',
+            hasStroke: false
+        }
     ];
     
-    // Adiciona as opções como botões
+    // Criar container para as opções
     const colorblindOptionsContainer = document.createElement('div');
     colorblindOptionsContainer.className = 'aguia-submenu-content';
     
-    // Recupera os modos de daltonismo ativos
+    // Recuperar modos ativos
     let activeColorblindModes = [];
     try {
         const savedModes = localStorage.getItem('aguia_colorblind_modes');
@@ -99,25 +124,67 @@ function createColorblindPanel() {
         activeColorblindModes = [];
     }
     
+    // Criar botões de opção
     colorblindOptions.forEach(option => {
         const optionButton = document.createElement('button');
         optionButton.className = 'aguia-submenu-option aguia-multi-select-option';
         optionButton.dataset.value = option.value;
+        optionButton.setAttribute('aria-label', option.text);
+
+        // Container flexível para o conteúdo do botão
+        const buttonContent = document.createElement('div');
+        buttonContent.className = 'aguia-button-content';
+        buttonContent.style.display = 'flex';
+        buttonContent.style.alignItems = 'center';
+        buttonContent.style.width = '100%';
         
-        // Esvaziar o conteúdo do botão para garantir que não haja texto indefinido
-        optionButton.innerHTML = '';
+        // Criar o ícone (círculo colorido)
+        const iconContainer = document.createElement('div');
+        iconContainer.className = 'aguia-icon-container';
+        iconContainer.style.marginRight = '10px';
+        iconContainer.style.display = 'flex';
+        iconContainer.style.alignItems = 'center';
+        iconContainer.style.justifyContent = 'center';
         
-        // Criar elemento para o ícone
-        const iconSpan = document.createElement('span');
-        iconSpan.className = 'aguia-icon';
-        iconSpan.innerHTML = option.iconSvg;
-        optionButton.appendChild(iconSpan);
+        // Criar o SVG diretamente
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', '24');
+        svg.setAttribute('height', '24');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('role', 'img');
+        svg.setAttribute('aria-hidden', 'true');
+        svg.setAttribute('focusable', 'false');
         
-        // Criar elemento span para o texto
-        const textSpan = document.createElement('span');
-        textSpan.textContent = option.text;
-        textSpan.className = 'option-text';
-        optionButton.appendChild(textSpan);
+        // Adicionar círculo colorido
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', '12');
+        circle.setAttribute('cy', '12');
+        circle.setAttribute('r', '10');
+        circle.setAttribute('stroke', 'currentColor');
+        circle.setAttribute('stroke-width', '1');
+        circle.setAttribute('fill', option.color);
+        svg.appendChild(circle);
+        
+        // Adicionar traço diagonal para a opção "Nenhum"
+        if (option.hasStroke) {
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', 'M7 7 L17 17');
+            path.setAttribute('stroke', 'currentColor');
+            path.setAttribute('stroke-width', '2');
+            path.setAttribute('stroke-linecap', 'round');
+            svg.appendChild(path);
+        }
+        
+        iconContainer.appendChild(svg);
+        buttonContent.appendChild(iconContainer);
+        
+        // Criar o texto da opção
+        const textContainer = document.createElement('div');
+        textContainer.className = 'aguia-text-container';
+        textContainer.textContent = option.text;
+        buttonContent.appendChild(textContainer);
+        
+        optionButton.appendChild(buttonContent);
         
         // Marca o botão como ativo se o modo estiver na lista de modos ativos
         if (option.value === 'none' && activeColorblindModes.length === 0) {
@@ -126,6 +193,7 @@ function createColorblindPanel() {
             optionButton.classList.add('active');
         }
         
+        // Adicionar evento de clique
         optionButton.addEventListener('click', function() {
             // Comportamento especial para a opção "Nenhum"
             if (this.dataset.value === 'none') {

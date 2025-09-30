@@ -70,21 +70,18 @@ class ExternoObter extends external_api {
     public static function execute() {
         global $USER;
 
-        // Validação de contexto e permissão
         $context = \context_system::instance();
         self::validate_context($context);
-        
-        // Recupera as preferências
-    $preferences = ApiPreferencias::buscar_preferencias_usuario();
-        
-        // Retorna apenas os dados necessários
+
+        $preferences = ApiPreferencias::buscar_preferencias_usuario();
+
         return [
-            'fontsize' => (int)$preferences->fontsize,
+            'fontsize' => (int) $preferences->fontsize,
             'contrast' => $preferences->contrast,
-            'readablefonts' => (int)$preferences->readablefonts,
-            'linespacing' => (int)$preferences->linespacing,
-            'speech' => (int)$preferences->speech,
-            'texthelper' => (int)$preferences->texthelper,
+            'readablefonts' => (int) $preferences->readablefonts,
+            'linespacing' => (int) $preferences->linespacing,
+            'speech' => (int) $preferences->speech,
+            'texthelper' => (int) $preferences->texthelper,
             'colorblind' => $preferences->colorblind
         ];
     }

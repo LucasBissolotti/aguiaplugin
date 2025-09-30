@@ -86,14 +86,16 @@ if ($moodleConfigExists) {
         aguia_log_error("Moodle config carregado com sucesso de: $moodleConfigPath");
         
         if (isset($CFG) && isset($CFG->dirroot)) {
-            $api_path = $CFG->dirroot . '/local/aguiaplugin/preferences/api.php';
+            $api_path = $CFG->dirroot . '/local/aguiaplugin/preferences/api_preferencias.php';
             $check_tables_path = $CFG->dirroot . '/local/aguiaplugin/preferences/check_tables.php';
-            $helpers_path = $CFG->dirroot . '/local/aguiaplugin/preferences/helpers.php';
-            
-            if (file_exists($api_path) && file_exists($check_tables_path) && file_exists($helpers_path)) {
+            $helpers_path = $CFG->dirroot . '/local/aguiaplugin/preferences/auxiliares.php';
+            $file_storage_path = $CFG->dirroot . '/local/aguiaplugin/preferences/armazenamento_arquivos.php';
+
+            if (file_exists($api_path) && file_exists($check_tables_path) && file_exists($helpers_path) && file_exists($file_storage_path)) {
                 require_once($api_path);
                 require_once($check_tables_path);
                 require_once($helpers_path);
+                require_once($file_storage_path);
             } else {
                 aguia_log_error("Arquivos do plugin não encontrados em: $CFG->dirroot/local/aguiaplugin/");
                 $moodleConfigExists = false;
@@ -111,7 +113,7 @@ if ($moodleConfigExists) {
 }
 
 // Sempre carregamos o armazenamento baseado em arquivo como fallback
-require_once(dirname(__FILE__) . '/file_storage.php');
+require_once(dirname(__FILE__) . '/armazenamento_arquivos.php');
 
 // Configurar resposta como JSON antes de qualquer operação
 header('Content-Type: application/json');
@@ -153,21 +155,21 @@ if ($moodleConfigExists) {
         
         if ($tablesExist) {
             // Buscar preferências atuais
-            $preferences = \local_aguiaplugin\preferences\api::get_user_preferences($userid);
+            $preferences = \local_aguiaplugin\preferences\ApiPreferencias::buscar_preferencias_usuario($userid);
             
             // Log para debug
             aguia_log_error("Preferências atuais: " . json_encode($preferences));
             aguia_log_error("Preferência a atualizar: $preference = " . json_encode($value));
             
             // Atualizar a preferência específica
-            $preferences = \local_aguiaplugin\preferences\api::update_preference(
-                $preference, 
-                $value, 
+            $preferences = \local_aguiaplugin\preferences\ApiPreferencias::atualizar_preferencia(
+                $preference,
+                $value,
                 $preferences
             );
             
             // Salvar as preferências
-            $dbSuccess = \local_aguiaplugin\preferences\api::save_user_preferences($preferences, $userid);
+            $dbSuccess = \local_aguiaplugin\preferences\ApiPreferencias::salvar_preferencias_usuario($preferences, $userid);
             
             aguia_log_error("Salvamento no banco: " . ($dbSuccess ? "Sucesso" : "Falha"));
         }
@@ -181,7 +183,7 @@ if ($moodleConfigExists) {
 if (!$dbSuccess) {
     aguia_log_error("Tentando salvar em arquivo para usuário $userid");
     try {
-        $fileSuccess = aguia_file_update_preference($userid, $preference, $value);
+    $fileSuccess = aguia_atualizar_preferencia_arquivo($userid, $preference, $value);
         aguia_log_error("Salvamento em arquivo: " . ($fileSuccess ? "Sucesso" : "Falha"));
     } catch (Exception $e) {
         aguia_log_error("Erro ao salvar em arquivo", $e);

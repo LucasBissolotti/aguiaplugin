@@ -11,7 +11,7 @@
  * - Texto para fala (WCAG 1.4.1)
  * - Auxiliar de leitura (WCAG 2.4.8)
  * 
- * @module     local_aguiaplugin/accessibility_wcag
+ * @module     local_aguiaplugin/acessibilidade_wcag
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -404,7 +404,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const optionButton = document.createElement('button');
             optionButton.className = 'aguia-submenu-option';
             optionButton.dataset.value = option.value;
-            optionButton.innerHTML = `<span class="aguia-icon">${option.icon}</span> ${option.text}`;
+            optionButton.setAttribute('aria-label', option.text);
+
+            const iconSpan = document.createElement('span');
+            iconSpan.className = 'aguia-icon';
+            if (option.iconSvg) {
+                iconSpan.innerHTML = option.iconSvg;
+            } else if (option.icon) {
+                iconSpan.textContent = option.icon;
+            }
+            iconSpan.setAttribute('aria-hidden', 'true');
+            optionButton.appendChild(iconSpan);
+
+            const textSpan = document.createElement('span');
+            textSpan.className = 'aguia-text';
+            textSpan.textContent = option.text;
+            optionButton.appendChild(textSpan);
             
             // Marca o botão como ativo se for o modo atual
             if (option.value === colorBlindMode) {
@@ -1988,7 +2003,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     value: value
                 };
                 
-                fetch(M.cfg.wwwroot + '/local/aguiaplugin/preferences/save.php', {
+                fetch(M.cfg.wwwroot + '/local/aguiaplugin/preferences/salvar.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2042,7 +2057,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             // Fallback para o caso da API não estar disponível
             if (typeof M !== 'undefined' && M.cfg && M.cfg.sesskey) {
-                fetch(M.cfg.wwwroot + '/local/aguiaplugin/preferences/get.php', {
+                fetch(M.cfg.wwwroot + '/local/aguiaplugin/preferences/obter.php', {
                     method: 'GET',
                     headers: {
                         'X-Moodle-Sesskey': M.cfg.sesskey

@@ -24,7 +24,7 @@
             if (typeof M !== 'undefined' && M.cfg && M.cfg.wwwroot) {
                 const data = { preference, value };
                 
-                fetch(M.cfg.wwwroot + '/local/aguiaplugin/preferences/save.php', {
+                fetch(M.cfg.wwwroot + '/local/aguiaplugin/preferences/salvar.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -74,7 +74,7 @@
             
             // Primeiro tenta carregar do Moodle
             if (typeof M !== 'undefined' && M.cfg && M.cfg.wwwroot) {
-                fetch(M.cfg.wwwroot + '/local/aguiaplugin/preferences/get.php', {
+                fetch(M.cfg.wwwroot + '/local/aguiaplugin/preferences/obter.php', {
                     method: 'GET',
                     credentials: 'same-origin' // Importante para cookies de sessão
                 })

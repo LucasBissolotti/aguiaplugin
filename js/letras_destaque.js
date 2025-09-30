@@ -8,7 +8,7 @@
 
 // Importando a variável do arquivo principal de acessibilidade
 // Evita duplicação de variáveis globais
-// highlightedLettersLevel é declarada em accessibility_wcag.js
+// highlightedLettersLevel é declarada em acessibilidade_wcag.js
 
 // Elementos que serão processados para destacar letras
 const textSelectors = 'p, h1, h2, h3, h4, h5, h6, li, td, th, figcaption, label, blockquote';
@@ -112,7 +112,7 @@ function loadHighlightedLettersPreference() {
 
         const level = parseInt(getStoredPreference('highlightedLetters')) || 0;
         if (level > 0) {
-            // Acessa a variável global do arquivo accessibility_wcag.js
+            // Acessa a variável global do arquivo acessibilidade_wcag.js
             if (typeof window.highlightedLettersLevel !== 'undefined') {
                 window.highlightedLettersLevel = 1; // Sempre usa nível 1
             }
