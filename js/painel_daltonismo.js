@@ -32,11 +32,40 @@ document.addEventListener("DOMContentLoaded", function() {
     // Inicializa os modos de daltonismo salvos
     initializeColorblindModes();
     
-    // Inicializa o VLibras se disponível
-    if (typeof initializeVLibras === 'function') {
-        initializeVLibras();
-    }
+    // VLibras removido
 });
+
+// Aplica estilos visuais fortes para o item selecionado (evita conflitos de CSS com !important)
+function updateColorblindOptionStyles() {
+    const options = document.querySelectorAll('#aguiaColorblindPanel .aguia-submenu-option');
+    options.forEach(btn => {
+        const isActive = btn.classList.contains('active');
+        const isNone = btn.dataset && btn.dataset.value === 'none';
+        const textEl = btn.querySelector('.aguia-text-container');
+
+        if (isActive && !isNone) {
+            // Tom azul consistente com a aplicação
+            btn.style.background = 'linear-gradient(145deg, #2271ff, #0d47a1)';
+            btn.style.backgroundColor = '#2271ff';
+            btn.style.border = '1px solid #2271ff';
+            btn.style.color = '#ffffff';
+            if (textEl) {
+                textEl.style.color = '#ffffff';
+                textEl.style.fontWeight = '700';
+            }
+        } else {
+            // Resetar para estilos padrão do tema
+            btn.style.background = '';
+            btn.style.backgroundColor = '';
+            btn.style.border = '';
+            btn.style.color = '';
+            if (textEl) {
+                textEl.style.color = '';
+                textEl.style.fontWeight = '';
+            }
+        }
+    });
+}
 
 // Função para criar o painel de daltonismo com suporte a múltiplas seleções
 function createColorblindPanel() {
@@ -98,12 +127,6 @@ function createColorblindPanel() {
             value: 'tritanopia',
             text: 'Tritanopia (sem azul)',
             color: '#0000FF',
-            hasStroke: false
-        },
-        {
-            value: 'achromatopsia',
-            text: 'Monocromacia (sem cores)',
-            color: '#000000',
             hasStroke: false
         }
     ];
@@ -205,6 +228,8 @@ function createColorblindPanel() {
                 this.classList.add('active');
                 // Reseta os modos de daltonismo
                 setColorBlindModes([]);
+                // Atualiza visual
+                updateColorblindOptionStyles();
             } else {
                 // Remove a classe ativa do botão "Nenhum"
                 const noneButton = document.querySelector('.aguia-submenu-option[data-value="none"]');
@@ -225,6 +250,8 @@ function createColorblindPanel() {
                 
                 // Aplica os modos de daltonismo
                 setColorBlindModes(activeModes);
+                // Atualiza visual
+                updateColorblindOptionStyles();
             }
         });
         
@@ -235,6 +262,8 @@ function createColorblindPanel() {
     
     // Adiciona o painel ao documento
     document.body.appendChild(colorblindPanel);
+    // Aplicar estilo inicial conforme seleção atual
+    updateColorblindOptionStyles();
 }
 
 // Função para alternar o painel de daltonismo

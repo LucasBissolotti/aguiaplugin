@@ -34,8 +34,9 @@ function toggleHighlightedLetters() {
         window.highlightedLettersLevel = window.highlightedLettersLevel === 0 ? 1 : 0;
         
         // Remove qualquer destaque de letras anterior
-        if (document && document.body) {
-            document.body.classList.remove('aguia-highlighted-letters', 'level-1', 'level-2', 'level-3');
+        const scope = document.getElementById('page') || document.querySelector('#page-content') || document.querySelector('main') || document.body;
+        if (scope) {
+            scope.classList.remove('aguia-highlighted-letters', 'level-1', 'level-2', 'level-3');
         }
         
         // Atualiza UI
@@ -44,8 +45,8 @@ function toggleHighlightedLetters() {
             // Atualiza o estado do botão
             if (window.highlightedLettersLevel > 0) {
                 highlightBtn.classList.add('active');
-                document.body.classList.add('aguia-highlighted-letters');
-                document.body.classList.add('level-1'); // Sempre usa level-1
+                scope.classList.add('aguia-highlighted-letters');
+                scope.classList.add('level-1'); // Sempre usa level-1
                 
                 // Verifica se a função showStatusMessage existe
                 if (typeof showStatusMessage === 'function') {
@@ -117,9 +118,10 @@ function loadHighlightedLettersPreference() {
                 window.highlightedLettersLevel = 1; // Sempre usa nível 1
             }
             
-            if (document && document.body) {
-                document.body.classList.add('aguia-highlighted-letters');
-                document.body.classList.add('level-1');
+            const scope = document.getElementById('page') || document.querySelector('#page-content') || document.querySelector('main') || document.body;
+            if (scope) {
+                scope.classList.add('aguia-highlighted-letters');
+                scope.classList.add('level-1');
                 
                 // Atualiza o botão se existir
                 const highlightBtn = document.getElementById('aguiaHighlightedLettersBtn');

@@ -26,14 +26,11 @@
 }
 
 /* Estado ativo com !important para garantir que seja aplicado */
-#aguiaHeaderHighlightBtn.active .icon svg rect,
-#aguiaHeaderHighlightBtn.active .icon svg path {
-    stroke: #2271ff !important;
-}
+/* Removido: o ícone deve permanecer preto em qualquer estado */
 
-/* Estado hover com !important para garantir que seja aplicado */
+/* Estado hover mantém a mesma aparência para garantir consistência */
 #aguiaHeaderHighlightBtn:hover .icon svg {
-    transform: scale(1.05) !important;
+    transform: none !important; /* Não altera o tamanho do ícone */
 }
 
 /* Removendo qualquer elemento que possa estar sobrepondo o ícone */

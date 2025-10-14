@@ -2,7 +2,7 @@
 
 ## Introdução
 
-Este documento apresenta o diagrama de classes para os principais componentes do plugin AGUIA de Acessibilidade, com foco especial no subsistema de tradução em Língua Brasileira de Sinais (LIBRAS). O diagrama ilustra as relações entre as classes que compõem o sistema, destacando os atributos com suas respectivas visibilidades e tipos, além das multiplicidades nos relacionamentos.
+Este documento apresenta o diagrama de classes para os principais componentes do plugin AGUIA de Acessibilidade. O diagrama ilustra as relações entre as classes que compõem o sistema, destacando os atributos com suas respectivas visibilidades e tipos, além das multiplicidades nos relacionamentos.
 
 ```mermaid
 classDiagram
@@ -20,12 +20,7 @@ classDiagram
         -iconSvg : string
     }
 
-    class VLibrasController {
-        -enabled : boolean
-        -widget : VLibrasWidget
-        -apiVersion : string
-        -supportedCharacters : string[]
-    }
+    %% VLibras removido do escopo do projeto
     
     class UIController {
         -menuId : string
@@ -49,13 +44,7 @@ classDiagram
         -userId : string
     }
 
-    class VLibrasWidget {
-        -rootPath : string
-        -personalization : boolean
-        -showMessageBox : boolean
-        -showWelcome : boolean
-        -characterId : string
-    }
+    %% VLibras removido do escopo do projeto
 
     class StyleManager {
         -loadedStylesheets : string[]
@@ -65,8 +54,7 @@ classDiagram
 
     %% Relacionamentos com multiplicidade
     AccessibilityManager "1" *-- "1..*" FeatureController : contém
-    FeatureController <|-- VLibrasController : herança
-    VLibrasController "1" --> "1" VLibrasWidget : controla
+    %% VLibras removido do escopo do projeto
     AccessibilityManager "1" --> "1" UIController : gerencia
     UIController "1" *-- "1..*" MenuItem : contém
     AccessibilityManager "1" --> "1" UserPreferenceManager : utiliza

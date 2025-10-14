@@ -4,10 +4,13 @@
     width: 36px !important; /* Padronizado para 36px */
     height: 36px !important;
     vertical-align: middle;
-    fill: #444444; /* Cor mais escura para melhor contraste */
-    stroke-width: 0; /* Remover stroke para melhorar legibilidade */
-    filter: none; /* Remover sombra para aparência mais limpa */
-    transition: transform 0.2s ease, fill 0.2s ease; /* Animação suave */
+    fill: #000000 !important; /* Cor preta para melhor contraste - sempre fixa */
+    stroke: #000000 !important; /* Cor fixa para traços */
+    color: #000000 !important; /* Cor fixa para elementos coloridos */
+    stroke-width: 0 !important; /* Remover stroke para melhorar legibilidade */
+    filter: none !important; /* Remover sombra para aparência mais limpa */
+    transform: none !important; /* Remover qualquer transformação */
+    transition: none !important; /* Remover animações */
 }
 
 /* Garantir que os ícones fiquem centralizados */
@@ -19,10 +22,13 @@
     margin-bottom: 10px; /* Espaçamento adequado entre ícone e texto */
 }
 
-/* Adicionar estilos para quando o botão estiver ativo */
+/* Estilos para quando o botão estiver ativo - mantendo aparência constante */
 .aguia-option.active .icon svg {
-    transform: scale(1.05); /* Efeito sutil de zoom quando ativo */
-    fill: #2271ff; /* Cor azul para indicar estado ativo */
+    /* Manter exatamente igual ao estado normal */
+    transform: none !important;
+    fill: #000000 !important;
+    color: #000000 !important;
+    stroke: #000000 !important;
 }
 
 /* Estado ativo mais visível */
@@ -41,7 +47,7 @@
     color: var(--aguia-text-dark);
 }
 
-/* Efeito hover mais dinâmico */
+/* Efeito hover mais dinâmico - apenas no botão, não no ícone */
 .aguia-option:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -49,36 +55,57 @@
 }
 
 .aguia-option:hover .icon svg {
-    transform: scale(1.1);
+    /* Manter aparência igual sem transformações */
+    transform: none !important;
+    fill: #000000 !important;
+    color: #000000 !important;
+    stroke: #000000 !important;
 }
 
-/* Cores específicas para diferentes tipos de botões - similar ao UserWay */
-.aguia-option[id="aguiaHorizontalMaskBtn"] .icon svg {
-    fill: #2196f3; /* Azul para máscara de leitura horizontal */
+/* Todos os ícones são pretos em todos os estados */
+/* Estas cores serão mantidas em todos os estados */
+.aguia-option[id="aguiaHorizontalMaskBtn"] .icon svg,
+.aguia-option[id="aguiaHorizontalMaskBtn"]:hover .icon svg,
+.aguia-option[id="aguiaHorizontalMaskBtn"].active .icon svg {
+    fill: #000000 !important; /* Preto para todos os ícones */
+    stroke: #000000 !important;
 }
 
-.aguia-option[id="aguiaVerticalMaskBtn"] .icon svg {
-    fill: #03a9f4; /* Azul claro para máscara de leitura vertical */
+.aguia-option[id="aguiaVerticalMaskBtn"] .icon svg,
+.aguia-option[id="aguiaVerticalMaskBtn"]:hover .icon svg,
+.aguia-option[id="aguiaVerticalMaskBtn"].active .icon svg {
+    fill: #000000 !important; /* Preto para todos os ícones */
+    stroke: #000000 !important;
 }
 
-.aguia-option[id="aguiaCustomCursorBtn"] .icon svg {
-    fill: #673ab7; /* Roxo para cursor grande */
+.aguia-option[id="aguiaCustomCursorBtn"] .icon svg,
+.aguia-option[id="aguiaCustomCursorBtn"]:hover .icon svg,
+.aguia-option[id="aguiaCustomCursorBtn"].active .icon svg {
+    fill: #000000 !important; /* Preto para cursor grande */
 }
 
-.aguia-option[id="aguiaHideImagesBtn"] .icon svg {
-    fill: #ff5722; /* Laranja para ocultar imagens */
+.aguia-option[id="aguiaHideImagesBtn"] .icon svg,
+.aguia-option[id="aguiaHideImagesBtn"]:hover .icon svg,
+.aguia-option[id="aguiaHideImagesBtn"].active .icon svg {
+    fill: #000000 !important; /* Preto para ocultar imagens */
 }
 
-.aguia-option[id="aguiaTextToSpeechBtn"] .icon svg {
-    fill: #4caf50; /* Verde para texto para fala */
+.aguia-option[id="aguiaTextToSpeechBtn"] .icon svg,
+.aguia-option[id="aguiaTextToSpeechBtn"]:hover .icon svg,
+.aguia-option[id="aguiaTextToSpeechBtn"].active .icon svg {
+    fill: #000000 !important; /* Preto para texto para fala */
 }
 
-.aguia-option[id="aguiaContrastBtn"] .icon svg {
-    fill: #009688; /* Turquesa para contraste */
+.aguia-option[id="aguiaContrastBtn"] .icon svg,
+.aguia-option[id="aguiaContrastBtn"]:hover .icon svg,
+.aguia-option[id="aguiaContrastBtn"].active .icon svg {
+    fill: #000000 !important; /* Preto para contraste */
 }
 
-.aguia-option[id="aguiaInvertBtn"] .icon svg {
-    fill: #607d8b; /* Azul acinzentado para cores invertidas */
+.aguia-option[id="aguiaInvertBtn"] .icon svg,
+.aguia-option[id="aguiaInvertBtn"]:hover .icon svg,
+.aguia-option[id="aguiaInvertBtn"].active .icon svg {
+    fill: #000000 !important; /* Preto para cores invertidas */
 }
 
 /* Estados ativos específicos por cor - apenas ícones coloridos */
@@ -136,15 +163,19 @@
 /* Ícones coloridos no estado ativo */
 .aguia-option.active .icon svg {
     transform: scale(1.1);
+    /* Garante preto no estado ativo em regras posteriores */
+    fill: #000000;
+    color: #000000;
+    stroke: #000000;
 }
 
 /* Estilos específicos para o ícone de Aumentar Texto */
 .aguia-option[id="aguiaIncreaseFontBtn"] .icon svg {
-    fill: #333333;
+    fill: #000000;
     width: 36px !important; /* Padronizado para 36px */
     height: 36px !important;
 }
 
 .aguia-option[id="aguiaIncreaseFontBtn"].active .icon svg {
-    fill: #2271ff;
+    fill: #000000;
 }

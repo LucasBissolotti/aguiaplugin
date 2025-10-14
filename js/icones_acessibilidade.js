@@ -16,17 +16,25 @@ const AguiaIcons = {
     tritanopia: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Tritanopia</title><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1" fill="#0000FF"/></svg>',
     
     achromatopsia: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Monocromacia</title><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1" fill="#000000"/></svg>',
-        // Ícone para VLibras - tradução para língua brasileira de sinais
-    vLibras: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>VLibras</title><path fill="currentColor" d="M5 19h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2zM5 7h14v10H5V7zm7-1c-1.1 0-2 .9-2 2 0 .74.4 1.38 1 1.72v1.78c-2 .67-3 2-3 3.5h2c0-1.1.9-2 2-2s2 .9 2 2h2c0-1.5-1-2.83-3-3.5V9.72c.6-.34 1-.98 1-1.72 0-1.1-.9-2-2-2z"/></svg>',
+        // VLibras removido
     
-    // Ícone para texto para fala - Pessoa com ondas sonoras (ondas ajustadas ainda mais para cima)
-    textToSpeech: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Texto para fala</title><path d="M8,10 C8,8.34 9.34,7 11,7 C12.66,7 14,8.34 14,10 C14,11.66 12.66,13 11,13 C9.34,13 8,11.66 8,10 Z" fill="currentColor"/><path d="M6,19 L16,19 C16,16.5 14,14 11,14 C8,14 6,16.5 6,19 Z" fill="currentColor"/><path d="M16,7.5 C16,7.5 17,9 17,10 C17,11 16,12.5 16,12.5" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"/><path d="M18,6 C18,6 20,8 20,10 C20,12 18,14 18,14" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"/></svg>',
+    // Ícone para texto para fala - Pessoa com ondas sonoras (cabeça e corpo preenchidos em preto; ondas só com traço)
+    textToSpeech: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Texto para fala</title><path d="M8,10 C8,8.34 9.34,7 11,7 C12.66,7 14,8.34 14,10 C14,11.66 12.66,13 11,13 C9.34,13 8,11.66 8,10 Z" fill="#000000" style="fill:#000000!important"/><path d="M6,19 L16,19 C16,16.5 14,14 11,14 C8,14 6,16.5 6,19 Z" fill="#000000" style="fill:#000000!important"/><path d="M15.5,8 C15.5,8 16.5,9 16.5,10 C16.5,11 15.5,12 15.5,12" stroke="#000000" fill="none" stroke-width="1.5" stroke-linecap="round" style="stroke:#000000!important"/><path d="M18,6.5 C18,6.5 20,8.25 20,10 C20,11.75 18,13.5 18,13.5" stroke="#000000" fill="none" stroke-width="1.5" stroke-linecap="round" style="stroke:#000000!important"/></svg>',
     
     // Ícone para aumentar texto - Versão limpa de A+
     increaseText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><text x="4" y="16" font-family="Arial, sans-serif" font-weight="bold" font-size="14">A+</text></svg>',
     
     // Ícone para fonte legível - Material Design
     readableFont: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Fontes legíveis</title><path fill="currentColor" d="M9 8h6v2h-6V8zm0 3h6v2h-6v-2zm0 3h6v2h-6v-2zM5 5h14c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V7c0-1.1.9-2 2-2zm0 2v10h14V7H5z"/></svg>',
+
+    // Novos ícones para estado de Fontes Legíveis
+    // Estado padrão (não selecionado): A dentro de um quadrado (como a imagem 1)
+    fontSingleA: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Fonte padrão</title><rect x="3" y="3" width="18" height="18" rx="3" ry="3" fill="none" stroke="currentColor" stroke-width="1.8"/><text x="12" y="16" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="12" fill="currentColor">A</text></svg>',
+    // Estado ativo (selecionado): Aa (A maiúsculo e a minúsculo) herdando a cor atual
+    fontAaSample: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Fontes legíveis ativas</title><text x="6" y="16" font-family="Arial, sans-serif" font-weight="bold" font-size="12" fill="currentColor">A</text><text x="13" y="16" font-family="Arial, sans-serif" font-weight="normal" font-size="12" fill="currentColor">a</text></svg>',
+
+    // Variante para OpenDyslexic: usa a família 'OpenDyslexic' se disponível
+    fontAaOpenDyslexic: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>OpenDyslexic ativo</title><text x="5" y="16" font-family="OpenDyslexic, Arial, sans-serif" font-weight="700" font-size="13" fill="currentColor">A</text><text x="13" y="16" font-family="OpenDyslexic, Arial, sans-serif" font-weight="400" font-size="13" fill="currentColor">a</text></svg>',
     
     // Ícone para espaçamento entre linhas - Material Design
     lineSpacing: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Espaçamento entre linhas</title><path fill="currentColor" d="M6 7h2.5L5 3.5L1.5 7H4v10H1.5L5 20.5L8.5 17H6V7zm4-2v2h12V5H10zm0 14h12v-2H10v2zm0-6h12v-2H10v2z"/></svg>',
@@ -37,14 +45,14 @@ const AguiaIcons = {
     // Mantém o ícone original por compatibilidade
     spacing: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Espaçamento</title><path fill="currentColor" d="M5 21h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2zm0-16h14v2H5V5zm0 4h14v2H5V9zm0 4h14v2H5v-2zm0 4h14v2H5v-2z"/></svg>',
     
-    // Ícone para destacar links - Estilo flat minimalista
-    emphasizeLinks: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Destacar links</title><rect x="6" y="8" width="12" height="8" rx="2" ry="2" fill="#444444" stroke="none"/><path fill="#FFFFFF" d="M10.5 10 C9.5 10 9 10.7 9 11.5 C9 12.3 9.5 13 10.5 13 L11.2 13 L11.2 12 L10.5 12 C10.2 12 10 11.8 10 11.5 C10 11.2 10.2 11 10.5 11 L11.8 11 L11.8 10 L10.5 10 Z M12.2 11 L12.2 12 L13.5 12 C13.8 12 14 12.2 14 12.5 C14 12.8 13.8 13 13.5 13 L12.2 13 L12.2 14 L13.5 14 C14.5 14 15 13.3 15 12.5 C15 11.7 14.5 11 13.5 11 L12.2 11 Z M11 12.25 L11 12.75 L13 12.75 L13 12.25 L11 12.25 Z"/></svg>',
+    // Ícone para destacar links - Dois elos horizontais interligados com corte onde passa o risco; risco horizontal mais curto e fino
+    emphasizeLinks: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Destacar links</title><defs><mask id="linkCutMask"><rect x="0" y="0" width="24" height="24" style="fill:#ffffff!important"/><!-- faixa preta remove o trecho onde o risco passa (limitada à extensão do risco) --><rect x="8" y="11.4" width="8" height="1.2" style="fill:#000000!important"/></mask></defs><g mask="url(#linkCutMask)"><ellipse cx="6.5" cy="12" rx="4.3" ry="3" style="fill:none!important; stroke:#000000!important; stroke-width:2!important"/><ellipse cx="17.5" cy="12" rx="4.3" ry="3" style="fill:none!important; stroke:#000000!important; stroke-width:2!important"/></g><!-- risco horizontal mais curto e mais fino --><line x1="8" y1="12" x2="16" y2="12" style="stroke:#000000!important; stroke-width:1.2!important; stroke-linecap:round!important; fill:none!important"/></svg>',
     
     // Ícone para alto contraste - Círculo metade preenchido
     contrast: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Alto contraste</title><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1" fill="none"/><path fill="currentColor" d="M12,2 A10,10 0 0,1 12,22 A10,10 0 0,1 12,2 z" d="M12,2 A10,10 0 0,1 12,22 A10,10 0 0,1 12,2 z" clip-path="inset(0 50% 0 0)"/></svg>',
     
     // Ícone para intensidade de cores - Gota metade preta e metade branca
-    colorIntensity: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Intensidade de cores</title><path fill="none" stroke="currentColor" stroke-width="1" d="M12 3.5c-3.8 5.2-7 9.8-7 13.5 0 3.9 3.1 7 7 7s7-3.1 7-7c0-3.7-3.2-8.3-7-13.5z"/><path fill="#000000" d="M12 3.5c-3.8 5.2-7 9.8-7 13.5 0 3.9 3.1 7 7 7s7-3.1 7-7c0-3.7-3.2-8.3-7-13.5z" clip-path="inset(0 50% 0 0)"/><path fill="#FFFFFF" d="M12 3.5c-3.8 5.2-7 9.8-7 13.5 0 3.9 3.1 7 7 7s7-3.1 7-7c0-3.7-3.2-8.3-7-13.5z" clip-path="inset(0 0 0 50%)"/></svg>',
+    colorIntensity: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Intensidade de cores</title><defs><clipPath id="ciClipAguia"><path d="M12 3.5c-3.8 5.2-7 9.8-7 13.5 0 3.9 3.1 7 7 7s7-3.1 7-7c0-3.7-3.2-8.3-7-13.5z"/></clipPath></defs><rect x="0" y="0" width="12" height="24" fill="#000000" clip-path="url(#ciClipAguia)" style="fill:#000000!important"/><path d="M12 3.5c-3.8 5.2-7 9.8-7 13.5 0 3.9 3.1 7 7 7s7-3.1 7-7c0-3.7-3.2-8.3-7-13.5z" fill="none" stroke="#000000" stroke-width="1" style="fill:none!important;stroke:#000000!important"/><!-- metade direita transparente para se adaptar ao fundo do botão (branco desativado, azul ativado) --></svg>',
     
     // Ícone para inverter cores
     invertColors: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Inverter cores</title><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8v8h8c0 4.41-3.59 8-8 8z"/></svg>',
@@ -83,11 +91,13 @@ const AguiaIcons = {
     // Ícone para letras destacadas - Material Design
     highlightedLetters: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><text x="7" y="18" font-family="Arial, sans-serif" font-weight="bold" font-size="18">B</text></svg>',
     
-    // Ícone para lupa de conteúdo - Design minimalista
-    magnifier: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Lupa de conteúdo</title><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="2" fill="none"/><path stroke="currentColor" stroke-width="2" d="M16 16 L21 21" stroke-linecap="round"/></svg>',
+    // Ícone para lupa de conteúdo - Lente com anel (bola preta maior com "furo" central)
+    // O furo central é transparente: fica branco no estado inativo (fundo do botão) e azul no ativo (fundo azul do botão)
+    // Abertura interna centralizada e ligeiramente menor (redução sutil)
+    magnifier: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Lupa de conteúdo</title><path d="M10 3a7 7 0 1 1 0 14a7 7 0 1 1 0-14 M10 4.2a5.8 5.8 0 1 0 0 11.6a5.8 5.8 0 1 0 0-11.6" fill="#000000" fill-rule="evenodd" style="fill:#000000!important"/><path d="M14.5 14.5 L21 21" stroke="#000000" stroke-width="2.2" stroke-linecap="round" style="stroke:#000000!important"/></svg>',
     
     // Ícone para destaque de cabeçalhos - Design minimalista com linha grossa
-    headerHighlight: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Destacar cabeçalhos</title><rect x="4" y="4" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" rx="2" ry="2"/><path d="M8 8 L12 8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>',
+    headerHighlight: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Destacar cabeçalhos</title><rect x="4" y="4" width="16" height="16" rx="2" ry="2" style="fill:none!important; stroke:#000000!important; stroke-width:2!important"/><path d="M8 8 L12 8" style="fill:none!important; stroke:#000000!important; stroke-width:3!important; stroke-linecap:round!important"/></svg>',
     
     // Novos ícones acessíveis
     

@@ -5,7 +5,6 @@
  * - Protanopia: Incapacidade de perceber vermelho
  * - Deuteranopia: Incapacidade de perceber verde
  * - Tritanopia: Incapacidade de perceber azul
- * - Monocromacia/Acromatopsia: Incapacidade de perceber cores
  *
  * NOTA: Este sistema suporta a combinação de múltiplos filtros de daltonismo
  * simultaneamente, permitindo criar experiências personalizadas para diferentes
@@ -16,7 +15,7 @@
  */
 
 /* Protanopia - Dificuldade em perceber vermelho */
-html.aguia-colorblind-protanopia {
+.aguia-colorblind-protanopia {
     filter: url('data:image/svg+xml,\
         <svg xmlns="http://www.w3.org/2000/svg">\
             <filter id="protanopia">\
@@ -30,7 +29,7 @@ html.aguia-colorblind-protanopia {
 }
 
 /* Deuteranopia - Dificuldade em perceber verde */
-html.aguia-colorblind-deuteranopia {
+.aguia-colorblind-deuteranopia {
     filter: url('data:image/svg+xml,\
         <svg xmlns="http://www.w3.org/2000/svg">\
             <filter id="deuteranopia">\
@@ -44,7 +43,7 @@ html.aguia-colorblind-deuteranopia {
 }
 
 /* Tritanopia - Dificuldade em perceber azul */
-html.aguia-colorblind-tritanopia {
+.aguia-colorblind-tritanopia {
     filter: url('data:image/svg+xml,\
         <svg xmlns="http://www.w3.org/2000/svg">\
             <filter id="tritanopia">\
@@ -57,16 +56,4 @@ html.aguia-colorblind-tritanopia {
         </svg>#tritanopia');
 }
 
-/* Monocromacia/Acromatopsia - Visão em escala de cinza */
-html.aguia-colorblind-achromatopsia {
-    filter: url('data:image/svg+xml,\
-        <svg xmlns="http://www.w3.org/2000/svg">\
-            <filter id="achromatopsia">\
-                <feColorMatrix in="SourceGraphic" type="matrix"\
-                    values="0.299, 0.587, 0.114, 0, 0\
-                            0.299, 0.587, 0.114, 0, 0\
-                            0.299, 0.587, 0.114, 0, 0\
-                            0,     0,     0,     1, 0"/>\
-            </filter>\
-        </svg>#achromatopsia');
-}
+/* Regra de Monocromacia/Acromatopsia removida por solicitação */

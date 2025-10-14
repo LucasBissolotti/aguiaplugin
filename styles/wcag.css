@@ -281,9 +281,10 @@ button#aguiaButton.aguia-button:hover::before {
 .aguia-option span.icon svg {
     width: 36px !important;
     height: 36px !important;
-    fill: #333333;
-    color: #333333;
-    transition: all 0.2s ease;
+    fill: #000000 !important;
+    color: #000000 !important;
+    stroke: #000000 !important;
+    transition: transform 0.2s ease;
 }
 
 .aguia-option span.text {
@@ -303,9 +304,10 @@ button#aguiaButton.aguia-button:hover::before {
 }
 
 .aguia-option.active span.icon svg {
-    fill: #2271ff;
-    color: #2271ff;
-    stroke: #2271ff;
+    /* Mantém ícones pretos mesmo quando ativos */
+    fill: #000000 !important;
+    color: #000000 !important;
+    stroke: #000000 !important;
 }
 
 .aguia-option.active span.text {
@@ -879,6 +881,37 @@ input:checked + .aguia-switch-slider:before {
     background-color: var(--aguia-primary-color);
     color: var(--aguia-text-light);
     border-color: var(--aguia-primary-color);
+}
+
+/* Estilização específica para o painel de daltonismo
+   Garante que a opção selecionada fique azul como os demais botões, mesmo com CSSs concorrentes */
+#aguiaColorblindPanel {
+    /* Impede que os filtros de daltonismo afetem o próprio painel de seleção */
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
+#aguiaColorblindPanel .aguia-submenu-option.active {
+    background: linear-gradient(135deg, #2196f3 0%, #0d47a1 100%) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+    box-shadow: 0 2px 4px rgba(33, 150, 243, 0.3) !important;
+}
+
+#aguiaColorblindPanel .aguia-submenu-option.active .aguia-text,
+#aguiaColorblindPanel .aguia-submenu-option.active .aguia-text-container {
+    color: #ffffff !important;
+}
+
+#aguiaColorblindPanel .aguia-submenu-option.active .aguia-icon svg circle,
+#aguiaColorblindPanel .aguia-submenu-option.active .aguia-icon-container svg circle {
+    stroke: #ffffff !important;
+    stroke-width: 2px !important;
+}
+
+#aguiaColorblindPanel .aguia-submenu-option.active .aguia-icon svg path,
+#aguiaColorblindPanel .aguia-submenu-option.active .aguia-icon-container svg path {
+    stroke: #ffffff !important;
 }
 
 .aguia-submenu-option .aguia-icon {

@@ -18,7 +18,7 @@
 #aguiaHighlightedLettersBtn .icon svg {
     width: 36px !important;
     height: 36px !important;
-    fill: #444444 !important;
+    fill: #000000 !important;
     overflow: visible !important;
     display: block !important;
     margin: 0 auto !important;
@@ -26,14 +26,17 @@
     filter: none !important;
 }
 
-/* Estado ativo com !important para garantir que seja aplicado */
-#aguiaHighlightedLettersBtn.active .icon svg {
-    fill: #2271ff !important;
+/* Estado ativo e hover com cores consistentes */
+#aguiaHighlightedLettersBtn.active .icon svg,
+#aguiaHighlightedLettersBtn:hover .icon svg,
+#aguiaHighlightedLettersBtn .icon svg {
+    fill: #000000 !important; /* Preto - consistente em todos os estados */
+    stroke: #000000 !important;
 }
 
-/* Estado hover com !important para garantir que seja aplicado */
+/* Estado hover sem transformação para manter aparência consistente */
 #aguiaHighlightedLettersBtn:hover .icon svg {
-    transform: scale(1.05) !important;
+    transform: none !important;
 }
 
 /* Removendo qualquer elemento que possa estar sobrepondo o ícone */

@@ -18,7 +18,7 @@
 #aguiaIncreaseFontBtn .icon svg {
     width: 36px !important;
     height: 36px !important;
-    fill: #444444 !important;
+    fill: #000000 !important;
     overflow: visible !important;
     display: block !important;
     margin: 0 auto !important;
@@ -26,23 +26,27 @@
     filter: none !important;
 }
 
-/* Estado ativo com !important para garantir que seja aplicado */
-#aguiaIncreaseFontBtn.active .icon svg {
-    fill: #2271ff !important;
+/* Estado ativo mantendo cores consistentes - preto */
+#aguiaIncreaseFontBtn.active .icon svg,
+#aguiaIncreaseFontBtn:hover .icon svg,
+#aguiaIncreaseFontBtn .icon svg {
+    fill: #000000 !important; /* Preto - consistente em todos os estados */
 }
-#aguiaIncreaseFontBtn.active .icon svg text {
-    fill: #2271ff !important;
+#aguiaIncreaseFontBtn.active .icon svg text,
+#aguiaIncreaseFontBtn:hover .icon svg text,
+#aguiaIncreaseFontBtn .icon svg text {
+    fill: #000000 !important; /* Consistente com o SVG */
 }
 
-/* Estado hover com !important para garantir que seja aplicado */
+/* Estado hover sem transformação para manter aparência consistente */
 #aguiaIncreaseFontBtn:hover .icon svg {
-    transform: scale(1.05) !important;
+    transform: none !important;
 }
 
 /* Estilo específico para o texto A+ */
 #aguiaIncreaseFontBtn .icon svg text {
     font-weight: bold !important;
-    fill: #444444 !important;
+    fill: #000000 !important;
 }
 
 /* Removendo qualquer elemento que possa estar sobrepondo o ícone */

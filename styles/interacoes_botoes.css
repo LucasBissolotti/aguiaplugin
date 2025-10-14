@@ -9,11 +9,11 @@
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
 }
 
-/* Efeito de clique para feedback visual */
+/* Efeito de clique para feedback visual - sem transformar o tamanho */
 .button-clicked, .aguia-option:active {
-    transform: scale(0.95) !important;
     background-color: rgba(0, 0, 0, 0.1) !important;
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2) !important;
+    /* Removido transform para manter o ícone com tamanho consistente */
 }
 
 /* Garantir que os botões possam ser selecionados em todos os dispositivos */
@@ -37,9 +37,9 @@
     box-shadow: 0 0 8px rgba(0, 114, 188, 0.7) !important;
 }
 
-/* Destacar ícones em botões ativos */
+/* Manter aparência dos ícones consistente em botões ativos */
 .aguia-option.active .icon svg {
-    filter: brightness(1.2) !important;
+    filter: none !important; /* Removido brightness para manter aparência consistente */
 }
 
 /* Garantir visibilidade em alto contraste */

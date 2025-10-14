@@ -18,30 +18,46 @@
 #aguiaTextToSpeechBtn .icon svg {
     width: 36px !important;
     height: 36px !important;
-    fill: #444444 !important;
+    fill: #000000 !important;
     overflow: visible !important;
     display: block !important;
     margin: 0 auto !important;
     transform: none !important;
     filter: none !important;
+    stroke-width: 1.5px !important; /* Garantir que as linhas não fiquem grossas demais */
+    stroke-linecap: round !important; /* Bordas arredondadas para curvas suaves */
+    stroke-linejoin: round !important; /* Junções arredondadas para evitar pontas afiadas */
+    padding: 1px !important; /* Adicionar um pouco de espaço interno */
 }
 
-/* Estado ativo com !important para garantir que seja aplicado */
-#aguiaTextToSpeechBtn.active .icon svg {
-    fill: #2271ff !important;
+/* Estado ativo e hover com cores consistentes */
+#aguiaTextToSpeechBtn.active .icon svg,
+#aguiaTextToSpeechBtn:hover .icon svg,
+#aguiaTextToSpeechBtn .icon svg {
+    fill: #000000 !important; /* Preto - consistente em todos os estados */
 }
 
-#aguiaTextToSpeechBtn.active .icon svg path[fill="currentColor"] {
-    fill: #2271ff !important;
+#aguiaTextToSpeechBtn.active .icon svg path,
+#aguiaTextToSpeechBtn:hover .icon svg path,
+#aguiaTextToSpeechBtn .icon svg path {
+    fill: #000000 !important; /* Preto - consistente em todos os estados */
 }
 
-#aguiaTextToSpeechBtn.active .icon svg path[stroke="currentColor"] {
-    stroke: #2271ff !important;
+/* Definição específica para as linhas de som (os riscos curvados) */
+#aguiaTextToSpeechBtn.active .icon svg path[d*="M"],
+#aguiaTextToSpeechBtn:hover .icon svg path[d*="M"],
+#aguiaTextToSpeechBtn .icon svg path[d*="M"] {
+    stroke: #000000 !important; /* Preto - consistente em todos os estados */
+    fill: none !important; /* Garantir que os riscos não sejam preenchidos */
+    stroke-width: 1.5px !important; /* Espessura adequada para visualização */
+    opacity: 1 !important; /* Garantir visibilidade total */
+    transform: translateX(3px) !important; /* Afastar os riscos curvados da cabeça do boneco */
+    margin-left: 2px !important; /* Espaçamento adicional à esquerda */
 }
 
-/* Estado hover com !important para garantir que seja aplicado */
+/* Estado hover sem transformação para manter aparência consistente */
 #aguiaTextToSpeechBtn:hover .icon svg {
-    transform: scale(1.05) !important;
+    transform: none !important;
 }
 
 /* Removendo qualquer elemento que possa estar sobrepondo o ícone */
@@ -49,4 +65,10 @@
 #aguiaTextToSpeechBtn .icon::after {
     display: none !important;
     content: none !important;
+}
+
+/* Garantir separação adequada entre os elementos do ícone */
+#aguiaTextToSpeechBtn .icon svg * {
+    vector-effect: non-scaling-stroke !important; /* Manter espessura das linhas consistente */
+    shape-rendering: geometricPrecision !important; /* Melhorar renderização dos elementos */
 }

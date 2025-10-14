@@ -16,7 +16,6 @@ O plugin AGUIA (Acessibilidade e Guia para Inclusão e Aprendizagem) é uma ferr
   - Protanomalia/Protanopia (dificuldade em perceber vermelho)
   - Deuteranomalia/Deuteranopia (dificuldade em perceber verde)
   - Tritanomalia/Tritanopia (dificuldade em perceber azul)
-  - Monocromacia/Acromatopsia (incapacidade de perceber cores)
 - **Leitura de texto (Text-to-Speech)**: Lê o texto quando o usuário clica em um elemento.
 - **Auxiliar de leitura (WCAG 2.4.8)**: Realça a linha de texto onde o cursor está posicionado.
 - **Destaque para links (WCAG 1.4.1)**: Permite destacar visualmente os links para melhor identificação.

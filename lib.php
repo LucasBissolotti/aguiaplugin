@@ -122,7 +122,7 @@ function local_aguiaplugin_require_js() {
         }
         
         /* Estrutura geral dos botões */
-        .aguia-submenu-option {
+    .aguia-submenu-option {
             display: flex !important;
             align-items: center !important;
             padding: 10px 15px !important;
@@ -135,7 +135,7 @@ function local_aguiaplugin_require_js() {
             box-sizing: border-box !important;
             position: relative !important;
             border: none !important;
-            background-color: white !important;
+            background-color: white; /* sem !important para permitir estilos de estado ativo */
         }
         
         /* Estilos para os círculos coloridos de daltonismo */
@@ -210,16 +210,7 @@ function local_aguiaplugin_before_footer() {
     local_aguiaplugin_require_js();
     
     // VLibras Widget 
-    echo '
-    <div vw class="enabled">
-      <div vw-access-button class="active"></div>
-      <div vw-plugin-wrapper></div>
-    </div>
-    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-    <script>
-      new window.VLibras.Widget(\'https://vlibras.gov.br/app\');
-    </script>
-    ';
+            // VLibras removido
 }
 
 /**
@@ -264,6 +255,7 @@ function local_aguiaplugin_before_standard_html_head() {
     'icons/ajuste_icone_destaque_cabecalho.css',
     'icons/ajuste_intensidade_cor.css',
     'icons/ajuste_texto_para_fala.css',
+    'icons/ajuste_texto_para_fala_adicional.css',
     'icons/ajuste_ocultar_imagens.css',
     'icons/ajuste_tamanho_texto.css',
     'icons/ajuste_altura_linha.css',
@@ -271,6 +263,8 @@ function local_aguiaplugin_before_standard_html_head() {
     'icons/ajuste_mascara_foco_horizontal.css',
     'icons/ajuste_mascara_foco_vertical.css',
     'icons/ajuste_alto_contraste.css',
+    'manutencao_icones.css', // Arquivo que garante que os ícones mantenham sua aparência original
+    'correcao_icones_final.css', // Correção final para botões com problemas específicos de consistência
     'icons/correcao_cursor_personalizado.css',
     ];
 

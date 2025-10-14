@@ -31,10 +31,15 @@
     background-color: #f0f0f0;
 }
 
-/* Estilo para botões ativos */
-#aguiaColorblindPanel .aguia-submenu-option.active {
-    background-color: #e6f2ff;
-    border-left: 3px solid #007bff;
+/* Estilo para botões ativos - mesmo azul dos demais botões
+   Usa !important e maior especificidade para superar regras globais com !important */
+#aguiaColorblindPanel button.aguia-submenu-option.active {
+    background: none !important;
+    background-color: #2271ff !important; /* mesmo tom dos demais botões */
+    color: #ffffff !important;
+    border-left: none !important;
+    border: 1px solid #2271ff !important;
+    box-shadow: 0 6px 12px rgba(34, 113, 255, 0.25) !important;
 }
 
 /* Container de conteúdo do botão */
@@ -70,19 +75,20 @@
 /* Efeito para botões ativos */
 #aguiaColorblindPanel .aguia-submenu-option.active .aguia-icon-container svg circle {
     stroke-width: 2px;
-    stroke: #007bff;
+    stroke: #000000;
 }
 
-#aguiaColorblindPanel .aguia-submenu-option.active .aguia-text-container {
-    font-weight: 500;
-    color: #007bff;
+#aguiaColorblindPanel button.aguia-submenu-option.active .aguia-text-container,
+#aguiaColorblindPanel button.aguia-submenu-option.active .aguia-button-content {
+    font-weight: 700;
+    color: #ffffff !important; /* branco mais forte */
 }
 
 /* Efeito específico para opção "Nenhum" */
 #aguiaColorblindPanel .aguia-submenu-option[data-value="none"] .aguia-icon-container svg path {
-    stroke: #333;
+    stroke: #000000 !important;
 }
 
 #aguiaColorblindPanel .aguia-submenu-option.active[data-value="none"] .aguia-icon-container svg path {
-    stroke: #007bff;
+    stroke: #000000;
 }

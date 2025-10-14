@@ -38,6 +38,40 @@ document.addEventListener('DOMContentLoaded', function() {
     let customCursorEnabled = false; // Nova variável para controlar o cursor personalizado
     let highlightedLettersLevel = 0; // 0: desativado, 1: pequeno, 2: médio, 3: grande
     
+    // Define um contêiner de escopo para aplicar os estilos de acessibilidade apenas no conteúdo da página
+    function getAguiaScopeElement() {
+        // Tente encontrar elementos típicos de header, conteúdo principal e footer
+        const content = document.getElementById('page')
+            || document.querySelector('#page-content')
+            || document.querySelector('main')
+            || document.querySelector('#region-main')
+            || document.body;
+
+        const header = document.querySelector('header, #page-header, .page-header, .header, #moodleheader');
+        const footer = document.querySelector('footer, #page-footer, .page-footer, .footer, #moodlefooter');
+
+        // Subimos a partir do conteúdo procurando um ancestral que contenha header e footer
+        let node = content;
+        while (node && node !== document.body) {
+            const hasHeader = header ? node.contains(header) : false;
+            const hasFooter = footer ? node.contains(footer) : false;
+            if (hasHeader && hasFooter) {
+                return node;
+            }
+            node = node.parentElement;
+        }
+
+        // Se o ancestral comum for apenas o <body>, evitamos usá-lo para não afetar a UI do plugin
+        // e mantemos o container de conteúdo como escopo padrão
+        return content;
+    }
+    const AGUIA_SCOPE = getAguiaScopeElement();
+    // Tornamos o AGUIA_SCOPE acessível globalmente para que outros scripts possam usá-lo
+    window.AGUIA_SCOPE = AGUIA_SCOPE;
+    
+    // Adicionar um ID ao elemento de escopo para facilitar sua localização
+    AGUIA_SCOPE.id = AGUIA_SCOPE.id || 'aguia-scope-element';
+    
     // Cria o botão de acessibilidade com a imagem AGUIA
     createAccessibilityButton();
     
@@ -234,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 id: 'aguiaIncreaseFontBtn'
             },
             { 
-                iconSvg: AguiaIcons.readableFont,
+                iconSvg: AguiaIcons.fontSingleA,
                 text: 'Fontes Legíveis', 
                 action: toggleReadableFonts,
                 ariaLabel: 'Ativar ou desativar fontes mais legíveis',
@@ -389,11 +423,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Opções para o painel de daltonismo
         const colorblindOptions = [
-            { value: 'none', text: 'Nenhum', iconSvg: AguiaIcons.colorblindNone },
+            // Para 'Nenhum', não renderizamos ícone para evitar duplicação visual
+            { value: 'none', text: 'Nenhum' },
             { value: 'protanopia', text: 'Protanopia (sem vermelho)', iconSvg: AguiaIcons.protanopia },
             { value: 'deuteranopia', text: 'Deuteranopia (sem verde)', iconSvg: AguiaIcons.deuteranopia },
             { value: 'tritanopia', text: 'Tritanopia (sem azul)', iconSvg: AguiaIcons.tritanopia },
-            { value: 'achromatopsia', text: 'Monocromacia (sem cores)', iconSvg: AguiaIcons.achromatopsia }
+            // Removido: achromatopsia (Monocromacia)
         ];
         
         // Adiciona as opções como botões
@@ -531,9 +566,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     const button = document.getElementById('aguiaMagnifierBtn');
                     const menu = document.getElementById('aguiaMenu');
                     
+                    // Garantir que AGUIA_SCOPE esteja definido
+                    const aguiaScope = window.AGUIA_SCOPE || document.getElementById('aguia-scope-element');
+                    
                     // Verificar se a função está disponível no namespace AguiaMagnifier
                     if (window.AguiaMagnifier && typeof window.AguiaMagnifier.toggleMagnifier === 'function') {
-                        const wasActive = window.AguiaMagnifier.isActive();
+                        const wasActive = window.AguiaMagnifier.state && window.AguiaMagnifier.state.enabled;
                         window.AguiaMagnifier.toggleMagnifier();
                         
                         if (!wasActive) {
@@ -549,14 +587,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     } else {
                         // Fallback simples se a função específica não estiver disponível
-                        if (document.body.classList.contains('aguia-magnifier-active')) {
-                            document.body.classList.remove('aguia-magnifier-active');
+                        if (aguiaScope && aguiaScope.classList.contains('aguia-magnifier-active')) {
+                            aguiaScope.classList.remove('aguia-magnifier-active');
                             if (button) button.classList.remove('active');
                             if (menu) menu.style.display = 'block';
                             showStatusMessage('Lupa de conteúdo desativada', 'success');
                             saveUserPreference('magnifier', false);
-                        } else {
-                            document.body.classList.add('aguia-magnifier-active');
+                        } else if (aguiaScope) {
+                            aguiaScope.classList.add('aguia-magnifier-active');
                             if (button) button.classList.add('active');
                             if (menu) menu.style.display = 'none';
                             showStatusMessage('Lupa de conteúdo ativada', 'success');
@@ -731,7 +769,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para definir o tamanho da fonte
     function setFontSize(size, silent = false) {
         // Remove todas as classes anteriores de tamanho de fonte
-        document.body.classList.remove(
+        AGUIA_SCOPE.classList.remove(
             'aguia-text-size-100',
             'aguia-text-size-110',
             'aguia-text-size-120',
@@ -741,7 +779,7 @@ document.addEventListener('DOMContentLoaded', function() {
         );
         
         // Aplica a nova classe de tamanho
-        document.body.classList.add('aguia-text-size-' + size);
+    AGUIA_SCOPE.classList.add('aguia-text-size-' + size);
         
         // Atualiza a variável atual
         currentFontSize = size;
@@ -795,7 +833,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Desativa intensidade de cores se estiver ativando alto contraste
         if (highContrastEnabled && colorIntensityMode > 0) {
             // Remove todas as classes de intensidade de cor
-            document.body.classList.remove(
+            AGUIA_SCOPE.classList.remove(
                 'aguia-color-intensity-low',
                 'aguia-color-intensity-high',
                 'aguia-color-intensity-gray'
@@ -810,7 +848,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const textSpan = intensityBtn.querySelector('.text');
                 const iconSpan = intensityBtn.querySelector('.icon');
                 if (textSpan) textSpan.textContent = 'Intensidade de Cores';
-                if (iconSpan) iconSpan.innerHTML = AguiaIcons.invertColors;
+                if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensity;
             }
             
             // Salva a preferência
@@ -829,10 +867,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Aplica a classe ao corpo do documento
         if (highContrastEnabled) {
-            document.body.classList.add('aguia-high-contrast');
+            AGUIA_SCOPE.classList.add('aguia-high-contrast');
             showStatusMessage('Alto contraste melhorado ativado', 'success');
         } else {
-            document.body.classList.remove('aguia-high-contrast');
+            AGUIA_SCOPE.classList.remove('aguia-high-contrast');
             showStatusMessage('Alto contraste melhorado desativado');
         }
         
@@ -848,7 +886,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Desativa alto contraste se estiver ativando qualquer modo de intensidade de cor
         if (colorIntensityMode > 0 && highContrastEnabled) {
             highContrastEnabled = false;
-            document.body.classList.remove('aguia-high-contrast');
+            AGUIA_SCOPE.classList.remove('aguia-high-contrast');
             
             const contrastBtn = document.getElementById('aguiaHighContrastBtn');
             if (contrastBtn) {
@@ -857,14 +895,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Remove todas as classes de intensidade de cor
-        document.body.classList.remove(
+        AGUIA_SCOPE.classList.remove(
             'aguia-color-intensity-low',
             'aguia-color-intensity-high',
             'aguia-color-intensity-gray'
         );
+
+        // Evita conflito com filtros de daltonismo: se for usar intensidade de cor, desativa daltonismo
+        if (colorIntensityMode > 0) {
+            AGUIA_SCOPE.classList.remove(
+                'aguia-colorblind-protanopia',
+                'aguia-colorblind-deuteranopia',
+                'aguia-colorblind-tritanopia'
+            );
+            colorBlindMode = 'none';
+            const colorblindBtn = document.getElementById('aguiaColorblindButton');
+            if (colorblindBtn) colorblindBtn.classList.remove('active');
+            document.querySelectorAll('#aguiaColorblindPanel .aguia-submenu-option').forEach(btn => btn.classList.remove('active'));
+            const noneOption = document.querySelector('#aguiaColorblindPanel .aguia-submenu-option[data-value="none"]');
+            if (noneOption) noneOption.classList.add('active');
+            saveUserPreference('colorblind', 'none');
+            localStorage.setItem('aguia_colorblind_modes', JSON.stringify([]));
+        }
         
         // Atualiza o botão
-        const intensityBtn = document.getElementById('aguiaColorIntensityBtn');
+            const intensityBtn = document.getElementById('aguiaColorIntensityBtn');
         if (intensityBtn) {
             // Remove todas as classes de nível
             intensityBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
@@ -876,31 +931,31 @@ document.addEventListener('DOMContentLoaded', function() {
             switch (colorIntensityMode) {
                 case 0: // Normal
                     if (textSpan) textSpan.textContent = 'Intensidade de Cores';
-                    if (iconSpan) iconSpan.innerHTML = AguiaIcons.invertColors;
+                    if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensity;
                     showStatusMessage('Intensidade de cores normal');
                     break;
                 
                 case 1: // Baixa intensidade
-                    document.body.classList.add('aguia-color-intensity-low');
+                    AGUIA_SCOPE.classList.add('aguia-color-intensity-low');
                     intensityBtn.classList.add('active', 'level-1');
                     if (textSpan) textSpan.textContent = 'Baixa Intensidade';
-                    if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensityLow;
+                    if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensity;
                     showStatusMessage('Modo de baixa intensidade de cores ativado', 'success');
                     break;
                 
                 case 2: // Alta intensidade
-                    document.body.classList.add('aguia-color-intensity-high');
+                    AGUIA_SCOPE.classList.add('aguia-color-intensity-high');
                     intensityBtn.classList.add('active', 'level-2');
                     if (textSpan) textSpan.textContent = 'Alta Intensidade';
-                    if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensityHigh;
+                    if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensity;
                     showStatusMessage('Modo de alta intensidade de cores ativado', 'success');
                     break;
                 
                 case 3: // Escala de cinza
-                    document.body.classList.add('aguia-color-intensity-gray');
+                    AGUIA_SCOPE.classList.add('aguia-color-intensity-gray');
                     intensityBtn.classList.add('active', 'level-3');
                     if (textSpan) textSpan.textContent = 'Escala de Cinza';
-                    if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensityGray;
+                    if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensity;
                     showStatusMessage('Modo de escala de cinza ativado', 'success');
                     break;
             }
@@ -915,7 +970,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset de alto contraste
         if (highContrastEnabled) {
             highContrastEnabled = false;
-            document.body.classList.remove('aguia-high-contrast');
+            AGUIA_SCOPE.classList.remove('aguia-high-contrast');
             
             const contrastBtn = document.getElementById('aguiaHighContrastBtn');
             if (contrastBtn) {
@@ -931,7 +986,7 @@ document.addEventListener('DOMContentLoaded', function() {
             colorIntensityMode = 0;
             
             // Remove todas as classes de intensidade de cor
-            document.body.classList.remove(
+            AGUIA_SCOPE.classList.remove(
                 'aguia-color-intensity-low',
                 'aguia-color-intensity-high',
                 'aguia-color-intensity-gray'
@@ -944,7 +999,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const textSpan = intensityBtn.querySelector('.text');
                 const iconSpan = intensityBtn.querySelector('.icon');
                 if (textSpan) textSpan.textContent = 'Intensidade de Cores';
-                if (iconSpan) iconSpan.innerHTML = AguiaIcons.invertColors;
+                if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensity;
             }
             
             // Salva preferência
@@ -969,7 +1024,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Remove classes de daltonismo do elemento HTML
-            document.documentElement.classList.remove(
+            AGUIA_SCOPE.classList.remove(
                 'aguia-colorblind-protanopia',
                 'aguia-colorblind-deuteranopia',
                 'aguia-colorblind-tritanopia',
@@ -989,12 +1044,34 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para lidar com múltiplos modos de daltonismo
     function setColorBlindModes(modes) {
         // Remove classes anteriores
-        document.documentElement.classList.remove(
+        AGUIA_SCOPE.classList.remove(
             'aguia-colorblind-protanopia',
             'aguia-colorblind-deuteranopia',
-            'aguia-colorblind-tritanopia',
-            'aguia-colorblind-achromatopsia'
+            'aguia-colorblind-tritanopia'
         );
+
+        // Evita conflito com os filtros de intensidade de cor (ambos usam 'filter')
+        // Remover quaisquer classes de intensidade de cor ativas
+        AGUIA_SCOPE.classList.remove(
+            'aguia-color-intensity-low',
+            'aguia-color-intensity-high',
+            'aguia-color-intensity-gray'
+        );
+        // Zera estado interno e UI do botão de intensidade de cores, se presente
+        colorIntensityMode = 0;
+        const intensityBtn = document.getElementById('aguiaColorIntensityBtn');
+        if (intensityBtn) {
+            // Harmoniza com toggleColorIntensity, que usa classes level-1/2/3
+            intensityBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
+            const textSpan = intensityBtn.querySelector('.text');
+            if (textSpan) {
+                textSpan.textContent = 'Intensidade de Cores';
+            }
+            const iconSpan = intensityBtn.querySelector('.icon');
+            if (iconSpan) {
+                iconSpan.innerHTML = AguiaIcons.colorIntensity;
+            }
+        }
         
         // Atualiza a variável - mantemos compatibilidade com código legado usando o primeiro modo
         colorBlindMode = modes.length > 0 ? modes[0] : 'none';
@@ -1003,13 +1080,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const colorblindButton = document.getElementById('aguiaColorblindButton');
         
         if (modes.length > 0) {
-            // Aplicar os filtros ao elemento html em vez de body
-            // para evitar problemas com o botão de acessibilidade
-            const htmlElement = document.documentElement;
-            
-            // Aplica todos os modos selecionados
+            // Aplica filtros no escopo
             modes.forEach(mode => {
-                htmlElement.classList.add('aguia-colorblind-' + mode);
+                AGUIA_SCOPE.classList.add('aguia-colorblind-' + mode);
             });
             
             // Mantém o botão fora do efeito
@@ -1026,7 +1099,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     case 'protanopia': return 'Protanopia (sem vermelho)';
                     case 'deuteranopia': return 'Deuteranopia (sem verde)';
                     case 'tritanopia': return 'Tritanopia (sem azul)';
-                    case 'achromatopsia': return 'Monocromacia (sem cores)';
                     default: return mode;
                 }
             });
@@ -1066,25 +1138,42 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Atualizar texto e classe de acordo com o modo atual
             const textSpan = fontsBtn.querySelector('.text');
+            const iconSpan = fontsBtn.querySelector('.icon');
+            const renderReadableFontsIcon = function(mode) {
+                // Fallbacks inline caso os ícones não estejam carregados ainda
+                const fallbackSingleA = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="3" ry="3" fill="none" stroke="currentColor" stroke-width="1.8"/><text x="12" y="16" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="12" fill="currentColor">A</text></svg>';
+                const fallbackAa = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><text x="6" y="16" font-family="Arial, sans-serif" font-weight="bold" font-size="12" fill="currentColor">A</text><text x="13" y="16" font-family="Arial, sans-serif" font-weight="normal" font-size="12" fill="currentColor">a</text></svg>';
+                const fallbackAaOpen = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><text x="5" y="16" font-family="OpenDyslexic, Arial, sans-serif" font-weight="700" font-size="13" fill="currentColor">A</text><text x="13" y="16" font-family="OpenDyslexic, Arial, sans-serif" font-weight="400" font-size="13" fill="currentColor">a</text></svg>';
+                if (mode === 0) {
+                    return (typeof AguiaIcons !== 'undefined' && AguiaIcons.fontSingleA) ? AguiaIcons.fontSingleA : fallbackSingleA;
+                } else if (mode === 1) {
+                    return (typeof AguiaIcons !== 'undefined' && AguiaIcons.fontAaSample) ? AguiaIcons.fontAaSample : fallbackAa;
+                } else {
+                    return (typeof AguiaIcons !== 'undefined' && AguiaIcons.fontAaOpenDyslexic) ? AguiaIcons.fontAaOpenDyslexic : fallbackAaOpen;
+                }
+            };
             if (textSpan) {
                 switch (fontMode) {
                     case 0: // Padrão
                         textSpan.textContent = 'Fontes Legíveis';
+                        if (iconSpan) iconSpan.innerHTML = renderReadableFontsIcon(0);
                         break;
                     case 1: // Fontes Legíveis
                         textSpan.textContent = 'Fontes Legíveis';
                         fontsBtn.classList.add('active');
+                        if (iconSpan) iconSpan.innerHTML = renderReadableFontsIcon(1);
                         break;
                     case 2: // OpenDyslexic
                         textSpan.textContent = 'Fontes Amigável (OpenDyslexic)';
                         fontsBtn.classList.add('active', 'opendyslexic');
+                        if (iconSpan) iconSpan.innerHTML = renderReadableFontsIcon(2);
                         break;
                 }
             }
         }
         
         // Remover todas as classes de fonte
-        document.body.classList.remove('aguia-readable-fonts', 'aguia-opendyslexic-fonts');
+    AGUIA_SCOPE.classList.remove('aguia-readable-fonts', 'aguia-opendyslexic-fonts');
         
         // Aplicar classe correta de acordo com o modo
         switch (fontMode) {
@@ -1093,12 +1182,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 readableFontsEnabled = false;
                 break;
             case 1: // Fontes Legíveis
-                document.body.classList.add('aguia-readable-fonts');
+                AGUIA_SCOPE.classList.add('aguia-readable-fonts');
                 showStatusMessage('Fontes legíveis ativadas', 'success');
                 readableFontsEnabled = true;
                 break;
             case 2: // OpenDyslexic
-                document.body.classList.add('aguia-opendyslexic-fonts');
+                AGUIA_SCOPE.classList.add('aguia-opendyslexic-fonts');
                 showStatusMessage('Fontes Amigável (OpenDyslexic) ativadas', 'success');
                 readableFontsEnabled = true;
                 break;
@@ -1140,18 +1229,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Remove todas as classes de espaçamento entre linhas existentes
-        document.body.classList.remove('aguia-line-spacing-level-1', 'aguia-line-spacing-level-2', 'aguia-line-spacing-level-3');
+    AGUIA_SCOPE.classList.remove('aguia-line-spacing-level-1', 'aguia-line-spacing-level-2', 'aguia-line-spacing-level-3');
         
         // Para compatibilidade com versões anteriores
-        if (document.body.classList.contains('aguia-spacing-level-1') || 
-            document.body.classList.contains('aguia-spacing-level-2') || 
-            document.body.classList.contains('aguia-spacing-level-3')) {
-            document.body.classList.remove('aguia-spacing-level-1', 'aguia-spacing-level-2', 'aguia-spacing-level-3', 'aguia-increased-spacing');
+        if (AGUIA_SCOPE.classList.contains('aguia-spacing-level-1') || 
+            AGUIA_SCOPE.classList.contains('aguia-spacing-level-2') || 
+            AGUIA_SCOPE.classList.contains('aguia-spacing-level-3')) {
+            AGUIA_SCOPE.classList.remove('aguia-spacing-level-1', 'aguia-spacing-level-2', 'aguia-spacing-level-3', 'aguia-increased-spacing');
         }
         
         // Aplica a classe apropriada baseada no nível
         if (lineSpacingLevel > 0) {
-            document.body.classList.add(`aguia-line-spacing-level-${lineSpacingLevel}`);
+            AGUIA_SCOPE.classList.add(`aguia-line-spacing-level-${lineSpacingLevel}`);
             
             // Mensagens detalhadas por nível
             const levelMessages = [
@@ -1201,11 +1290,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Remove todas as classes de espaçamento entre letras existentes
-        document.body.classList.remove('aguia-letter-spacing-level-1', 'aguia-letter-spacing-level-2', 'aguia-letter-spacing-level-3');
+    AGUIA_SCOPE.classList.remove('aguia-letter-spacing-level-1', 'aguia-letter-spacing-level-2', 'aguia-letter-spacing-level-3');
         
         // Aplica a classe apropriada baseada no nível
         if (letterSpacingLevel > 0) {
-            document.body.classList.add(`aguia-letter-spacing-level-${letterSpacingLevel}`);
+            AGUIA_SCOPE.classList.add(`aguia-letter-spacing-level-${letterSpacingLevel}`);
             
             // Mensagens detalhadas por nível
             const levelMessages = [
@@ -1263,7 +1352,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Função para adicionar listeners de texto para fala
     function addTextToSpeechListeners() {
-        const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, td, th, a, button, label');
+    const elements = (AGUIA_SCOPE || document).querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, td, th, a, button, label');
         
         elements.forEach(function(element) {
             element.setAttribute('data-aguia-tts', 'true');
@@ -1284,7 +1373,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Função para remover listeners de texto para fala
     function removeTextToSpeechListeners() {
-        const elements = document.querySelectorAll('[data-aguia-tts="true"]');
+    const elements = (AGUIA_SCOPE || document).querySelectorAll('[data-aguia-tts="true"]');
         
         elements.forEach(function(element) {
             element.removeEventListener('click', speakText);
@@ -1558,12 +1647,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         if (emphasizeLinksEnabled) {
-            document.body.classList.add('aguia-emphasize-links');
+            AGUIA_SCOPE.classList.add('aguia-emphasize-links');
             if (!silent) {
                 showStatusMessage('Links destacados ativados', 'success');
             }
         } else {
-            document.body.classList.remove('aguia-emphasize-links');
+            AGUIA_SCOPE.classList.remove('aguia-emphasize-links');
             if (!silent) {
                 showStatusMessage('Links destacados desativados');
             }
@@ -1589,13 +1678,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (headerHighlightEnabled) {
             // Adiciona uma classe ao body para facilitar aplicação de estilos CSS
-            document.body.classList.add('aguia-highlight-headers');
+            AGUIA_SCOPE.classList.add('aguia-highlight-headers');
             if (!silent) {
                 showStatusMessage('Cabeçalhos destacados ativados', 'success');
             }
         } else {
             // Remove a classe do body
-            document.body.classList.remove('aguia-highlight-headers');
+            AGUIA_SCOPE.classList.remove('aguia-highlight-headers');
             if (!silent) {
                 showStatusMessage('Cabeçalhos destacados desativados');
             }
@@ -1620,12 +1709,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         if (hideImagesEnabled) {
-            document.body.classList.add('aguia-hide-images');
+            AGUIA_SCOPE.classList.add('aguia-hide-images');
             if (!silent) {
                 showStatusMessage('Ocultação de imagens ativada', 'success');
             }
         } else {
-            document.body.classList.remove('aguia-hide-images');
+            AGUIA_SCOPE.classList.remove('aguia-hide-images');
             if (!silent) {
                 showStatusMessage('Ocultação de imagens desativada');
             }
@@ -1648,12 +1737,12 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleHideImages(true);
         } else {
             // Garante que as classes sejam removidas e as preferências atualizadas
-            document.body.classList.remove('aguia-hide-images');
+            AGUIA_SCOPE.classList.remove('aguia-hide-images');
             saveUserPreference('hideImages', false);
         }
         
         // Reset da lupa de conteúdo
-        document.body.classList.remove('aguia-magnifier-active');
+    AGUIA_SCOPE.classList.remove('aguia-magnifier-active');
         // Remover a classe active do botão da lupa
         const menuMagnifierBtn = document.getElementById('aguiaMagnifierBtn');
         if (menuMagnifierBtn) {
@@ -1674,15 +1763,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // Força desativação dos novos tipos de máscara
         horizontalMaskLevel = 0;
         verticalMaskLevel = 0;
-        document.body.classList.remove('aguia-reading-mask-horizontal');
-        document.body.classList.remove('aguia-reading-mask-horizontal-level-1');
-        document.body.classList.remove('aguia-reading-mask-horizontal-level-2');
-        document.body.classList.remove('aguia-reading-mask-horizontal-level-3');
-        document.body.classList.remove('aguia-reading-mask-vertical');
-        document.body.classList.remove('aguia-reading-mask-vertical-level-1');
-        document.body.classList.remove('aguia-reading-mask-vertical-level-2');
-        document.body.classList.remove('aguia-reading-mask-vertical-level-3');
-        document.body.classList.remove('aguia-custom-cursor');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal-level-1');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal-level-2');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal-level-3');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical-level-1');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical-level-2');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical-level-3');
+    AGUIA_SCOPE.classList.remove('aguia-custom-cursor');
         saveUserPreference('horizontalMaskLevel', 0);
         saveUserPreference('verticalMaskLevel', 0);
         saveUserPreference('customCursor', false);
@@ -1719,7 +1808,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Reset de fontes legíveis e OpenDyslexic - forçado
         // Remover todas as classes de fonte
-        document.body.classList.remove('aguia-readable-fonts', 'aguia-opendyslexic-fonts');
+    AGUIA_SCOPE.classList.remove('aguia-readable-fonts', 'aguia-opendyslexic-fonts');
         
         // Resetar o botão
         const fontsBtn = document.getElementById('aguiaReadableFontsBtn');
@@ -1741,9 +1830,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Reset de espaçamento entre linhas - forçado
         // Reseta para zero
-        document.body.classList.remove('aguia-line-spacing-level-1', 'aguia-line-spacing-level-2', 'aguia-line-spacing-level-3');
-        document.body.classList.remove('aguia-spacing-level-1', 'aguia-spacing-level-2', 'aguia-spacing-level-3'); // Para compatibilidade
-        document.body.classList.remove('aguia-increased-spacing'); // Para compatibilidade
+    AGUIA_SCOPE.classList.remove('aguia-line-spacing-level-1', 'aguia-line-spacing-level-2', 'aguia-line-spacing-level-3');
+    AGUIA_SCOPE.classList.remove('aguia-spacing-level-1', 'aguia-spacing-level-2', 'aguia-spacing-level-3'); // Para compatibilidade
+    AGUIA_SCOPE.classList.remove('aguia-increased-spacing'); // Para compatibilidade
         
         // Reset do botão
         const lineSpacingBtn = document.getElementById('aguiaLineSpacingBtn');
@@ -1765,7 +1854,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Reset de espaçamento entre letras - forçado
         // Reseta para zero
-        document.body.classList.remove('aguia-letter-spacing-level-1', 'aguia-letter-spacing-level-2', 'aguia-letter-spacing-level-3');
+    AGUIA_SCOPE.classList.remove('aguia-letter-spacing-level-1', 'aguia-letter-spacing-level-2', 'aguia-letter-spacing-level-3');
         
         // Reset do botão
         const letterSpacingBtn = document.getElementById('aguiaLetterSpacingBtn');
@@ -1831,7 +1920,7 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleEmphasizeLinks(true);
         } else {
             // Garante que esteja desativado
-            document.body.classList.remove('aguia-emphasize-links');
+            AGUIA_SCOPE.classList.remove('aguia-emphasize-links');
             
             // Reset do botão
             const linksBtn = document.getElementById('aguiaEmphasizeLinksBtn');
@@ -1847,7 +1936,7 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleHeaderHighlight(true);
         } else {
             // Garante que esteja desativado
-            document.body.classList.remove('aguia-highlight-headers');
+            AGUIA_SCOPE.classList.remove('aguia-highlight-headers');
             
             // Reset do botão
             const headerBtn = document.getElementById('aguiaHeaderHighlightBtn');
@@ -1863,7 +1952,7 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleHighlightedLetters(true);
         } else {
             // Garante que esteja desativado
-            document.body.classList.remove('aguia-highlighted-letters', 'level-1', 'level-2', 'level-3');
+            AGUIA_SCOPE.classList.remove('aguia-highlighted-letters', 'level-1', 'level-2', 'level-3');
             
             // Reset do botão
             const highlightedLettersBtn = document.getElementById('aguiaHighlightedLettersBtn');
@@ -1888,11 +1977,10 @@ document.addEventListener('DOMContentLoaded', function() {
         setColorBlindModes([]);
         
         // Remove classes de daltonismo do elemento HTML
-        document.documentElement.classList.remove(
+        AGUIA_SCOPE.classList.remove(
             'aguia-colorblind-protanopia',
             'aguia-colorblind-deuteranopia',
-            'aguia-colorblind-tritanopia',
-            'aguia-colorblind-achromatopsia'
+            'aguia-colorblind-tritanopia'
         );
         
         // Atualiza a UI no painel de daltonismo
@@ -1912,24 +2000,10 @@ document.addEventListener('DOMContentLoaded', function() {
         colorBlindMode = 'none';
         saveUserPreference('colorblind', 'none');
         
-        // Reset do VLibras se estiver disponível
-        if (typeof vLibrasEnabled !== 'undefined') {
-            vLibrasEnabled = false;
-            if (typeof disableVLibras === 'function') {
-                disableVLibras();
-            }
-            
-            // Atualiza o botão se existir
-            const vLibrasBtn = document.getElementById('aguia-vlibras-button');
-            if (vLibrasBtn) {
-                vLibrasBtn.classList.remove('active');
-            }
-            
-            saveUserPreference('vlibras', false);
-        }
+        // VLibras removido
         
-        // Reset da Lupa de Conteúdo
-        document.body.classList.remove('aguia-magnifier-active');
+    // Reset da Lupa de Conteúdo
+    AGUIA_SCOPE.classList.remove('aguia-magnifier-active');
         
         // Reset do botão da lupa no menu
         const menuLupaBtn = document.getElementById('aguiaMagnifierBtn');
@@ -2125,6 +2199,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 preferences.colorIntensityMode = 3; // Escala de cinza é o mais próximo das cores invertidas
             }
             
+            // Limpa chave legada de VLibras, se existir
+            try { localStorage.removeItem('aguia_vlibras'); } catch (e) {}
             applyUserPreferences(preferences);
         }
     }
@@ -2162,7 +2238,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Aplicar alto contraste
         if (preferences.highContrast) {
             highContrastEnabled = true;
-            document.body.classList.add('aguia-high-contrast');
+            AGUIA_SCOPE.classList.add('aguia-high-contrast');
             
             // Atualiza botão se existir
             const contrastBtn = document.getElementById('aguiaHighContrastBtn');
@@ -2180,35 +2256,35 @@ document.addEventListener('DOMContentLoaded', function() {
             // Aplica a classe adequada ao body
             switch (colorIntensityMode) {
                 case 1: // Baixa intensidade
-                    document.body.classList.add('aguia-color-intensity-low');
+                    AGUIA_SCOPE.classList.add('aguia-color-intensity-low');
                     if (intensityBtn) {
                         intensityBtn.classList.add('active', 'level-1');
                         const textSpan = intensityBtn.querySelector('.text');
                         const iconSpan = intensityBtn.querySelector('.icon');
                         if (textSpan) textSpan.textContent = 'Baixa Intensidade';
-                        if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensityLow;
+                        if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensity;
                     }
                     break;
                 
                 case 2: // Alta intensidade
-                    document.body.classList.add('aguia-color-intensity-high');
+                    AGUIA_SCOPE.classList.add('aguia-color-intensity-high');
                     if (intensityBtn) {
                         intensityBtn.classList.add('active', 'level-2');
                         const textSpan = intensityBtn.querySelector('.text');
                         const iconSpan = intensityBtn.querySelector('.icon');
                         if (textSpan) textSpan.textContent = 'Alta Intensidade';
-                        if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensityHigh;
+                        if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensity;
                     }
                     break;
                 
                 case 3: // Escala de cinza
-                    document.body.classList.add('aguia-color-intensity-gray');
+                    AGUIA_SCOPE.classList.add('aguia-color-intensity-gray');
                     if (intensityBtn) {
                         intensityBtn.classList.add('active', 'level-3');
                         const textSpan = intensityBtn.querySelector('.text');
                         const iconSpan = intensityBtn.querySelector('.icon');
                         if (textSpan) textSpan.textContent = 'Escala de Cinza';
-                        if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensityGray;
+                        if (iconSpan) iconSpan.innerHTML = AguiaIcons.colorIntensity;
                     }
                     break;
             }
@@ -2224,27 +2300,41 @@ document.addEventListener('DOMContentLoaded', function() {
             if (fontsBtn) {
                 fontsBtn.classList.add('active');
                 
-                // Atualiza texto e classe de acordo com o modo
+                // Atualiza texto, ícone e classe de acordo com o modo
                 const textSpan = fontsBtn.querySelector('.text');
+                const iconSpan = fontsBtn.querySelector('.icon');
+                const renderReadableFontsIcon = function(mode) {
+                    const fallbackSingleA = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="3" ry="3" fill="none" stroke="currentColor" stroke-width="1.8"/><text x="12" y="16" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="12" fill="currentColor">A</text></svg>';
+                    const fallbackAa = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><text x="6" y="16" font-family="Arial, sans-serif" font-weight="bold" font-size="12" fill="currentColor">A</text><text x="13" y="16" font-family="Arial, sans-serif" font-weight="normal" font-size="12" fill="currentColor">a</text></svg>';
+                    const fallbackAaOpen = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><text x="5" y="16" font-family="OpenDyslexic, Arial, sans-serif" font-weight="700" font-size="13" fill="currentColor">A</text><text x="13" y="16" font-family="OpenDyslexic, Arial, sans-serif" font-weight="400" font-size="13" fill="currentColor">a</text></svg>';
+                    if (mode === 1) {
+                        return (typeof AguiaIcons !== 'undefined' && AguiaIcons.fontAaSample) ? AguiaIcons.fontAaSample : fallbackAa;
+                    } else if (mode === 2) {
+                        return (typeof AguiaIcons !== 'undefined' && AguiaIcons.fontAaOpenDyslexic) ? AguiaIcons.fontAaOpenDyslexic : fallbackAaOpen;
+                    }
+                    return (typeof AguiaIcons !== 'undefined' && AguiaIcons.fontSingleA) ? AguiaIcons.fontSingleA : fallbackSingleA;
+                };
                 if (textSpan) {
                     switch (fontMode) {
                         case 1: // Fontes Legíveis
-                            document.body.classList.add('aguia-readable-fonts');
+                            AGUIA_SCOPE.classList.add('aguia-readable-fonts');
                             textSpan.textContent = 'Fontes Legíveis';
+                            if (iconSpan) iconSpan.innerHTML = renderReadableFontsIcon(1);
                             break;
                         case 2: // OpenDyslexic
-                            document.body.classList.add('aguia-opendyslexic-fonts');
+                            AGUIA_SCOPE.classList.add('aguia-opendyslexic-fonts');
                             textSpan.textContent = 'Fontes Amigável (OpenDyslexic)';
                             fontsBtn.classList.add('opendyslexic');
+                            if (iconSpan) iconSpan.innerHTML = renderReadableFontsIcon(2);
                             break;
                     }
                 }
             } else {
                 // Se o botão não existe, aplicamos apenas as classes ao corpo
                 if (fontMode === 1) {
-                    document.body.classList.add('aguia-readable-fonts');
+                    AGUIA_SCOPE.classList.add('aguia-readable-fonts');
                 } else if (fontMode === 2) {
-                    document.body.classList.add('aguia-opendyslexic-fonts');
+                    AGUIA_SCOPE.classList.add('aguia-opendyslexic-fonts');
                 }
             }
         }
@@ -2253,7 +2343,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const spacingLevel = parseInt(preferences.lineSpacing) || 0;
         if (spacingLevel > 0 && spacingLevel <= 3) {
             lineSpacingLevel = spacingLevel;
-            document.body.classList.add(`aguia-spacing-level-${lineSpacingLevel}`);
+            AGUIA_SCOPE.classList.add(`aguia-spacing-level-${lineSpacingLevel}`);
             
             // Atualiza botão se existir
             const spacingBtn = document.getElementById('aguiaLineSpacingBtn');
@@ -2271,8 +2361,8 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (preferences.lineSpacing === true) {
             // Compatibilidade com versões anteriores que usavam booleano
             lineSpacingLevel = 2; // Nível médio
-            document.body.classList.add('aguia-spacing-level-2');
-            document.body.classList.add('aguia-increased-spacing'); // Para compatibilidade
+            AGUIA_SCOPE.classList.add('aguia-spacing-level-2');
+            AGUIA_SCOPE.classList.add('aguia-increased-spacing'); // Para compatibilidade
             
             // Atualiza botão se existir
             const spacingBtn = document.getElementById('aguiaLineSpacingBtn');
@@ -2292,7 +2382,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const letterSpacingLevel = parseInt(preferences.letterSpacing) || 0;
         if (letterSpacingLevel > 0 && letterSpacingLevel <= 3) {
             letterSpacingLevel = letterSpacingLevel;
-            document.body.classList.add(`aguia-letter-spacing-level-${letterSpacingLevel}`);
+            AGUIA_SCOPE.classList.add(`aguia-letter-spacing-level-${letterSpacingLevel}`);
             
             // Atualiza botão se existir
             const letterSpacingBtn = document.getElementById('aguiaLetterSpacingBtn');
@@ -2336,7 +2426,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Aplicar destaque de links
         if (preferences.emphasizeLinks) {
             emphasizeLinksEnabled = true;
-            document.body.classList.add('aguia-emphasize-links');
+            AGUIA_SCOPE.classList.add('aguia-emphasize-links');
             
             // Atualiza botão se existir
             const linksBtn = document.getElementById('aguiaEmphasizeLinksBtn');
@@ -2348,7 +2438,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Aplicar destaque de cabeçalho
         if (preferences.headerHighlight) {
             headerHighlightEnabled = true;
-            document.body.classList.add('aguia-highlight-headers');
+            AGUIA_SCOPE.classList.add('aguia-highlight-headers');
             
             // Atualiza botão se existir
             const headerBtn = document.getElementById('aguiaHeaderHighlightBtn');
@@ -2360,7 +2450,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Aplicar ocultação de imagens
         if (preferences.hideImages) {
             hideImagesEnabled = true;
-            document.body.classList.add('aguia-hide-images');
+            AGUIA_SCOPE.classList.add('aguia-hide-images');
             
             // Atualiza botão se existir
             const hideImagesBtn = document.getElementById('aguiaHideImagesBtn');
@@ -2369,13 +2459,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Aplicar VLibras se estiver habilitado nas preferências
-        if (preferences.vlibras) {
-            // Inicializa o VLibras se estiver disponível
-            if (typeof initializeVLibras === 'function') {
-                initializeVLibras();
-            }
-        }
+        // VLibras removido: nenhuma inicialização
 
         // Aplicar máscara de leitura (compatibilidade com versões anteriores)
         if (preferences.readingMaskMode && preferences.readingMaskMode > 0) {
@@ -2386,9 +2470,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 horizontalMaskLevel = preferences.horizontalMaskLevel || 1;
                 verticalMaskLevel = 0;
                 
-                document.body.classList.add('aguia-reading-mask-horizontal');
-                document.body.classList.add(`aguia-reading-mask-horizontal-level-${horizontalMaskLevel}`);
-                document.body.classList.remove('aguia-reading-mask-vertical');
+                AGUIA_SCOPE.classList.add('aguia-reading-mask-horizontal');
+                AGUIA_SCOPE.classList.add(`aguia-reading-mask-horizontal-level-${horizontalMaskLevel}`);
+                AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical');
                 
                 // Atualiza botão horizontal se existir
                 const horizontalMaskBtn = document.getElementById('aguiaHorizontalMaskBtn');
@@ -2408,9 +2492,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 verticalMaskLevel = preferences.verticalMaskLevel || 1;
                 horizontalMaskLevel = 0;
                 
-                document.body.classList.remove('aguia-reading-mask-horizontal');
-                document.body.classList.add('aguia-reading-mask-vertical');
-                document.body.classList.add(`aguia-reading-mask-vertical-level-${verticalMaskLevel}`);
+                AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal');
+                AGUIA_SCOPE.classList.add('aguia-reading-mask-vertical');
+                AGUIA_SCOPE.classList.add(`aguia-reading-mask-vertical-level-${verticalMaskLevel}`);
                 
                 // Atualiza botão vertical se existir
                 const verticalMaskBtn = document.getElementById('aguiaVerticalMaskBtn');
@@ -2434,8 +2518,8 @@ document.addEventListener('DOMContentLoaded', function() {
             verticalMaskLevel = 0; // Garante que apenas uma máscara esteja ativa
             readingMaskMode = 1; // Para compatibilidade
             
-            document.body.classList.add('aguia-reading-mask-horizontal');
-            document.body.classList.add(`aguia-reading-mask-horizontal-level-${horizontalMaskLevel}`);
+            AGUIA_SCOPE.classList.add('aguia-reading-mask-horizontal');
+            AGUIA_SCOPE.classList.add(`aguia-reading-mask-horizontal-level-${horizontalMaskLevel}`);
             
             // Atualiza botão se existir
             const horizontalMaskBtn = document.getElementById('aguiaHorizontalMaskBtn');
@@ -2458,8 +2542,8 @@ document.addEventListener('DOMContentLoaded', function() {
             horizontalMaskLevel = 0; // Garante que apenas uma máscara esteja ativa
             readingMaskMode = 2; // Para compatibilidade
             
-            document.body.classList.add('aguia-reading-mask-vertical');
-            document.body.classList.add(`aguia-reading-mask-vertical-level-${verticalMaskLevel}`);
+            AGUIA_SCOPE.classList.add('aguia-reading-mask-vertical');
+            AGUIA_SCOPE.classList.add(`aguia-reading-mask-vertical-level-${verticalMaskLevel}`);
             
             // Atualiza botão se existir
             const verticalMaskBtn = document.getElementById('aguiaVerticalMaskBtn');
@@ -2479,7 +2563,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Aplicar cursor personalizado (separado da máscara)
         if (preferences.customCursor) {
             customCursorEnabled = true;
-            document.body.classList.add('aguia-custom-cursor');
+            AGUIA_SCOPE.classList.add('aguia-custom-cursor');
             
             // Atualiza botão se existir
             const cursorBtn = document.getElementById('aguiaCustomCursorBtn');
@@ -2492,8 +2576,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const lettersLevel = parseInt(preferences.highlightedLetters) || 0;
         if (lettersLevel > 0) {
             highlightedLettersLevel = 1; // Sempre usa nível 1
-            document.body.classList.add('aguia-highlighted-letters');
-            document.body.classList.add('level-1');
+            AGUIA_SCOPE.classList.add('aguia-highlighted-letters');
+            AGUIA_SCOPE.classList.add('level-1');
             
             // Atualiza botão se existir
             const lettersBtn = document.getElementById('aguiaHighlightedLettersBtn');
@@ -2517,25 +2601,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Aplicar modo de daltonismo
-        if (preferences.colorblind && preferences.colorblind !== 'none') {
-            colorBlindMode = preferences.colorblind;
-            document.documentElement.classList.add('aguia-colorblind-' + colorBlindMode);
-            
-            // Atualiza o botão de daltonismo
-            const colorblindButton = document.getElementById('aguiaColorblindButton');
-            if (colorblindButton) {
-                colorblindButton.classList.add('active');
+        // Aplicar modos de daltonismo (suporte a múltiplos modos)
+        try {
+            const savedModesStr = localStorage.getItem('aguia_colorblind_modes');
+            let modes = [];
+            if (savedModesStr) {
+                modes = JSON.parse(savedModesStr) || [];
+            } else if (preferences.colorblind && preferences.colorblind !== 'none') {
+                // Compatibilidade legada: usar preferências.colorblind (único)
+                modes = [preferences.colorblind];
             }
-            
-            // Atualiza os botões do painel de daltonismo
-            document.querySelectorAll('#aguiaColorblindPanel .aguia-submenu-option').forEach(btn => {
-                if (btn.dataset.value === colorBlindMode) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
+
+            // Filtra valores válidos e remove modo removido (achromatopsia)
+            const allowed = ['protanopia', 'deuteranopia', 'tritanopia'];
+            modes = modes.filter(m => allowed.includes(m));
+
+            if (modes.length > 0) {
+                setColorBlindModes(modes);
+            } else {
+                // Garante UI consistente ("Nenhum")
+                const colorblindButton = document.getElementById('aguiaColorblindButton');
+                if (colorblindButton) colorblindButton.classList.remove('active');
+                document.querySelectorAll('#aguiaColorblindPanel .aguia-submenu-option').forEach(btn => btn.classList.remove('active'));
+                const noneButton = document.querySelector('#aguiaColorblindPanel .aguia-submenu-option[data-value="none"]');
+                if (noneButton) noneButton.classList.add('active');
+            }
+        } catch (e) {
+            // Fallback silencioso
         }
     }
     
@@ -2579,10 +2671,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Se a máscara vertical estiver ativa, desativamos ela primeiro
         if (verticalMaskLevel > 0) {
             verticalMaskLevel = 0;
-            document.body.classList.remove('aguia-reading-mask-vertical');
-            document.body.classList.remove('aguia-reading-mask-vertical-level-1');
-            document.body.classList.remove('aguia-reading-mask-vertical-level-2');
-            document.body.classList.remove('aguia-reading-mask-vertical-level-3');
+            AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical');
+            AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical-level-1');
+            AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical-level-2');
+            AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical-level-3');
             const verticalMaskBtn = document.getElementById('aguiaVerticalMaskBtn');
             if (verticalMaskBtn) {
                 verticalMaskBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
@@ -2602,10 +2694,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const horizontalMaskBtn = document.getElementById('aguiaHorizontalMaskBtn');
         
         // Remove todas as classes de nível
-        document.body.classList.remove('aguia-reading-mask-horizontal');
-        document.body.classList.remove('aguia-reading-mask-horizontal-level-1');
-        document.body.classList.remove('aguia-reading-mask-horizontal-level-2');
-        document.body.classList.remove('aguia-reading-mask-horizontal-level-3');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal-level-1');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal-level-2');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal-level-3');
         
         if (horizontalMaskBtn) {
             horizontalMaskBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
@@ -2613,8 +2705,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Aplica o nível selecionado
         if (horizontalMaskLevel > 0) {
-            document.body.classList.add('aguia-reading-mask-horizontal');
-            document.body.classList.add(`aguia-reading-mask-horizontal-level-${horizontalMaskLevel}`);
+            AGUIA_SCOPE.classList.add('aguia-reading-mask-horizontal');
+            AGUIA_SCOPE.classList.add(`aguia-reading-mask-horizontal-level-${horizontalMaskLevel}`);
             
             const sizes = ['', 'pequena', 'média', 'grande'];
             if (!silent) {
@@ -2654,10 +2746,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Se a máscara horizontal estiver ativa, desativamos ela primeiro
         if (horizontalMaskLevel > 0) {
             horizontalMaskLevel = 0;
-            document.body.classList.remove('aguia-reading-mask-horizontal');
-            document.body.classList.remove('aguia-reading-mask-horizontal-level-1');
-            document.body.classList.remove('aguia-reading-mask-horizontal-level-2');
-            document.body.classList.remove('aguia-reading-mask-horizontal-level-3');
+            AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal');
+            AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal-level-1');
+            AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal-level-2');
+            AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal-level-3');
             const horizontalMaskBtn = document.getElementById('aguiaHorizontalMaskBtn');
             if (horizontalMaskBtn) {
                 horizontalMaskBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
@@ -2677,10 +2769,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const verticalMaskBtn = document.getElementById('aguiaVerticalMaskBtn');
         
         // Remove todas as classes de nível
-        document.body.classList.remove('aguia-reading-mask-vertical');
-        document.body.classList.remove('aguia-reading-mask-vertical-level-1');
-        document.body.classList.remove('aguia-reading-mask-vertical-level-2');
-        document.body.classList.remove('aguia-reading-mask-vertical-level-3');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical-level-1');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical-level-2');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical-level-3');
         
         if (verticalMaskBtn) {
             verticalMaskBtn.classList.remove('active', 'level-1', 'level-2', 'level-3');
@@ -2688,8 +2780,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Aplica o nível selecionado
         if (verticalMaskLevel > 0) {
-            document.body.classList.add('aguia-reading-mask-vertical');
-            document.body.classList.add(`aguia-reading-mask-vertical-level-${verticalMaskLevel}`);
+            AGUIA_SCOPE.classList.add('aguia-reading-mask-vertical');
+            AGUIA_SCOPE.classList.add(`aguia-reading-mask-vertical-level-${verticalMaskLevel}`);
             
             const sizes = ['', 'pequena', 'média', 'grande'];
             if (!silent) {
@@ -2732,7 +2824,7 @@ document.addEventListener('DOMContentLoaded', function() {
             maskH = document.createElement('div');
             maskH.id = 'aguiaReadingMaskH';
             maskH.className = 'aguia-reading-mask-horizontal-element';
-            document.body.appendChild(maskH);
+            AGUIA_SCOPE.appendChild(maskH);
         }
         // Cria ou obtém o elemento da máscara vertical
         let maskV = document.getElementById('aguiaReadingMaskV');
@@ -2740,7 +2832,7 @@ document.addEventListener('DOMContentLoaded', function() {
             maskV = document.createElement('div');
             maskV.id = 'aguiaReadingMaskV';
             maskV.className = 'aguia-reading-mask-vertical-element';
-            document.body.appendChild(maskV);
+            AGUIA_SCOPE.appendChild(maskV);
         }
 
         document.addEventListener('mousemove', function(e) {
@@ -2802,12 +2894,12 @@ document.addEventListener('DOMContentLoaded', function() {
         customCursorEnabled = !customCursorEnabled;
         
         if (customCursorEnabled) {
-            document.body.classList.add('aguia-custom-cursor');
+            AGUIA_SCOPE.classList.add('aguia-custom-cursor');
             if (!silent) {
                 showStatusMessage('Cursor personalizado ativado', 'success');
             }
         } else {
-            document.body.classList.remove('aguia-custom-cursor');
+            AGUIA_SCOPE.classList.remove('aguia-custom-cursor');
             if (!silent) {
                 showStatusMessage('Cursor personalizado desativado');
             }
@@ -2836,17 +2928,17 @@ document.addEventListener('DOMContentLoaded', function() {
         customCursorEnabled = false;
         
         // Remove todas as classes
-        document.body.classList.remove('aguia-reading-mask-horizontal');
-        document.body.classList.remove('aguia-reading-mask-horizontal-level-1');
-        document.body.classList.remove('aguia-reading-mask-horizontal-level-2');
-        document.body.classList.remove('aguia-reading-mask-horizontal-level-3');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal-level-1');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal-level-2');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-horizontal-level-3');
         
-        document.body.classList.remove('aguia-reading-mask-vertical');
-        document.body.classList.remove('aguia-reading-mask-vertical-level-1');
-        document.body.classList.remove('aguia-reading-mask-vertical-level-2');
-        document.body.classList.remove('aguia-reading-mask-vertical-level-3');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical-level-1');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical-level-2');
+    AGUIA_SCOPE.classList.remove('aguia-reading-mask-vertical-level-3');
         
-        document.body.classList.remove('aguia-custom-cursor');
+    AGUIA_SCOPE.classList.remove('aguia-custom-cursor');
         
         // Esconde as máscaras
         const maskH = document.getElementById('aguiaReadingMaskH');
@@ -2884,22 +2976,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }    // Cria a máscara de leitura após o carregamento da página
     createReadingMask();
     
-    // Função para o botão VLibras (mantido apenas o botão, sem funcionalidade)
-    function toggleVLibras() {
-        const button = document.getElementById('aguia-vlibras-button');
-        if (button) {
-            // Alterna apenas o estado visual do botão
-            button.classList.toggle('active');
-            
-            // Mostra mensagem indicando que a funcionalidade foi removida
-            showStatusMessage('Funcionalidade VLibras não está disponível', 'info');
-            
-            // Após 3 segundos, remove o estado ativo do botão
-            setTimeout(function() {
-                button.classList.remove('active');
-            }, 3000);
-        }
-    }
+    // VLibras removido
     
     // Função para alternar letras destacadas
     function toggleHighlightedLetters(silent = false) {
@@ -2911,8 +2988,8 @@ document.addEventListener('DOMContentLoaded', function() {
             window.highlightedLettersLevel = highlightedLettersLevel;
             
             // Remove todas as classes anteriores
-            if (document && document.body) {
-                document.body.classList.remove('aguia-highlighted-letters', 'level-1', 'level-2', 'level-3');
+            if (AGUIA_SCOPE) {
+                AGUIA_SCOPE.classList.remove('aguia-highlighted-letters', 'level-1', 'level-2', 'level-3');
             }
         
             // Atualiza UI
@@ -2937,15 +3014,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                         
                         // Aplica a classe correspondente
-                        document.body.classList.add('aguia-highlighted-letters');
-                        document.body.classList.add('level-1');
+                        AGUIA_SCOPE.classList.add('aguia-highlighted-letters');
+                        AGUIA_SCOPE.classList.add('level-1');
                     }
                 }
             }
             
             // Carrega o CSS necessário
             if (highlightedLettersLevel > 0) {
-                const linkExists = document.querySelector('link[href*="highlighted_letters.css"]');
+                const linkExists = document.querySelector('link[href*="letras_destaque.css"]');
                 if (!linkExists) {
                     const link = document.createElement('link');
                     link.rel = 'stylesheet';

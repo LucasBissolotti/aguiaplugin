@@ -27,7 +27,16 @@ const AguiaMagnifier = {
     state: {
         enabled: false,
         magnifier: null,
-        button: null
+        magnifierContent: null,
+        button: null,
+        lastMouseClientX: 0,
+        lastMouseClientY: 0,
+        lastFullText: '',
+        lastSourceElement: null,
+        overlay: null,
+        overlayPanel: null,
+        overlayContent: null,
+        expandFab: null
     },
     
     // Inicialização da lupa
@@ -40,16 +49,31 @@ const AguiaMagnifier = {
         
         // Criar o botão da lupa
         this.createMagnifierButton();
+
+    // Criar elementos do leitor expandido (overlay)
+    this.createReaderOverlay();
         
-        // Adicionar evento de movimento do mouse
-        document.addEventListener('mousemove', this.updateMagnifier.bind(this));
+    // Adicionar evento de movimento do mouse
+    document.addEventListener('mousemove', this.updateMagnifier.bind(this));
+
+    // Habilitar rolagem com a roda do mouse dentro da caixa da lupa
+    // Mesmo com pointer-events: none, capturamos no documento e redirecionamos para a lupa
+    document.addEventListener('wheel', this.handleWheelScroll.bind(this), { passive: false });
         
         // Adicionar a lupa ao menu principal do AGUIA
         this.addToMainMenu();
         
+        // Obter o escopo do AGUIA
+        const aguiaScope = document.getElementById('aguia-scope-element') || 
+                          window.AGUIA_SCOPE || 
+                          document.querySelector('#page') || 
+                          document.querySelector('#page-content') || 
+                          document.querySelector('main') || 
+                          document.body;
+        
         // Aplicar o estado inicial se estiver ativado
         if (this.state.enabled) {
-            document.body.classList.add('aguia-magnifier-active');
+            aguiaScope.classList.add('aguia-magnifier-active');
             // Ativar os botões
             if (this.state.button) {
                 this.state.button.classList.add('active');
@@ -59,6 +83,9 @@ const AguiaMagnifier = {
                 menuButton.classList.add('active');
             }
         }
+        
+        // Expor a variável AGUIA_SCOPE globalmente para uso em outros scripts
+        window.AGUIA_SCOPE = aguiaScope;
         
         console.log('AGUIA Magnifier: Lupa de conteúdo inicializada');
     },
@@ -74,6 +101,11 @@ const AguiaMagnifier = {
         return savedState === 'true';
     },
     
+    // Método para verificar se a lupa está ativa (para compatibilidade com acessibilidade_wcag.js)
+    isActive: function() {
+        return this.state.enabled;
+    },
+    
     // Salvar o estado da lupa
     saveState: function(enabled) {
         localStorage.setItem(this.config.storageKey, enabled);
@@ -85,11 +117,38 @@ const AguiaMagnifier = {
         const magnifier = document.createElement('div');
         magnifier.id = 'aguia-content-magnifier';
         magnifier.classList.add('aguia-magnifier-hidden');
+        // Conteúdo interno rolável
+        const content = document.createElement('div');
+        content.className = 'aguia-magnifier-content';
+        magnifier.appendChild(content);
         
-        // Adicionar ao body
-        document.body.appendChild(magnifier);
+        // Obter o escopo do AGUIA
+        const aguiaScope = document.getElementById('aguia-scope-element') || 
+                          window.AGUIA_SCOPE || 
+                          document.body;
+        
+        // Adicionar ao escopo do AGUIA ou ao body se não encontrar
+        aguiaScope.appendChild(magnifier);
         
         this.state.magnifier = magnifier;
+        this.state.magnifierContent = content;
+
+        // Botão flutuante separado (fora da lupa) para Expandir
+        const fab = document.createElement('button');
+        fab.id = 'aguia-magnifier-expand-fab';
+        fab.type = 'button';
+        fab.setAttribute('aria-label', 'Expandir leitura em tela cheia');
+        fab.textContent = 'Expandir';
+        fab.addEventListener('click', (e) => {
+            e.preventDefault();
+            const txt = this.state.lastFullText || this.state.magnifierContent?.textContent || '';
+            if (txt && txt.trim().length > 0) {
+                this.openReaderOverlay(txt);
+            }
+        });
+        fab.style.display = 'none';
+        (document.body).appendChild(fab);
+        this.state.expandFab = fab;
     },
     
     // Criar o botão para ativar/desativar a lupa
@@ -144,7 +203,8 @@ const AguiaMagnifier = {
         // Verificar estado inicial
         if (this.state.enabled) {
             magnifierButton.classList.add('active');
-            document.body.classList.add('aguia-magnifier-active');
+            const scope = document.getElementById('page') || document.querySelector('#page-content') || document.querySelector('main') || document.body;
+            scope.classList.add('aguia-magnifier-active');
         }
         
         // Adicionar evento de clique para ativar/desativar a lupa
@@ -163,11 +223,20 @@ const AguiaMagnifier = {
     toggleMagnifier: function() {
         const isActive = this.state.enabled;
         
+        // Obter o escopo do AGUIA
+        const aguiaScope = document.getElementById('aguia-scope-element') || 
+                          window.AGUIA_SCOPE || 
+                          document.querySelector('#page') || 
+                          document.querySelector('#page-content') || 
+                          document.querySelector('main') || 
+                          document.body;
+        
         if (isActive) {
             // Desativar a lupa
             this.state.button.classList.remove('active');
-            document.body.classList.remove('aguia-magnifier-active');
+            aguiaScope.classList.remove('aguia-magnifier-active');
             this.saveState(false);
+            if (this.state.expandFab) this.state.expandFab.style.display = 'none';
             
             // Atualiza também o botão no menu principal
             const menuButton = document.getElementById('aguiaMagnifierBtn');
@@ -177,7 +246,7 @@ const AguiaMagnifier = {
         } else {
             // Ativar a lupa
             this.state.button.classList.add('active');
-            document.body.classList.add('aguia-magnifier-active');
+            aguiaScope.classList.add('aguia-magnifier-active');
             this.saveState(true);
             
             // Atualiza também o botão no menu principal
@@ -190,11 +259,22 @@ const AguiaMagnifier = {
     
     // Atualizar a posição e conteúdo da lupa
     updateMagnifier: function(e) {
-        if (!this.state.enabled) {
+        // Obter o escopo do AGUIA
+        const aguiaScope = document.getElementById('aguia-scope-element') || 
+                          window.AGUIA_SCOPE || 
+                          document.querySelector('#page') || 
+                          document.querySelector('#page-content') || 
+                          document.querySelector('main') || 
+                          document.body;
+                          
+        if (!this.state.enabled || !aguiaScope.classList.contains('aguia-magnifier-active')) {
             return;
         }
         
-        const magnifier = this.state.magnifier;
+    const magnifier = this.state.magnifier;
+    // Registrar última posição do mouse para lógica de rolagem
+    this.state.lastMouseClientX = e.clientX;
+    this.state.lastMouseClientY = e.clientY;
         
         // Obter o elemento sob o cursor
         const element = document.elementFromPoint(e.clientX, e.clientY);
@@ -204,13 +284,15 @@ const AguiaMagnifier = {
             element.id === 'aguia-content-magnifier' || 
             element.id === 'aguia-standalone-magnifier' ||
             element.closest('#aguia-menu-panel') || 
+            element.closest('#aguiaMenu') ||
             element === magnifier) {
             magnifier.classList.add('aguia-magnifier-hidden');
+            if (this.state.expandFab) this.state.expandFab.style.display = 'none';
             return;
         }
         
         // Obter o texto do elemento
-        let text = '';
+    let text = '';
         
         if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
             text = element.value;
@@ -221,7 +303,9 @@ const AguiaMagnifier = {
             // Extrair o texto mantendo a estrutura da página
             if (textElement) {
                 // Obter o texto diretamente para preservar a estrutura da página
-                text = textElement.textContent.trim();
+                text = textElement.textContent || '';
+                // Guardar elemento fonte para possível uso no overlay
+                this.state.lastSourceElement = textElement;
                 
                 // Se não tivermos texto significativo, verificar se temos texto alternativo
                 if (!text && textElement.getAttribute('alt')) {
@@ -233,21 +317,29 @@ const AguiaMagnifier = {
                     text = textElement.getAttribute('aria-label');
                 }
             } else {
-                text = element.textContent.trim();
+                text = element.textContent || '';
+                this.state.lastSourceElement = element;
             }
         }
         
         // Se o elemento não tem texto, não mostramos a lupa
         if (!text) {
             magnifier.classList.add('aguia-magnifier-hidden');
+            if (this.state.expandFab) this.state.expandFab.style.display = 'none';
             return;
         }
         
         // Limpar o texto removendo linhas vazias, formatações extras e estruturas
-        text = this.cleanupText(text);
+    text = this.cleanupText(text);
+    // Guardar o texto completo (sem truncar) para o overlay e para rolagem
+    this.state.lastFullText = text;
         
         // Definir o conteúdo da lupa
-        magnifier.textContent = text;
+        if (this.state.magnifierContent) {
+            this.state.magnifierContent.textContent = text;
+        } else {
+            magnifier.textContent = text;
+        }
         
         // Posicionar a lupa abaixo do cursor
         magnifier.style.left = `${e.pageX}px`;
@@ -255,6 +347,51 @@ const AguiaMagnifier = {
         
         // Mostrar a lupa
         magnifier.classList.remove('aguia-magnifier-hidden');
+
+        // Posicionar e mostrar o botão Expandir próximo ao canto inferior direito da lupa
+        if (this.state.expandFab) {
+            const rect = magnifier.getBoundingClientRect();
+            const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
+            const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+            const fabX = rect.left + scrollX + rect.width - 80; // um pouco para dentro
+            const fabY = rect.top + scrollY + rect.height - 40;
+            this.state.expandFab.style.left = `${fabX}px`;
+            this.state.expandFab.style.top = `${fabY}px`;
+            this.state.expandFab.style.display = 'inline-block';
+        }
+    },
+
+    // Permitir rolagem do conteúdo dentro da lupa com a roda do mouse
+    handleWheelScroll: function(e) {
+        // Se não está ativo, ignorar
+        if (!this.state.enabled || !this.state.magnifier || this.state.magnifier.classList.contains('aguia-magnifier-hidden')) {
+            return;
+        }
+
+        const magnifier = this.state.magnifier;
+        const rect = magnifier.getBoundingClientRect();
+        const x = this.state.lastMouseClientX;
+        const y = this.state.lastMouseClientY;
+
+        // Verificar se o cursor está sobre a lupa
+        const overMagnifier = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+        if (!overMagnifier) {
+            return; // não interfere com a rolagem da página
+        }
+
+        // Checar se há conteúdo para rolar na lupa
+        const canScrollDown = magnifier.scrollTop + magnifier.clientHeight < magnifier.scrollHeight;
+        const canScrollUp = magnifier.scrollTop > 0;
+
+        const deltaY = e.deltaY;
+        const scrollingDown = deltaY > 0;
+
+        // Só previne a rolagem da página se a lupa puder rolar nessa direção
+        if ((scrollingDown && canScrollDown) || (!scrollingDown && canScrollUp)) {
+            e.preventDefault();
+            // Ajuste de sensibilidade: usar deltaY diretamente dá sensação natural
+            magnifier.scrollTop += deltaY;
+        }
     },
     
     // Limpar o texto para remover apenas as linhas azuis estruturais
@@ -278,10 +415,7 @@ const AguiaMagnifier = {
         // Preservar quebras de linha normais e formatação do texto
         cleaned = cleaned.replace(/\s{3,}/g, ' ');
         
-        // Limitar o comprimento máximo do texto para evitar sobrecarga
-        if (cleaned.length > 500) {
-            cleaned = cleaned.substring(0, 500) + '...';
-        }
+        // Não truncar: precisamos do texto completo para leitura
         
         // Remover linhas azuis (que geralmente são delimitadores de CSS/HTML)
         cleaned = cleaned.replace(/border(-[a-z]+)?:[^;]+;/g, '');
@@ -290,12 +424,87 @@ const AguiaMagnifier = {
         // Remover múltiplos espaços
         cleaned = cleaned.replace(/\s\s+/g, ' ');
         
-        // Limitar o comprimento máximo do texto para evitar sobrecarga
-        if (cleaned.length > 500) {
-            cleaned = cleaned.substring(0, 500) + '...';
-        }
+        // Não truncar
         
         return cleaned;
+    },
+
+    // Criar elementos do overlay de leitura expandida
+    createReaderOverlay: function() {
+        if (this.state.overlay) return;
+        const overlay = document.createElement('div');
+        overlay.id = 'aguia-magnifier-overlay';
+        overlay.setAttribute('aria-hidden', 'true');
+        overlay.style.display = 'none';
+
+        const panel = document.createElement('div');
+        panel.className = 'aguia-reader-panel';
+
+        const header = document.createElement('div');
+        header.className = 'aguia-reader-header';
+        const title = document.createElement('div');
+        title.className = 'aguia-reader-title';
+        title.textContent = 'Leitura ampliada';
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.className = 'aguia-reader-close';
+        closeBtn.setAttribute('aria-label', 'Fechar leitura');
+        closeBtn.textContent = 'Fechar';
+        closeBtn.addEventListener('click', () => this.closeReaderOverlay());
+
+        header.appendChild(title);
+        header.appendChild(closeBtn);
+
+        const content = document.createElement('div');
+        content.className = 'aguia-reader-content';
+
+        panel.appendChild(header);
+        panel.appendChild(content);
+        overlay.appendChild(panel);
+
+        // Interações de fechamento
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                this.closeReaderOverlay();
+            }
+        });
+
+        document.body.appendChild(overlay);
+        this.state.overlay = overlay;
+        this.state.overlayPanel = panel;
+        this.state.overlayContent = content;
+
+        // Fechar com ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isReaderOpen()) {
+                e.preventDefault();
+                this.closeReaderOverlay();
+            }
+        });
+    },
+
+    isReaderOpen: function() {
+        return !!(this.state.overlay && this.state.overlay.style.display !== 'none');
+    },
+
+    openReaderOverlay: function(text) {
+        this.createReaderOverlay();
+        if (!this.state.overlay || !this.state.overlayContent) return;
+        this.state.overlayContent.textContent = text || this.state.lastFullText || '';
+        this.state.overlay.style.display = 'block';
+        this.state.overlay.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('aguia-reader-open');
+        // Foco no painel para navegação por teclado
+        this.state.overlayPanel.setAttribute('tabindex', '-1');
+        this.state.overlayPanel.focus({ preventScroll: true });
+        if (this.state.expandFab) this.state.expandFab.style.display = 'none';
+    },
+
+    closeReaderOverlay: function() {
+        if (!this.state.overlay) return;
+        this.state.overlay.style.display = 'none';
+        this.state.overlay.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('aguia-reader-open');
     },
     
     // Encontrar o elemento de texto relevante mais próximo
@@ -518,7 +727,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
     // Função para atualizar a posição e conteúdo da lupa
     function updateMagnifier(e) {
-        if (!document.body.classList.contains('aguia-magnifier-active')) {
+        const scope = document.getElementById('page') || document.querySelector('#page-content') || document.querySelector('main') || document.body;
+        if (!scope.classList.contains('aguia-magnifier-active')) {
             return;
         }
         

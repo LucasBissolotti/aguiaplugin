@@ -27,19 +27,27 @@
     padding: 2px !important;
 }
 
-/* Estado ativo com !important para garantir que seja aplicado */
-#aguiaLineSpacingBtn.active .icon svg path {
-    stroke: #2271ff !important;
+/* Estado ativo e hover com cores consistentes - preto */
+#aguiaLineSpacingBtn.active .icon svg path,
+#aguiaLineSpacingBtn:hover .icon svg path,
+#aguiaLineSpacingBtn .icon svg path {
+    stroke: #000000 !important; /* Preto - consistente em todos os estados */
+    fill: #000000 !important;
 }
 
 #aguiaLineSpacingBtn.active .icon svg rect,
-#aguiaLineSpacingBtn.active .icon svg line {
-    stroke: #2271ff !important;
+#aguiaLineSpacingBtn.active .icon svg line,
+#aguiaLineSpacingBtn:hover .icon svg rect,
+#aguiaLineSpacingBtn:hover .icon svg line,
+#aguiaLineSpacingBtn .icon svg rect,
+#aguiaLineSpacingBtn .icon svg line {
+    stroke: #000000 !important; /* Preto - consistente com o SVG */
+    fill: #000000 !important;
 }
 
-/* Estado hover com !important para garantir que seja aplicado */
+/* Estado hover sem transformação para manter aparência consistente */
 #aguiaLineSpacingBtn:hover .icon svg {
-    transform: scale(1.05) !important;
+    transform: none !important;
 }
 
 /* Removendo qualquer elemento que possa estar sobrepondo o ícone */

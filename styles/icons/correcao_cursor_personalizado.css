@@ -18,7 +18,7 @@
 #aguiaCustomCursorBtn .icon svg {
     width: 36px !important;
     height: 36px !important;
-    fill: #444444 !important;
+    fill: #000000 !important;
     overflow: visible !important;
     display: block !important;
     margin: 0 auto !important;
@@ -26,19 +26,23 @@
     filter: none !important;
 }
 
-/* Estado ativo com !important para garantir que seja aplicado */
-#aguiaCustomCursorBtn.active .icon svg {
-    fill: #2271ff !important;
+/* Estado ativo e hover com cores consistentes */
+#aguiaCustomCursorBtn.active .icon svg,
+#aguiaCustomCursorBtn:hover .icon svg,
+#aguiaCustomCursorBtn .icon svg {
+    fill: #000000 !important; /* Preto - consistente em todos os estados */
 }
 
-#aguiaCustomCursorBtn.active .icon svg path {
-    fill: #2271ff !important;
-    stroke: #2271ff !important;
+#aguiaCustomCursorBtn.active .icon svg path,
+#aguiaCustomCursorBtn:hover .icon svg path,
+#aguiaCustomCursorBtn .icon svg path {
+    fill: #000000 !important; /* Preto - consistente em todos os estados */
+    stroke: #000000 !important;
 }
 
-/* Estado hover com !important para garantir que seja aplicado */
+/* Estado hover sem transformação para manter aparência consistente */
 #aguiaCustomCursorBtn:hover .icon svg {
-    transform: scale(1.05) !important;
+    transform: none !important;
 }
 
 /* Removendo qualquer elemento que possa estar sobrepondo o ícone */

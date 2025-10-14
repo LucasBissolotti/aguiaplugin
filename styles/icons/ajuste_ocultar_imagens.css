@@ -18,26 +18,44 @@
 #aguiaHideImagesBtn .icon svg {
     width: 36px !important;
     height: 36px !important;
-    fill: #444444 !important;
     overflow: visible !important;
     display: block !important;
     margin: 0 auto !important;
     transform: none !important;
     filter: none !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
 }
 
-/* Estado ativo com !important para garantir que seja aplicado */
+/* Estado ativo e hover com cores consistentes */
 #aguiaHideImagesBtn.active .icon svg rect,
-#aguiaHideImagesBtn.active .icon svg path,
-#aguiaHideImagesBtn.active .icon svg line,
-#aguiaHideImagesBtn.active .icon svg circle {
-    stroke: #2271ff !important;
-    fill: #2271ff !important;
+#aguiaHideImagesBtn:hover .icon svg rect,
+#aguiaHideImagesBtn .icon svg rect {
+    stroke: #000000 !important; /* Contorno preto para o retângulo (moldura da imagem) */
+    fill: none !important; /* Sem preenchimento para representar uma imagem */
+    stroke-width: 1.5px !important;
 }
 
-/* Estado hover com !important para garantir que seja aplicado */
+/* Elementos internos da imagem (paisagem) */
+#aguiaHideImagesBtn.active .icon svg path,
+#aguiaHideImagesBtn:hover .icon svg path,
+#aguiaHideImagesBtn .icon svg path {
+    fill: #000000 !important; /* Preenchimento preto para os elementos da paisagem */
+    stroke: #000000 !important;
+}
+
+/* Linha diagonal que cruza a imagem */
+#aguiaHideImagesBtn.active .icon svg line,
+#aguiaHideImagesBtn:hover .icon svg line,
+#aguiaHideImagesBtn .icon svg line {
+    stroke: #000000 !important; /* Risco preto diagonal */
+    stroke-width: 2px !important; /* Linha mais grossa para destacar */
+    fill: none !important;
+}
+
+/* Estado hover sem transformação para manter aparência consistente */
 #aguiaHideImagesBtn:hover .icon svg {
-    transform: scale(1.05) !important;
+    transform: none !important;
 }
 
 /* Removendo qualquer elemento que possa estar sobrepondo o ícone */
@@ -45,4 +63,24 @@
 #aguiaHideImagesBtn .icon::after {
     display: none !important;
     content: none !important;
+}
+
+/* Ajustes específicos para garantir a visualização correta do ícone de Ocultar Imagens */
+#aguiaHideImagesBtn .icon svg {
+    position: relative !important;
+}
+
+/* Garantir a posição correta da linha diagonal sobre o retângulo da imagem */
+#aguiaHideImagesBtn .icon svg line {
+    vector-effect: non-scaling-stroke !important;
+    transform-origin: center center !important;
+    z-index: 2 !important; /* Garantir que a linha fique acima dos elementos da paisagem */
+}
+
+/* Garantir que o círculo (sol) também fique preto */
+#aguiaHideImagesBtn .icon svg circle,
+#aguiaHideImagesBtn:hover .icon svg circle,
+#aguiaHideImagesBtn.active .icon svg circle {
+    fill: #000000 !important;
+    stroke: #000000 !important;
 }

@@ -23,9 +23,9 @@
     z-index: 9999;
     max-width: 350px;
     min-width: 120px;
-    max-height: 300px;
+    max-height: 360px; /* mais alto para comportar mais texto antes de rolar */
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-    pointer-events: none;
+    pointer-events: none; /* deixamos none mas redirecionamos a roda via JS */
     transition: all 0.2s ease;
     overflow-y: auto;
     overflow-x: hidden;
@@ -51,6 +51,111 @@
     visibility: hidden !important;
     transform: translateY(10px);
 }
+
+/* Conteúdo interno e botão Expandir (permitir clique) */
+#aguia-content-magnifier .aguia-magnifier-content {
+    pointer-events: auto;
+}
+
+#aguia-content-magnifier .aguia-magnifier-expand {
+    pointer-events: auto;
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    font-size: 12px;
+    line-height: 1;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #2271ff;
+    background: #ffffff;
+    color: #2271ff;
+    cursor: pointer;
+}
+
+#aguia-content-magnifier .aguia-magnifier-expand:hover {
+    background: #f0f6ff;
+}
+
+/* Overlay de leitura expandida */
+#aguia-magnifier-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 10000;
+}
+
+.aguia-reader-panel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(900px, 92vw);
+    height: min(80vh, 820px);
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    display: flex;
+    flex-direction: column;
+    outline: 2px solid #2271ff;
+}
+
+.aguia-reader-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e6e8ee;
+}
+
+.aguia-reader-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1b1f24;
+}
+
+.aguia-reader-close {
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #d0d7de;
+    background: #ffffff;
+    color: #24292f;
+    cursor: pointer;
+}
+
+.aguia-reader-close:hover {
+    background: #f6f8fa;
+}
+
+.aguia-reader-content {
+    padding: 18px 20px 20px;
+    font-size: 26px;
+    line-height: 1.6;
+    color: #000;
+    overflow: auto;
+    flex: 1;
+}
+
+body.aguia-reader-open {
+    overflow: hidden;
+}
+
+/* Botão flutuante Expandir (fora da lupa para não ser bloqueado por pointer-events) */
+#aguia-magnifier-expand-fab {
+    position: absolute;
+    z-index: 10001;
+    pointer-events: auto;
+    font-size: 12px;
+    line-height: 1;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #2271ff;
+    background: #ffffff;
+    color: #2271ff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    cursor: pointer;
+}
+#aguia-magnifier-expand-fab:hover { background: #f0f6ff; }
 
 /* Estilos para o painel AGUIA */
 #aguia-menu-panel {

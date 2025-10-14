@@ -25,19 +25,18 @@
     filter: none !important;
 }
 
-/* Estado ativo com !important para garantir que seja aplicado */
-#aguiaEmphasizeLinksBtn.active .icon svg rect {
-    fill: #2271ff !important;
+/* Define a cor da corrente via CSS var consumida pelo SVG */
+#aguiaEmphasizeLinksBtn .icon {
+    --chainColor: #FFFFFF; /* inativo: branco */
 }
 
-/* Garante que o símbolo interno permanece branco mesmo quando ativo */
-#aguiaEmphasizeLinksBtn.active .icon svg path {
-    fill: #FFFFFF !important;
+#aguiaEmphasizeLinksBtn.active .icon {
+    --chainColor: #2271ff; /* ativo: azul dos botões */
 }
 
-/* Estado hover com !important para garantir que seja aplicado */
+/* Estado hover mantém a mesma aparência para garantir consistência */
 #aguiaEmphasizeLinksBtn:hover .icon svg {
-    transform: scale(1.05) !important;
+    transform: none !important; /* Não altera o tamanho do ícone */
 }
 
 /* Removendo qualquer elemento que possa estar sobrepondo o ícone */

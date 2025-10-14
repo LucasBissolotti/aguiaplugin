@@ -25,6 +25,9 @@ function initializeColorblindModes() {
     }
 
     // Se houver modos salvos, aplica-os
+    // Remove modo descontinuado (achromatopsia), se existir
+    activeColorblindModes = activeColorblindModes.filter(m => ['protanopia','deuteranopia','tritanopia'].includes(m));
+
     if (activeColorblindModes.length > 0) {
         setColorBlindModes(activeColorblindModes);
         

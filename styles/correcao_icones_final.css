@@ -1,0 +1,253 @@
+/**
+ * Arquivo de correção final para garantir a consistência dos ícones problemáticos
+ * Este arquivo tem a maior prioridade e é carregado após todos os outros
+ *
+ * @package    local_aguiaplugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* CORREÇÕES PARA OS BOTÕES COM PROBLEMAS DE CONSISTÊNCIA */
+
+/* Aumentar Texto */
+#aguiaIncreaseFontBtn .icon svg *,
+#aguiaIncreaseFontBtn:hover .icon svg *,
+#aguiaIncreaseFontBtn.active .icon svg * {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Espaçamento entre Linhas */
+#aguiaLineSpacingBtn .icon svg *,
+#aguiaLineSpacingBtn:hover .icon svg *,
+#aguiaLineSpacingBtn.active .icon svg * {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Espaçamento entre Letras */
+#aguiaLetterSpacingBtn .icon svg *,
+#aguiaLetterSpacingBtn:hover .icon svg *,
+#aguiaLetterSpacingBtn.active .icon svg * {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Letras Destacadas */
+#aguiaHighlightedLettersBtn .icon svg *,
+#aguiaHighlightedLettersBtn:hover .icon svg *,
+#aguiaHighlightedLettersBtn.active .icon svg * {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Texto para Fala */
+#aguiaTextToSpeechBtn .icon svg *,
+#aguiaTextToSpeechBtn:hover .icon svg *,
+#aguiaTextToSpeechBtn.active .icon svg * {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Ajuste específico para os riscos curvados do ícone de Texto para Fala */
+#aguiaTextToSpeechBtn .icon svg path[d*="M"],
+#aguiaTextToSpeechBtn:hover .icon svg path[d*="M"],
+#aguiaTextToSpeechBtn.active .icon svg path[d*="M"] {
+    fill: none !important; /* Garantir que os riscos não sejam preenchidos */
+    stroke: #000000 !important;
+    stroke-width: 1.5px !important;
+    transform: translateX(3px) !important; /* Afastar os riscos curvados da cabeça do boneco */
+    margin-left: 2px !important; /* Espaçamento adicional à esquerda */
+}
+
+/* Aumentar bastante apenas o ícone Texto para Fala e ajustar container */
+#aguiaTextToSpeechBtn .icon svg {
+    width: 72px !important;
+    height: 72px !important;
+}
+#aguiaTextToSpeechBtn .icon {
+    height: 80px !important;
+}
+
+/* Ocultar Imagens */
+#aguiaHideImagesBtn .icon svg *,
+#aguiaHideImagesBtn:hover .icon svg *,
+#aguiaHideImagesBtn.active .icon svg * {
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Ajuste específico para o ícone de Ocultar Imagens */
+#aguiaHideImagesBtn .icon svg rect,
+#aguiaHideImagesBtn:hover .icon svg rect,
+#aguiaHideImagesBtn.active .icon svg rect {
+    stroke: #000000 !important;
+    fill: none !important;
+    stroke-width: 1.5px !important;
+}
+
+#aguiaHideImagesBtn .icon svg path,
+#aguiaHideImagesBtn:hover .icon svg path,
+#aguiaHideImagesBtn.active .icon svg path {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+}
+
+#aguiaHideImagesBtn .icon svg line,
+#aguiaHideImagesBtn:hover .icon svg line,
+#aguiaHideImagesBtn.active .icon svg line {
+    stroke: #000000 !important;
+    stroke-width: 2px !important;
+    z-index: 2 !important; /* Garantir que a linha fique acima */
+}
+
+#aguiaHideImagesBtn .icon svg circle,
+#aguiaHideImagesBtn:hover .icon svg circle,
+#aguiaHideImagesBtn.active .icon svg circle {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+}
+
+/* Cursor Grande */
+#aguiaCustomCursorBtn .icon svg *,
+#aguiaCustomCursorBtn:hover .icon svg *,
+#aguiaCustomCursorBtn.active .icon svg * {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Destacar Links */
+/* Exceção: o ícone de Destacar Links usa máscara com recorte; manter apenas o preenchimento preto do retângulo via inline style
+   e permitir que o currentColor do SVG defina a cor do recorte (sem forçar fill/stroke aqui). */
+/* Removido o forçamento de fill/stroke para este ícone específico. */
+
+/* Destacar Cabeçalhos */
+/* Destacar Cabeçalhos - sempre preto, independente do estado */
+#aguiaEmphasizeHeadingsBtn .icon svg *,
+#aguiaEmphasizeHeadingsBtn:hover .icon svg *,
+#aguiaEmphasizeHeadingsBtn.active .icon svg * {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Lupa de Conteúdo */
+#aguiaMagnifierBtn .icon svg *,
+#aguiaMagnifierBtn:hover .icon svg *,
+#aguiaMagnifierBtn.active .icon svg * {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Destacar Links: manter traço sem preenchimento (compatível com a nova corrente diagonal) */
+#aguiaEmphasizeLinksBtn .icon svg rect,
+#aguiaEmphasizeLinksBtn:hover .icon svg rect,
+#aguiaEmphasizeLinksBtn.active .icon svg rect,
+#aguiaEmphasizeLinksBtn .icon svg path,
+#aguiaEmphasizeLinksBtn:hover .icon svg path,
+#aguiaEmphasizeLinksBtn.active .icon svg path,
+#aguiaEmphasizeLinksBtn .icon svg line,
+#aguiaEmphasizeLinksBtn:hover .icon svg line,
+#aguiaEmphasizeLinksBtn.active .icon svg line,
+#aguiaEmphasizeLinksBtn .icon svg ellipse,
+#aguiaEmphasizeLinksBtn:hover .icon svg ellipse,
+#aguiaEmphasizeLinksBtn.active .icon svg ellipse {
+    fill: none !important;
+    stroke: #000000 !important;
+    stroke-width: 2px !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+
+/* Aumentar apenas o ícone Destacar Links e ajustar container para não cortar */
+#aguiaEmphasizeLinksBtn .icon svg {
+    width: 60px !important;
+    height: 60px !important;
+}
+#aguiaEmphasizeLinksBtn .icon {
+    height: 68px !important;
+}
+
+/* Afinar o risco horizontal do ícone (sobrepõe stroke dos rects) */
+#aguiaEmphasizeLinksBtn .icon svg line {
+    stroke-width: 1.2px !important;
+}
+
+/* Garantir que os elementos de ícone não mudem */
+#aguiaIncreaseFontBtn .icon,
+#aguiaLineSpacingBtn .icon,
+#aguiaLetterSpacingBtn .icon,
+#aguiaHighlightedLettersBtn .icon,
+#aguiaTextToSpeechBtn .icon,
+#aguiaHideImagesBtn .icon,
+#aguiaCustomCursorBtn .icon,
+#aguiaEmphasizeLinksBtn .icon,
+#aguiaEmphasizeHeadingsBtn .icon,
+#aguiaMagnifierBtn .icon,
+#aguiaIncreaseFontBtn:hover .icon,
+#aguiaLineSpacingBtn:hover .icon,
+#aguiaLetterSpacingBtn:hover .icon,
+#aguiaHighlightedLettersBtn:hover .icon,
+#aguiaTextToSpeechBtn:hover .icon,
+#aguiaHideImagesBtn:hover .icon,
+#aguiaCustomCursorBtn:hover .icon,
+#aguiaEmphasizeLinksBtn:hover .icon,
+#aguiaEmphasizeHeadingsBtn:hover .icon,
+#aguiaMagnifierBtn:hover .icon,
+#aguiaIncreaseFontBtn.active .icon,
+#aguiaLineSpacingBtn.active .icon,
+#aguiaLetterSpacingBtn.active .icon,
+#aguiaHighlightedLettersBtn.active .icon,
+#aguiaTextToSpeechBtn.active .icon,
+#aguiaHideImagesBtn.active .icon,
+#aguiaCustomCursorBtn.active .icon,
+#aguiaEmphasizeLinksBtn.active .icon,
+#aguiaEmphasizeHeadingsBtn.active .icon,
+#aguiaMagnifierBtn.active .icon {
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Regras importantes para evitar transições ou animações */
+.aguia-option .icon,
+.aguia-option:hover .icon,
+.aguia-option.active .icon,
+.aguia-option .icon svg,
+.aguia-option:hover .icon svg,
+.aguia-option.active .icon svg {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Overrides finais para aumentar bastante o ícone de Espaçamento entre Letras */
+#aguiaLetterSpacingBtn .icon svg {
+    width: 44px !important;
+    height: 44px !important;
+}
+#aguiaLetterSpacingBtn .icon {
+    height: 50px !important; /* evitar corte visual do SVG maior */
+}

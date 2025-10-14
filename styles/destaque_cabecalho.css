@@ -5,12 +5,12 @@
  */
 
 /* Estilos para cabeçalhos quando o destaque está ativado */
-body.aguia-highlight-headers h1,
-body.aguia-highlight-headers h2,
-body.aguia-highlight-headers h3,
-body.aguia-highlight-headers h4,
-body.aguia-highlight-headers h5,
-body.aguia-highlight-headers h6 {
+.aguia-highlight-headers h1,
+.aguia-highlight-headers h2,
+.aguia-highlight-headers h3,
+.aguia-highlight-headers h4,
+.aguia-highlight-headers h5,
+.aguia-highlight-headers h6 {
     border-bottom: 2px solid #2271ff;
     padding-bottom: 5px;
     position: relative;
@@ -18,12 +18,12 @@ body.aguia-highlight-headers h6 {
 }
 
 /* Adiciona uma linha gradiente sob o cabeçalho para melhor visualização */
-body.aguia-highlight-headers h1::after,
-body.aguia-highlight-headers h2::after,
-body.aguia-highlight-headers h3::after,
-body.aguia-highlight-headers h4::after,
-body.aguia-highlight-headers h5::after,
-body.aguia-highlight-headers h6::after {
+.aguia-highlight-headers h1::after,
+.aguia-highlight-headers h2::after,
+.aguia-highlight-headers h3::after,
+.aguia-highlight-headers h4::after,
+.aguia-highlight-headers h5::after,
+.aguia-highlight-headers h6::after {
     content: '';
     position: absolute;
     bottom: -2px;
@@ -34,31 +34,31 @@ body.aguia-highlight-headers h6::after {
 }
 
 /* Estilos específicos para diferentes níveis de cabeçalho */
-body.aguia-highlight-headers h1 {
+.aguia-highlight-headers h1 {
     border-bottom-width: 3px;
 }
 
-body.aguia-highlight-headers h2 {
+.aguia-highlight-headers h2 {
     border-bottom-width: 2.5px;
 }
 
 /* Melhora o contraste do destaque para temas escuros */
 @media (prefers-color-scheme: dark) {
-    body.aguia-highlight-headers h1,
-    body.aguia-highlight-headers h2,
-    body.aguia-highlight-headers h3,
-    body.aguia-highlight-headers h4,
-    body.aguia-highlight-headers h5,
-    body.aguia-highlight-headers h6 {
+    .aguia-highlight-headers h1,
+    .aguia-highlight-headers h2,
+    .aguia-highlight-headers h3,
+    .aguia-highlight-headers h4,
+    .aguia-highlight-headers h5,
+    .aguia-highlight-headers h6 {
         border-bottom-color: #6699ff;
     }
     
-    body.aguia-highlight-headers h1::after,
-    body.aguia-highlight-headers h2::after,
-    body.aguia-highlight-headers h3::after,
-    body.aguia-highlight-headers h4::after,
-    body.aguia-highlight-headers h5::after,
-    body.aguia-highlight-headers h6::after {
+    .aguia-highlight-headers h1::after,
+    .aguia-highlight-headers h2::after,
+    .aguia-highlight-headers h3::after,
+    .aguia-highlight-headers h4::after,
+    .aguia-highlight-headers h5::after,
+    .aguia-highlight-headers h6::after {
         background: linear-gradient(90deg, rgba(102,153,255,0.8), rgba(102,153,255,0.3));
     }
 }

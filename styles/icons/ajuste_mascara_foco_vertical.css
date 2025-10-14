@@ -28,12 +28,12 @@
 
 /* Estado ativo com !important para garantir que seja aplicado */
 #aguiaFocusMaskVerticalBtn.active .icon svg {
-    fill: #2271ff !important;
+    fill: #000000 !important;
 }
 
 #aguiaFocusMaskVerticalBtn.active .icon svg rect {
-    stroke: #2271ff !important;
-    fill: #2271ff !important;
+    stroke: #000000 !important;
+    fill: #000000 !important;
 }
 
 /* Exceção para o retângulo central quando ativo */

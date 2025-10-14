@@ -28,7 +28,7 @@
 
 /* Estado ativo com !important para garantir que seja aplicado */
 #aguiaHighContrastBtn.active .icon svg {
-    fill: #2271ff !important;
+    fill: #000000 !important;
 }
 
 /* Estado hover com !important para garantir que seja aplicado */

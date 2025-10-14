@@ -25,15 +25,20 @@
     filter: none !important;
 }
 
-/* Estado ativo com !important para garantir que seja aplicado */
+/* Estado ativo e hover com cores consistentes */
 #aguiaMagnifierBtn.active .icon svg circle,
-#aguiaMagnifierBtn.active .icon svg path {
-    stroke: #2271ff !important;
+#aguiaMagnifierBtn.active .icon svg path,
+#aguiaMagnifierBtn:hover .icon svg circle,
+#aguiaMagnifierBtn:hover .icon svg path,
+#aguiaMagnifierBtn .icon svg circle,
+#aguiaMagnifierBtn .icon svg path {
+    stroke: #00bcd4 !important; /* Ciano - consistente em todos os estados */
+    fill: #00bcd4 !important;
 }
 
-/* Estado hover com !important para garantir que seja aplicado */
+/* Estado hover com !important para garantir que seja aplicado - sem transformação */
 #aguiaMagnifierBtn:hover .icon svg {
-    transform: scale(1.05) !important;
+    transform: none !important; /* Mantém o ícone sem transformação para aparência consistente */
 }
 
 /* Removendo qualquer elemento que possa estar sobrepondo o ícone */

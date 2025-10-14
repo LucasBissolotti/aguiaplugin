@@ -47,22 +47,26 @@ define([
     function applyPreferences(prefs) {
         // Aplicar tamanho da fonte
         if (prefs.fontSize && prefs.fontSize !== 100) {
-            document.body.style.fontSize = prefs.fontSize + '%';
+            const scope = document.getElementById('page') || document.querySelector('#page-content') || document.querySelector('main') || document.body;
+            scope.style.fontSize = prefs.fontSize + '%';
         }
         
         // Aplicar contraste alto
         if (prefs.highContrast) {
-            document.body.classList.add('aguia-high-contrast');
+            const scope = document.getElementById('page') || document.querySelector('#page-content') || document.querySelector('main') || document.body;
+            scope.classList.add('aguia-high-contrast');
         }
         
         // Aplicar fontes para leitura facilitada
         if (prefs.readableFonts) {
-            document.body.classList.add('aguia-readable-fonts');
+            const scope = document.getElementById('page') || document.querySelector('#page-content') || document.querySelector('main') || document.body;
+            scope.classList.add('aguia-readable-fonts');
         }
         
         // Aplicar modo de daltonismo
         if (prefs.colorblind && prefs.colorblind !== 'none') {
-            document.body.classList.add('aguia-colorblind-' + prefs.colorblind);
+            const scope = document.getElementById('page') || document.querySelector('#page-content') || document.querySelector('main') || document.body;
+            scope.classList.add('aguia-colorblind-' + prefs.colorblind);
         }
         
         // Outras preferências serão aplicadas conforme necessário

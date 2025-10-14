@@ -55,7 +55,7 @@ function aguia_format_preference_value($preference, $value) {
         return $value ? 1 : 0;
     } else if ($preference === 'colorblind') {
         // Verifica se é um dos valores permitidos
-        $allowedValues = ['none', 'protanopia', 'deuteranopia', 'tritanopia', 'achromatopsia'];
+        $allowedValues = ['none', 'protanopia', 'deuteranopia', 'tritanopia'];
         return in_array($value, $allowedValues) ? $value : 'none';
     }
     

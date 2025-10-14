@@ -16,29 +16,34 @@
 
 /* Garantir que o ícone tenha tamanho adequado e sem estilos que possam afetar a renderização */
 #aguiaLetterSpacingBtn .icon svg {
-    width: 36px !important;
-    height: 36px !important;
+    width: 40px !important; /* aumentar bastante */
+    height: 40px !important;
     overflow: visible !important;
     display: block !important;
     margin: 0 auto !important;
     transform: none !important;
     filter: none !important;
-    /* Garantir que o SVG tenha espaço suficiente */
-    padding: 2px !important;
+    /* Remover padding e permitir tamanho maior */
+    padding: 0 !important;
 }
 
-/* Estado ativo com !important para garantir que seja aplicado */
-#aguiaLetterSpacingBtn.active .icon svg text {
-    fill: #2271ff !important;
+/* Estado ativo e hover com cores consistentes */
+#aguiaLetterSpacingBtn.active .icon svg text,
+#aguiaLetterSpacingBtn:hover .icon svg text,
+#aguiaLetterSpacingBtn .icon svg text {
+    fill: #000000 !important; /* Preto - consistente em todos os estados */
 }
 
-#aguiaLetterSpacingBtn.active .icon svg path {
-    stroke: #2271ff !important;
+#aguiaLetterSpacingBtn.active .icon svg path,
+#aguiaLetterSpacingBtn:hover .icon svg path,
+#aguiaLetterSpacingBtn .icon svg path {
+    stroke: #000000 !important; /* Preto - consistente com o texto */
+    fill: #000000 !important;
 }
 
-/* Estado hover com !important para garantir que seja aplicado */
+/* Estado hover sem transformação para manter aparência consistente */
 #aguiaLetterSpacingBtn:hover .icon svg {
-    transform: scale(1.05) !important;
+    transform: none !important;
 }
 
 /* Removendo qualquer elemento que possa estar sobrepondo o ícone */

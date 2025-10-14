@@ -11,7 +11,7 @@
                 <FIELD NAME="linespacing" TYPE="int" LENGTH="3" NOTNULL="false" DEFAULT="100" SEQUENCE="false" COMMENT="Espaçamento entre linhas em percentual"/>
                 <FIELD NAME="speech" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Leitura de texto ativada (1=sim, 0=não)"/>
                 <FIELD NAME="texthelper" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Auxiliar de leitura (1=sim, 0=não)"/>
-                <FIELD NAME="colorblind" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="none" SEQUENCE="false" COMMENT="Modo de daltonismo (none, protanopia, deuteranopia, tritanopia, achromatopsia)"/>
+                <FIELD NAME="colorblind" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="none" SEQUENCE="false" COMMENT="Modo de daltonismo (none, protanopia, deuteranopia, tritanopia)"/>
                 <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Timestamp da última modificação"/>
             </FIELDS>
             <KEYS>

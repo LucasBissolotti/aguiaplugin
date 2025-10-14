@@ -161,7 +161,7 @@ class ApiPreferencias {
                 $preferenciasBanco->texthelper = $valor ? 1 : 0;
                 break;
             case 'colorblind':
-                $valoresPermitidos = ['none', 'protanopia', 'deuteranopia', 'tritanopia', 'achromatopsia'];
+                $valoresPermitidos = ['none', 'protanopia', 'deuteranopia', 'tritanopia'];
                 $preferenciasBanco->colorblind = in_array($valor, $valoresPermitidos) ? $valor : 'none';
                 break;
             default:

@@ -12,13 +12,15 @@
     justify-content: center !important;
     align-items: center !important;
     height: auto !important;
+    background: transparent !important; /* manter transparente para a metade adaptativa */
 }
 
 /* Garantir que o ícone tenha tamanho adequado e sem estilos que possam afetar a renderização */
 #aguiaColorIntensityBtn .icon svg {
     width: 36px !important;
     height: 36px !important;
-    fill: #444444 !important;
+    /* não forçar fill global aqui para permitir transparência da metade direita */
+    background: transparent !important;
     overflow: visible !important;
     display: block !important;
     margin: 0 auto !important;
@@ -27,8 +29,9 @@
 }
 
 /* Estado ativo com !important para garantir que seja aplicado */
-#aguiaColorIntensityBtn.active .icon svg {
-    fill: #2271ff !important;
+/* No estado ativo, apenas garantir contorno preto se necessário */
+#aguiaColorIntensityBtn.active .icon svg path {
+    stroke: #000000 !important;
 }
 
 /* Estado hover com !important para garantir que seja aplicado */

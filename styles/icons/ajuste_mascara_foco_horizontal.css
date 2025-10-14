@@ -28,12 +28,12 @@
 
 /* Estado ativo com !important para garantir que seja aplicado */
 #aguiaFocusMaskHorizontalBtn.active .icon svg {
-    fill: #2271ff !important;
+    fill: #000000 !important;
 }
 
 #aguiaFocusMaskHorizontalBtn.active .icon svg rect,
 #aguiaFocusMaskHorizontalBtn.active .icon svg line {
-    stroke: #2271ff !important;
+    stroke: #000000 !important;
 }
 
 /* Estado hover com !important para garantir que seja aplicado */

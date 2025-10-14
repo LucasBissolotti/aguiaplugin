@@ -21,10 +21,20 @@
             return;
         }
         
+        // Obter o escopo do AGUIA
+        const aguiaScope = document.getElementById('aguia-scope-element') || 
+                          window.AGUIA_SCOPE || 
+                          document.querySelector('#page') || 
+                          document.querySelector('#page-content') || 
+                          document.querySelector('main') || 
+                          document.body;
+        
         const magnifier = document.createElement('div');
         magnifier.id = MAGNIFIER_ID;
         magnifier.className = 'aguia-magnifier aguia-magnifier-hidden';
-        document.body.appendChild(magnifier);
+        
+        // Adicionar ao escopo do AGUIA ou ao body se não encontrar
+        aguiaScope.appendChild(magnifier);
         
         return magnifier;
     }
@@ -59,7 +69,8 @@
         const isEnabled = localStorage.getItem(STORAGE_KEY) === 'true';
         if (isEnabled) {
             button.classList.add('active');
-            document.body.classList.add('aguia-magnifier-active');
+            const scope = document.getElementById('page') || document.querySelector('#page-content') || document.querySelector('main') || document.body;
+            scope.classList.add('aguia-magnifier-active');
         }
         
         // Adicionar ao body (mesmo oculto para preservar a funcionalidade)
@@ -72,13 +83,21 @@
     function toggleMagnifier(button) {
         const isActive = button.classList.contains('active');
         
+        // Obter o escopo do AGUIA
+        const aguiaScope = document.getElementById('aguia-scope-element') || 
+                          window.AGUIA_SCOPE || 
+                          document.querySelector('#page') || 
+                          document.querySelector('#page-content') || 
+                          document.querySelector('main') || 
+                          document.body;
+        
         if (isActive) {
             button.classList.remove('active');
-            document.body.classList.remove('aguia-magnifier-active');
+            aguiaScope.classList.remove('aguia-magnifier-active');
             localStorage.setItem(STORAGE_KEY, 'false');
         } else {
             button.classList.add('active');
-            document.body.classList.add('aguia-magnifier-active');
+            aguiaScope.classList.add('aguia-magnifier-active');
             localStorage.setItem(STORAGE_KEY, 'true');
         }
     }
@@ -234,7 +253,15 @@
     
     // Atualizar a posição e conteúdo da lupa
     function updateMagnifier(e, magnifier) {
-        if (!document.body.classList.contains('aguia-magnifier-active')) {
+        // Obter o escopo do AGUIA
+        const aguiaScope = document.getElementById('aguia-scope-element') || 
+                          window.AGUIA_SCOPE || 
+                          document.querySelector('#page') || 
+                          document.querySelector('#page-content') || 
+                          document.querySelector('main') || 
+                          document.body;
+                          
+        if (!aguiaScope.classList.contains('aguia-magnifier-active')) {
             magnifier.classList.add('aguia-magnifier-hidden');
             return;
         }
@@ -247,7 +274,8 @@
             element === magnifier || 
             element.id === BUTTON_ID || 
             element.id === 'aguia-content-magnifier' || 
-            element.id === MAGNIFIER_ID) {
+            element.id === MAGNIFIER_ID ||
+            element.closest('#aguiaMenu')) {
             magnifier.classList.add('aguia-magnifier-hidden');
             return;
         }
