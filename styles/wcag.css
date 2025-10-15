@@ -60,7 +60,7 @@
 
 /* Estilo para a faixa lateral com o nome AGUIA no hover */
 button#aguiaButton.aguia-button::before {
-    content: "AGUIA";
+    content: "";
     position: absolute;
     left: -100px; /* Posição inicial fora da tela */
     top: 0;
@@ -318,7 +318,7 @@ button#aguiaButton.aguia-button:hover::before {
 /* Estilo para opções em linha (para o reset e outras ações) */
 .aguia-inline-options {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     margin-top: 16px;
 }
 
@@ -787,11 +787,34 @@ input:checked + .aguia-switch-slider:before {
     font-size: 13px;
     cursor: pointer;
     transition: all 0.2s ease;
+    margin-left: 8px;
 }
 
 .aguia-reset-button:hover {
     background-color: #fff5f5;
     border-color: var(--aguia-error-color);
+}
+
+/* Botão de salvar preferências */
+.aguia-save-button {
+    background-color: var(--aguia-primary-color);
+    color: #fff;
+    border: none;
+    border-radius: var(--aguia-border-radius);
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.05s ease;
+}
+.aguia-save-button:hover {
+    background-color: var(--aguia-secondary-color);
+}
+.aguia-save-button:active {
+    transform: translateY(1px);
+}
+.aguia-save-button[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .aguia-credits {
@@ -981,7 +1004,7 @@ button#aguiaButton.aguia-button img.aguia-logo {
 
 /* Estilo definitivo para o hover do botão AGUIA com máxima prioridade */
 button#aguiaButton.aguia-button::before {
-    content: "AGUIA" !important;
+    content: "" !important;
     position: absolute !important;
     left: -100px !important;
     top: 0 !important;

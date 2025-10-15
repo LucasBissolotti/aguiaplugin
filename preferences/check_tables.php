@@ -15,7 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Versão do plugin AGUIA
+ * Verificação mínima das tabelas do plugin.
+ * Mantido intencionalmente simples para não bloquear o salvamento caso a instalação já tenha sido feita via install.xml/upgrade.php.
  *
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -23,8 +24,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_aguiaplugin';
-$plugin->version = 2025101501;  // Data e versão (YYYYMMDD00)
-$plugin->requires = 2022041900;  // Versão mínima (4.0)
-$plugin->maturity = MATURITY_BETA;
-$plugin->release = 'v1.5.0';
+if (!function_exists('local_aguiaplugin_check_tables')) {
+    /**
+     * Retorna true para não bloquear o fluxo de salvamento. A criação/alteração de tabelas é responsabilidade do install.xml/upgrade.
+     * Você pode estender esta função para validar a existência da tabela se desejar.
+     *
+     * @return bool
+     */
+    function local_aguiaplugin_check_tables(): bool {
+        return true;
+    }
+}

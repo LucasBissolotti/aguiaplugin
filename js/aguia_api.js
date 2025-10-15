@@ -8,6 +8,20 @@
 (function() {
     // Namespace para a API AGUIA
     window.AguiaAPI = window.AguiaAPI || {};
+    // Controle de sincronização automática com o servidor (por padrão habilitada)
+    // Quando false: alterações chamando savePreference só atualizam localStorage;
+    // use options { server: true } ou AguiaAPI.saveAll/commitLocalToServer para salvar no servidor.
+    if (typeof window.AguiaAPI.autoSync === 'undefined') {
+        window.AguiaAPI.autoSync = true;
+    }
+
+    // Obtém a sesskey do Moodle, se disponível.
+    function getSesskey() {
+        if (typeof M !== 'undefined' && M.cfg && M.cfg.sesskey) {
+            return M.cfg.sesskey;
+        }
+        return null;
+    }
     
     /**
      * Salva uma preferência do usuário
@@ -15,20 +29,28 @@
      * @param {*} value - Valor da preferência
      * @returns {Promise} - Promise que resolve quando a preferência for salva
      */
-    window.AguiaAPI.savePreference = function(preference, value) {
+    window.AguiaAPI.savePreference = function(preference, value, options) {
         return new Promise((resolve, reject) => {
             // Sempre salva no localStorage como backup
             localStorage.setItem('aguia_' + preference, JSON.stringify(value));
             
             // Se o usuário estiver logado no Moodle, tenta salvar via AJAX
-            if (typeof M !== 'undefined' && M.cfg && M.cfg.wwwroot) {
-                const data = { preference, value };
+            const forceServer = options && options.server === true;
+            const shouldSyncServer = (window.AguiaAPI.autoSync || forceServer);
+
+            if (shouldSyncServer && typeof M !== 'undefined' && M.cfg && M.cfg.wwwroot) {
+                const sesskey = getSesskey();
+                const data = { preference, value, ...(sesskey ? { sesskey } : {}) };
                 
-                fetch(M.cfg.wwwroot + '/local/aguiaplugin/preferences/salvar.php', {
+                const saveUrl = M.cfg.wwwroot + '/local/aguiaplugin/preferences/salvar.php' + (sesskey ? ('?sesskey=' + encodeURIComponent(sesskey)) : '');
+                fetch(saveUrl, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        ...(sesskey ? { 'X-Moodle-Sesskey': sesskey } : {})
                     },
+                    credentials: 'same-origin',
                     body: JSON.stringify(data)
                 })
                 .then(response => {
@@ -57,8 +79,8 @@
                     resolve({ success: true, local: true, error: error.message });
                 });
             } else {
-                // Quando não tem acesso ao Moodle, usamos apenas o localStorage
-                resolve({ success: true, local: true });
+                // Quando não deve sincronizar agora ou não tem acesso ao Moodle, usamos apenas o localStorage
+                resolve({ success: true, local: true, skippedServer: true });
             }
         });
     };
@@ -74,7 +96,9 @@
             
             // Primeiro tenta carregar do Moodle
             if (typeof M !== 'undefined' && M.cfg && M.cfg.wwwroot) {
-                fetch(M.cfg.wwwroot + '/local/aguiaplugin/preferences/obter.php', {
+                const sesskey = getSesskey();
+                const url = M.cfg.wwwroot + '/local/aguiaplugin/preferences/obter.php' + (sesskey ? ('?sesskey=' + encodeURIComponent(sesskey)) : '');
+                fetch(url, {
                     method: 'GET',
                     credentials: 'same-origin' // Importante para cookies de sessão
                 })
@@ -165,5 +189,42 @@
         }
         
         return preferences;
+    };
+
+    /**
+     * Salva um conjunto de preferências no servidor, forçando a sincronização.
+     * Aceita um objeto no formato retornado por loadFromLocalStorage() ou equivalente.
+     * Retorna um resumo do resultado por preferência.
+     * @param {Object} preferences Objeto com preferências
+     * @returns {Promise<{results: Object, allOk: boolean}>}
+     */
+    window.AguiaAPI.saveAll = function(preferences) {
+        const entries = Object.entries(preferences || {});
+        if (!entries.length) {
+            return Promise.resolve({ results: {}, allOk: true });
+        }
+        const results = {};
+        // Executa em sequência para evitar sobrecarga; poderia ser em paralelo também.
+        let chain = Promise.resolve();
+        entries.forEach(([pref, val]) => {
+            chain = chain.then(() =>
+                window.AguiaAPI.savePreference(pref, val, { server: true })
+                    .then(r => { results[pref] = r; })
+                    .catch(e => { results[pref] = { success: false, error: (e && e.message) || 'erro' }; })
+            );
+        });
+        return chain.then(() => {
+            const allOk = Object.values(results).every(r => r && r.success);
+            return { results, allOk };
+        });
+    };
+
+    /**
+     * Lê as preferências do localStorage e envia todas para o servidor.
+     * @returns {Promise<{results: Object, allOk: boolean}>}
+     */
+    window.AguiaAPI.commitLocalToServer = function() {
+        const prefs = window.AguiaAPI.loadFromLocalStorage();
+        return window.AguiaAPI.saveAll(prefs);
     };
 })();

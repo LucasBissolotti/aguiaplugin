@@ -77,9 +77,11 @@ function xmldb_local_aguiaplugin_upgrade($oldversion) {
         $table->add_field('texthelper', XMLDB_TYPE_INTEGER, '1', null, null, null, '0');
         $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
 
-        // Add keys.
+    // Add keys.
         $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
         $table->add_key('userid', XMLDB_KEY_UNIQUE, ['userid']);
+    // Foreign key to core user table.
+    $table->add_key('fk_userid', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
 
         // Create table if it doesn't exist.
         if (!$dbman->table_exists($table)) {
@@ -88,6 +90,19 @@ function xmldb_local_aguiaplugin_upgrade($oldversion) {
 
         // Aguiaplugin savepoint reached.
         upgrade_plugin_savepoint(true, 2025070100, 'local', 'aguiaplugin');
+    }
+
+    // Add foreign key on existing installs if missing.
+    if ($oldversion < 2025101501) {
+        $table = new xmldb_table('local_aguiaplugin_prefs');
+        $key = new xmldb_key('fk_userid', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
+        // Add foreign key if it does not exist.
+        try {
+            $dbman->add_key($table, $key);
+        } catch (Exception $e) {
+            // Some DBs may not support adding FK if data violates constraint or it already exists; ignore and proceed.
+        }
+        upgrade_plugin_savepoint(true, 2025101501, 'local', 'aguiaplugin');
     }
 
     return true;

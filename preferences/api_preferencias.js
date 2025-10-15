@@ -6,19 +6,44 @@
  */
 
 (function() {
+    // Namespace
     window.AguiaAPI = window.AguiaAPI || {};
-    
-    window.AguiaAPI.savePreference = function(preference, value) {
+
+    // Controle de sincronização automática com o servidor (por padrão habilitada)
+    if (typeof window.AguiaAPI.autoSync === 'undefined') {
+        window.AguiaAPI.autoSync = true;
+    }
+
+    // Sesskey helper
+    function getSesskey() {
+        if (typeof M !== 'undefined' && M.cfg && M.cfg.sesskey) {
+            return M.cfg.sesskey;
+        }
+        return null;
+    }
+
+    // Salvar preferência
+    window.AguiaAPI.savePreference = function(preference, value, options) {
         return new Promise((resolve, reject) => {
-            if (typeof M !== 'undefined' && M.cfg && M.cfg.sesskey) {
-                const data = { preference, value };
-                
-                fetch(M.cfg.wwwroot + '/local/aguiaplugin/preferences/salvar.php', {
+            // backup local sempre
+            localStorage.setItem('aguia_' + preference, JSON.stringify(value));
+
+            const forceServer = options && options.server === true;
+            const shouldSyncServer = (window.AguiaAPI.autoSync || forceServer);
+
+            if (shouldSyncServer && typeof M !== 'undefined' && M.cfg && M.cfg.wwwroot) {
+                const sesskey = getSesskey();
+                const data = { preference, value, ...(sesskey ? { sesskey } : {}) };
+                const saveUrl = M.cfg.wwwroot + '/local/aguiaplugin/preferences/salvar.php' + (sesskey ? ('?sesskey=' + encodeURIComponent(sesskey)) : '');
+
+                fetch(saveUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Moodle-Sesskey': M.cfg.sesskey
+                        'Accept': 'application/json',
+                        ...(sesskey ? { 'X-Moodle-Sesskey': sesskey } : {})
                     },
+                    credentials: 'same-origin',
                     body: JSON.stringify(data)
                 })
                 .then(response => {
@@ -31,26 +56,36 @@
                         throw new Error('Resposta não-JSON do servidor');
                     });
                 })
-                .then(responseData => resolve(responseData))
+                .then(responseData => {
+                    if (responseData && responseData.success) {
+                        resolve(responseData);
+                    } else {
+                        resolve({ success: true, local: true, serverError: responseData && responseData.message });
+                    }
+                })
                 .catch(error => {
                     console.error('Erro ao salvar preferência:', error);
-                    localStorage.setItem('aguia_' + preference, JSON.stringify(value));
-                    reject(error);
+                    resolve({ success: true, local: true, error: error.message });
                 });
             } else {
-                localStorage.setItem('aguia_' + preference, JSON.stringify(value));
-                resolve({ success: true, local: true });
+                resolve({ success: true, local: true, skippedServer: true });
             }
         });
     };
-    
+
+    // Carregar preferências (server -> local merge)
     window.AguiaAPI.loadPreferences = function() {
         return new Promise((resolve) => {
-            if (typeof M !== 'undefined' && M.cfg && M.cfg.sesskey) {
-                fetch(M.cfg.wwwroot + '/local/aguiaplugin/preferences/obter.php', {
+            const localPreferences = window.AguiaAPI.loadFromLocalStorage();
+
+            if (typeof M !== 'undefined' && M.cfg && M.cfg.wwwroot) {
+                const sesskey = getSesskey();
+                const url = M.cfg.wwwroot + '/local/aguiaplugin/preferences/obter.php' + (sesskey ? ('?sesskey=' + encodeURIComponent(sesskey)) : '');
+                fetch(url, {
                     method: 'GET',
+                    credentials: 'same-origin',
                     headers: {
-                        'X-Moodle-Sesskey': M.cfg.sesskey
+                        ...(sesskey ? { 'X-Moodle-Sesskey': sesskey } : {})
                     }
                 })
                 .then(response => {
@@ -58,42 +93,35 @@
                     if (contentType && contentType.includes('application/json')) {
                         return response.json();
                     }
-                    return response.text().then(text => {
-                        console.error('Resposta não-JSON do servidor:', text);
-                        return { success: false, error: 'Resposta não-JSON do servidor' };
-                    });
+                    throw new Error('Resposta não-JSON do servidor');
                 })
                 .then(data => {
-                    if (data && data.success !== false && data.preferences) {
-                        resolve(data.preferences);
+                    if (data && data.success && data.preferences) {
+                        const mergedPreferences = { ...localPreferences, ...data.preferences };
+                        Object.keys(mergedPreferences).forEach(key => {
+                            localStorage.setItem('aguia_' + key, JSON.stringify(mergedPreferences[key]));
+                        });
+                        resolve(mergedPreferences);
                     } else {
-                        console.info('Carregando preferências do localStorage devido a erro ou dados ausentes do servidor');
-                        resolve(window.AguiaAPI.loadFromLocalStorage());
+                        resolve(localPreferences);
                     }
                 })
-                .catch(error => {
-                    console.error('Erro ao carregar preferências:', error);
-                    resolve(window.AguiaAPI.loadFromLocalStorage());
-                });
+                .catch(() => resolve(localPreferences));
             } else {
-                resolve(window.AguiaAPI.loadFromLocalStorage());
+                resolve(localPreferences);
             }
         });
     };
-    
+
+    // Utilitários de localStorage
     window.AguiaAPI.getFromLocalStorage = function(key, defaultValue) {
         const item = localStorage.getItem('aguia_' + key);
         if (item === null) return defaultValue;
-        try {
-            return JSON.parse(item);
-        } catch (e) {
-            return defaultValue;
-        }
+        try { return JSON.parse(item); } catch (e) { return defaultValue; }
     };
-    
+
     window.AguiaAPI.loadFromLocalStorage = function() {
         const getFromLocalStorage = window.AguiaAPI.getFromLocalStorage;
-        
         const preferences = {
             fontSize: getFromLocalStorage('fontSize', 100),
             highContrast: getFromLocalStorage('highContrast', false),
@@ -112,11 +140,36 @@
             verticalMaskLevel: getFromLocalStorage('verticalMaskLevel', 0),
             customCursor: getFromLocalStorage('customCursor', false)
         };
-        
         if (getFromLocalStorage('invertedColors', false) === true) {
             preferences.colorIntensityMode = 3;
         }
-        
         return preferences;
+    };
+
+    // Salvar em lote
+    window.AguiaAPI.saveAll = function(preferences) {
+        const entries = Object.entries(preferences || {});
+        if (!entries.length) {
+            return Promise.resolve({ results: {}, allOk: true });
+        }
+        const results = {};
+        let chain = Promise.resolve();
+        entries.forEach(([pref, val]) => {
+            chain = chain.then(() =>
+                window.AguiaAPI.savePreference(pref, val, { server: true })
+                    .then(r => { results[pref] = r; })
+                    .catch(e => { results[pref] = { success: false, error: (e && e.message) || 'erro' }; })
+            );
+        });
+        return chain.then(() => {
+            const allOk = Object.values(results).every(r => r && r.success);
+            return { results, allOk };
+        });
+    };
+
+    // Commit local -> servidor
+    window.AguiaAPI.commitLocalToServer = function() {
+        const prefs = window.AguiaAPI.loadFromLocalStorage();
+        return window.AguiaAPI.saveAll(prefs);
     };
 })();

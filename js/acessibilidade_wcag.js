@@ -17,6 +17,10 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     // Os estilos CSS agora são carregados pelo PHP
+    // Desliga a sincronização automática com o servidor; salvamento manual via botão
+    if (window.AguiaAPI) {
+        window.AguiaAPI.autoSync = false;
+    }
     
     // Inicialização das variáveis
     let currentFontSize = 100;
@@ -625,19 +629,55 @@ document.addEventListener('DOMContentLoaded', function() {
         const footer = document.createElement('div');
         footer.className = 'aguia-menu-footer';
         
+        // Botão de salvar preferências (novo)
+        const saveButton = document.createElement('button');
+        saveButton.className = 'aguia-save-button';
+        saveButton.textContent = 'Salvar preferências';
+        saveButton.setAttribute('aria-label', 'Salvar configurações de acessibilidade');
+        saveButton.addEventListener('click', function() {
+            try {
+                // Coleta o estado atual das preferências a partir do localStorage
+                if (window.AguiaAPI && typeof window.AguiaAPI.commitLocalToServer === 'function') {
+                    // Garante que façamos uma tentativa de sincronizar todas as prefs com o servidor
+                    saveButton.disabled = true;
+                    saveButton.textContent = 'Salvando...';
+                    window.AguiaAPI.commitLocalToServer()
+                        .then(result => {
+                            if (result && result.allOk) {
+                                showStatusMessage('Preferências salvas', 'success');
+                            } else {
+                                showStatusMessage('Algumas preferências podem não ter sido salvas', 'warning');
+                            }
+                        })
+                        .catch(() => {
+                            showStatusMessage('Erro ao salvar preferências', 'error');
+                        })
+                        .finally(() => {
+                            saveButton.disabled = false;
+                            saveButton.textContent = 'Salvar preferências';
+                        });
+                } else {
+                    showStatusMessage('API de preferências indisponível', 'error');
+                }
+            } catch (e) {
+                showStatusMessage('Erro ao salvar preferências', 'error');
+            }
+        });
+
         // Botão de reset
         const resetButton = document.createElement('button');
         resetButton.className = 'aguia-reset-button';
-        resetButton.textContent = 'Resetar Tudo';
-        resetButton.setAttribute('aria-label', 'Resetar todas as configurações de acessibilidade');
+        resetButton.textContent = 'Redefinir configurações de acessibilidade';
+        resetButton.setAttribute('aria-label', 'Redefinir todas as configurações de acessibilidade');
         resetButton.addEventListener('click', resetAll);
         
         // Créditos
         const credits = document.createElement('div');
         credits.className = 'aguia-credits';
-        credits.textContent = 'AGUIA';
+        credits.textContent = '';
         
-        footer.appendChild(resetButton);
+    footer.appendChild(resetButton);
+    footer.appendChild(saveButton);
         footer.appendChild(credits);
         menu.appendChild(footer);
         
@@ -2057,7 +2097,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Função para salvar preferências do usuário
     function saveUserPreference(preference, value) {
-        // Usa a API AGUIA para salvar a preferência
+        // Usa a API AGUIA para salvar a preferência localmente e, se autosync desligado, só no servidor quando clicar em salvar
         if (window.AguiaAPI && typeof window.AguiaAPI.savePreference === 'function') {
             window.AguiaAPI.savePreference(preference, value)
                 .then(() => {
@@ -2131,11 +2171,13 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             // Fallback para o caso da API não estar disponível
             if (typeof M !== 'undefined' && M.cfg && M.cfg.sesskey) {
-                fetch(M.cfg.wwwroot + '/local/aguiaplugin/preferences/obter.php', {
+                const url = M.cfg.wwwroot + '/local/aguiaplugin/preferences/obter.php?sesskey=' + encodeURIComponent(M.cfg.sesskey);
+                fetch(url, {
                     method: 'GET',
                     headers: {
                         'X-Moodle-Sesskey': M.cfg.sesskey
-                    }
+                    },
+                    credentials: 'same-origin'
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -2291,7 +2333,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Aplicar fontes legíveis ou OpenDyslexic
-        fontMode = parseInt(preferences.fontMode) || 0;
+        // Se o servidor retornou somente readableFonts=true (legado), mapeia para fontMode=1
+        let incomingFontMode = parseInt(preferences.fontMode) || 0;
+        if (!incomingFontMode && preferences.readableFonts) {
+            incomingFontMode = 1;
+        }
+        fontMode = incomingFontMode;
         if (fontMode > 0) {
             readableFontsEnabled = true;
             
@@ -2379,9 +2426,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Aplicar espaçamento entre letras com níveis
-        const letterSpacingLevel = parseInt(preferences.letterSpacing) || 0;
-        if (letterSpacingLevel > 0 && letterSpacingLevel <= 3) {
-            letterSpacingLevel = letterSpacingLevel;
+        const lsLevel = parseInt(preferences.letterSpacing) || 0;
+        if (lsLevel > 0 && lsLevel <= 3) {
+            letterSpacingLevel = lsLevel; // atualiza variável global
             AGUIA_SCOPE.classList.add(`aguia-letter-spacing-level-${letterSpacingLevel}`);
             
             // Atualiza botão se existir

@@ -115,7 +115,40 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 $userid = 0;
 $authenticated = false;
 
+// Garante que a sesskey esteja disponível para require_sesskey(), mesmo com Content-Type: application/json
 if ($moodleConfigExists) {
+    // Tenta obter a sesskey do GET, JSON e Header
+    $sesskeyfromget = isset($_GET['sesskey']) ? $_GET['sesskey'] : null;
+    $sesskeyfromjson = (isset($data) && is_object($data) && isset($data->sesskey)) ? $data->sesskey : null;
+    // Compatível com servidores que não implementam getallheaders
+    if (!function_exists('aguia_getallheaders')) {
+        function aguia_getallheaders() {
+            $headers = [];
+            foreach ($_SERVER as $name => $value) {
+                if (substr($name, 0, 5) == 'HTTP_') {
+                    $key = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
+                    $headers[$key] = $value;
+                }
+            }
+            return $headers;
+        }
+    }
+    $headers = function_exists('getallheaders') ? getallheaders() : aguia_getallheaders();
+    $sesskeyfromheader = null;
+    foreach ($headers as $hkey => $hval) {
+        if (strtolower($hkey) === 'x-moodle-sesskey') {
+            $sesskeyfromheader = $hval;
+            break;
+        }
+    }
+    $sesskey = $sesskeyfromget ?: $sesskeyfromjson ?: $sesskeyfromheader;
+    if ($sesskey && empty($_REQUEST['sesskey'])) {
+        // Injeta no REQUEST para que require_sesskey() consiga validar
+        $_REQUEST['sesskey'] = $sesskey;
+        // Também no GET para consistência
+        $_GET['sesskey'] = $sesskey;
+    }
+
     try {
         require_login();
         require_sesskey();
