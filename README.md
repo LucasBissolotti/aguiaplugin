@@ -151,7 +151,7 @@ Contribuições são bem-vindas! Para contribuir:
 
 ## Suporte
 
-Se encontrar problemas ou tiver sugestões, abra uma [issue](https://github.com/LucasBissolotti/Plugin-AGUIA/issues) no GitHub.
+Se encontrar problemas ou tiver sugestões, abra uma [issue](https://github.com/LucasBissolotti/aguiaplugin/issues) no GitHub.
 
 ## Licença
 
