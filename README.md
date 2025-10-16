@@ -38,7 +38,7 @@ Alternativamente, você pode instalar usando git:
 
 ```bash
 cd /path/to/moodle/local/
-git clone https://github.com/LucasBissolotti/Plugin-AGUIA.git aguiaplugin
+git clone https://github.com/LucasBissolotti/aguiaplugin.git aguiaplugin
 ```
 
 Depois, acesse o site como administrador para concluir a instalação.
@@ -151,7 +151,7 @@ Contribuições são bem-vindas! Para contribuir:
 
 ## Suporte
 
-Se encontrar problemas ou tiver sugestões, abra uma [issue](https://github.com/LucasBissolotti/Plugin-AGUIA/issues) no GitHub.
+Se encontrar problemas ou tiver sugestões, abra uma [issue](https://github.com/LucasBissolotti/aguiaplugin/issues) no GitHub.
 
 ## Licença
 

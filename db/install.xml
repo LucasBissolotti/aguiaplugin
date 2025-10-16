@@ -1,24 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/aguiaplugin/db" VERSION="20250701" COMMENT="XMLDB file for Moodle local/aguiaplugin plugin">
+<XMLDB PATH="local/aguiaplugin/db" VERSION="20251015" COMMENT="Tabelas do plugin local/aguiaplugin">
     <TABLES>
         <TABLE NAME="local_aguiaplugin_prefs" COMMENT="Armazena as preferências de acessibilidade dos usuários">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID do usuário Moodle"/>
-                <FIELD NAME="fontsize" TYPE="int" LENGTH="3" NOTNULL="false" DEFAULT="100" SEQUENCE="false" COMMENT="Tamanho da fonte em percentual"/>
-                <FIELD NAME="contrast" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="normal" SEQUENCE="false" COMMENT="Contraste preferido (normal, high, etc)"/>
-                <FIELD NAME="readablefonts" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Fontes mais legíveis (1=sim, 0=não)"/>
-                <FIELD NAME="linespacing" TYPE="int" LENGTH="3" NOTNULL="false" DEFAULT="100" SEQUENCE="false" COMMENT="Espaçamento entre linhas em percentual"/>
-                <FIELD NAME="speech" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Leitura de texto ativada (1=sim, 0=não)"/>
-                <FIELD NAME="texthelper" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Auxiliar de leitura (1=sim, 0=não)"/>
-                <FIELD NAME="colorblind" TYPE="char" LENGTH="20" NOTNULL="false" DEFAULT="none" SEQUENCE="false" COMMENT="Modo de daltonismo (none, protanopia, deuteranopia, tritanopia)"/>
-                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Timestamp da última modificação"/>
+                <FIELD NAME="usuarioid" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="ID do usuário Moodle"/>
+                <FIELD NAME="tamanho_fonte" TYPE="int" LENGTH="3" DEFAULT="100" COMMENT="Tamanho da fonte em percentual"/>
+                <FIELD NAME="contraste" TYPE="char" LENGTH="20" DEFAULT="normal" COMMENT="Contraste preferido (normal, alto, etc.)"/>
+                <FIELD NAME="fontes_legiveis" TYPE="int" LENGTH="1" DEFAULT="0" COMMENT="Fontes mais legíveis (1=sim, 0=não)"/>
+                <FIELD NAME="espaco_linhas" TYPE="int" LENGTH="3" DEFAULT="100" COMMENT="Espaçamento entre linhas em percentual"/>
+                <FIELD NAME="texto_para_fala" TYPE="int" LENGTH="1" DEFAULT="0" COMMENT="Leitura de texto ativada (1=sim, 0=não)"/>
+                <FIELD NAME="auxiliar_leitura" TYPE="int" LENGTH="1" DEFAULT="0" COMMENT="Auxiliar de leitura (1=sim, 0=não)"/>
+                <FIELD NAME="daltonismo" TYPE="char" LENGTH="20" DEFAULT="none" COMMENT="Modo de daltonismo (none, protanopia, deuteranopia, tritanopia)"/>
+                <FIELD NAME="intensidade_cores" TYPE="int" LENGTH="2" DEFAULT="0" COMMENT="Nível de intensidade/alteração de cores (0-3)"/>
+                <FIELD NAME="modo_fonte" TYPE="int" LENGTH="2" DEFAULT="0" COMMENT="Modo de fonte (0=padrão)"/>
+                <FIELD NAME="espaco_letras" TYPE="int" LENGTH="3" DEFAULT="0" COMMENT="Espaçamento entre letras (nível)"/>
+                <FIELD NAME="destaque_links" TYPE="int" LENGTH="1" DEFAULT="0" COMMENT="Destaque de links (1=sim, 0=não)"/>
+                <FIELD NAME="destaque_cabecalho" TYPE="int" LENGTH="1" DEFAULT="0" COMMENT="Destaque de cabeçalhos (1=sim, 0=não)"/>
+                <FIELD NAME="mascara_leitura_modo" TYPE="int" LENGTH="1" DEFAULT="0" COMMENT="Modo da máscara de leitura"/>
+                <FIELD NAME="mascara_horizontal_nivel" TYPE="int" LENGTH="2" DEFAULT="0" COMMENT="Nível da máscara horizontal"/>
+                <FIELD NAME="mascara_vertical_nivel" TYPE="int" LENGTH="2" DEFAULT="0" COMMENT="Nível da máscara vertical"/>
+                <FIELD NAME="cursor_personalizado" TYPE="int" LENGTH="1" DEFAULT="0" COMMENT="Cursor personalizado (1=sim, 0=não)"/>
+                <FIELD NAME="modificado_em" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="Timestamp da última modificação"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="userid" TYPE="unique" FIELDS="userid"/>
-                <!-- Chave estrangeira para garantir vínculo com a tabela de usuários do Moodle (mdl_user) -->
-                <KEY NAME="fk_userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+                <KEY NAME="usuarioid" TYPE="unique" FIELDS="usuarioid"/>
+                <KEY NAME="fk_usuarioid" TYPE="foreign" FIELDS="usuarioid" REFTABLE="user" REFFIELDS="id"/>
             </KEYS>
         </TABLE>
     </TABLES>

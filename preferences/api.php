@@ -45,23 +45,32 @@ class ApiPreferencias {
         }
 
         $padroes = [
-            'fontsize' => 100,
-            'contrast' => 'normal',
-            'readablefonts' => 0,
-            'linespacing' => 100,
-            'speech' => 0,
-            'texthelper' => 0,
-            'colorblind' => 'none'
+            'tamanho_fonte' => 100,
+            'contraste' => 'normal',
+            'fontes_legiveis' => 0,
+            'espaco_linhas' => 100,
+            'texto_para_fala' => 0,
+            'auxiliar_leitura' => 0,
+            'daltonismo' => 'none',
+            'intensidade_cores' => 0,
+            'modo_fonte' => 0,
+            'espaco_letras' => 0,
+            'destaque_links' => 0,
+            'destaque_cabecalho' => 0,
+            'mascara_leitura_modo' => 0,
+            'mascara_horizontal_nivel' => 0,
+            'mascara_vertical_nivel' => 0,
+            'cursor_personalizado' => 0
         ];
 
-        $registro = $DB->get_record('local_aguiaplugin_prefs', ['userid' => $usuarioid]);
+        $registro = $DB->get_record('local_aguiaplugin_prefs', ['usuarioid' => $usuarioid]);
 
         if ($registro) {
             return $registro;
         }
 
-        $padroes = (object) $padroes;
-        $padroes->userid = $usuarioid;
+    $padroes = (object) $padroes;
+    $padroes->usuarioid = $usuarioid;
         return $padroes;
     }
 
@@ -79,18 +88,27 @@ class ApiPreferencias {
             $usuarioid = $USER->id;
         }
 
-        $existente = $DB->get_record('local_aguiaplugin_prefs', ['userid' => $usuarioid]);
+        $existente = $DB->get_record('local_aguiaplugin_prefs', ['usuarioid' => $usuarioid]);
 
-        $registro = new \stdClass();
-        $registro->userid = $usuarioid;
-        $registro->fontsize = isset($preferencias->fontsize) ? (int) $preferencias->fontsize : 100;
-        $registro->contrast = isset($preferencias->contrast) ? $preferencias->contrast : 'normal';
-        $registro->readablefonts = isset($preferencias->readablefonts) ? (int) $preferencias->readablefonts : 0;
-        $registro->linespacing = isset($preferencias->linespacing) ? (int) $preferencias->linespacing : 100;
-        $registro->speech = isset($preferencias->speech) ? (int) $preferencias->speech : 0;
-        $registro->texthelper = isset($preferencias->texthelper) ? (int) $preferencias->texthelper : 0;
-        $registro->colorblind = isset($preferencias->colorblind) ? $preferencias->colorblind : 'none';
-        $registro->timemodified = time();
+    $registro = new \stdClass();
+    $registro->usuarioid = $usuarioid;
+    $registro->tamanho_fonte = isset($preferencias->tamanho_fonte) ? (int)$preferencias->tamanho_fonte : (isset($preferencias->fontsize) ? (int)$preferencias->fontsize : 100);
+    $registro->contraste = isset($preferencias->contraste) ? $preferencias->contraste : (isset($preferencias->contrast) ? ($preferencias->contrast === 'high' ? 'alto' : 'normal') : 'normal');
+    $registro->fontes_legiveis = isset($preferencias->fontes_legiveis) ? (int)$preferencias->fontes_legiveis : (isset($preferencias->readablefonts) ? (int)$preferencias->readablefonts : 0);
+    $registro->espaco_linhas = isset($preferencias->espaco_linhas) ? (int)$preferencias->espaco_linhas : (isset($preferencias->linespacing) ? (int)$preferencias->linespacing : 100);
+    $registro->texto_para_fala = isset($preferencias->texto_para_fala) ? (int)$preferencias->texto_para_fala : (isset($preferencias->speech) ? (int)$preferencias->speech : 0);
+    $registro->auxiliar_leitura = isset($preferencias->auxiliar_leitura) ? (int)$preferencias->auxiliar_leitura : (isset($preferencias->texthelper) ? (int)$preferencias->texthelper : 0);
+    $registro->daltonismo = isset($preferencias->daltonismo) ? $preferencias->daltonismo : (isset($preferencias->colorblind) ? $preferencias->colorblind : 'none');
+    $registro->intensidade_cores = isset($preferencias->intensidade_cores) ? (int)$preferencias->intensidade_cores : (isset($preferencias->colorIntensityMode) ? (int)$preferencias->colorIntensityMode : 0);
+    $registro->modo_fonte = isset($preferencias->modo_fonte) ? (int)$preferencias->modo_fonte : (isset($preferencias->fontMode) ? (int)$preferencias->fontMode : 0);
+    $registro->espaco_letras = isset($preferencias->espaco_letras) ? (int)$preferencias->espaco_letras : (isset($preferencias->letterSpacing) ? (int)$preferencias->letterSpacing : 0);
+    $registro->destaque_links = isset($preferencias->destaque_links) ? (int)$preferencias->destaque_links : (isset($preferencias->emphasizeLinks) ? (int)$preferencias->emphasizeLinks : 0);
+    $registro->destaque_cabecalho = isset($preferencias->destaque_cabecalho) ? (int)$preferencias->destaque_cabecalho : (isset($preferencias->headerHighlight) ? (int)$preferencias->headerHighlight : 0);
+    $registro->mascara_leitura_modo = isset($preferencias->mascara_leitura_modo) ? (int)$preferencias->mascara_leitura_modo : (isset($preferencias->readingMaskMode) ? (int)$preferencias->readingMaskMode : 0);
+    $registro->mascara_horizontal_nivel = isset($preferencias->mascara_horizontal_nivel) ? (int)$preferencias->mascara_horizontal_nivel : (isset($preferencias->horizontalMaskLevel) ? (int)$preferencias->horizontalMaskLevel : 0);
+    $registro->mascara_vertical_nivel = isset($preferencias->mascara_vertical_nivel) ? (int)$preferencias->mascara_vertical_nivel : (isset($preferencias->verticalMaskLevel) ? (int)$preferencias->verticalMaskLevel : 0);
+    $registro->cursor_personalizado = isset($preferencias->cursor_personalizado) ? (int)$preferencias->cursor_personalizado : (isset($preferencias->customCursor) ? (int)$preferencias->customCursor : 0);
+    $registro->modificado_em = time();
 
         if ($existente) {
             $registro->id = $existente->id;
@@ -108,13 +126,22 @@ class ApiPreferencias {
      */
     public static function converter_banco_para_js($preferenciasBanco) {
         return [
-            'fontSize' => (int) $preferenciasBanco->fontsize,
-            'highContrast' => ($preferenciasBanco->contrast === 'high'),
-            'readableFonts' => (bool) $preferenciasBanco->readablefonts,
-            'textToSpeech' => (bool) $preferenciasBanco->speech,
-            'readingHelper' => (bool) $preferenciasBanco->texthelper,
-            'colorblind' => $preferenciasBanco->colorblind,
-            'lineSpacing' => self::obter_nivel_espacamento_linha($preferenciasBanco->linespacing)
+            'fontSize' => (int) ($preferenciasBanco->tamanho_fonte ?? 100),
+            'highContrast' => (($preferenciasBanco->contraste ?? 'normal') === 'alto'),
+            'readableFonts' => (bool) ($preferenciasBanco->fontes_legiveis ?? 0),
+            'textToSpeech' => (bool) ($preferenciasBanco->texto_para_fala ?? 0),
+            'readingHelper' => (bool) ($preferenciasBanco->auxiliar_leitura ?? 0),
+            'colorblind' => ($preferenciasBanco->daltonismo ?? 'none'),
+            'lineSpacing' => self::obter_nivel_espacamento_linha((int)($preferenciasBanco->espaco_linhas ?? 100)),
+            'colorIntensityMode' => (int) ($preferenciasBanco->intensidade_cores ?? 0),
+            'fontMode' => (int) ($preferenciasBanco->modo_fonte ?? 0),
+            'letterSpacing' => (int) ($preferenciasBanco->espaco_letras ?? 0),
+            'emphasizeLinks' => (bool) ($preferenciasBanco->destaque_links ?? 0),
+            'headerHighlight' => (bool) ($preferenciasBanco->destaque_cabecalho ?? 0),
+            'readingMaskMode' => (int) ($preferenciasBanco->mascara_leitura_modo ?? 0),
+            'horizontalMaskLevel' => (int) ($preferenciasBanco->mascara_horizontal_nivel ?? 0),
+            'verticalMaskLevel' => (int) ($preferenciasBanco->mascara_vertical_nivel ?? 0),
+            'customCursor' => (bool) ($preferenciasBanco->cursor_personalizado ?? 0)
         ];
     }
 
@@ -140,29 +167,54 @@ class ApiPreferencias {
 
         switch ($preferencia) {
             case 'fontSize':
-                $preferenciasBanco->fontsize = (int) $valor;
+                $preferenciasBanco->tamanho_fonte = (int) $valor;
                 break;
             case 'highContrast':
-                $preferenciasBanco->contrast = $valor ? 'high' : 'normal';
+                $preferenciasBanco->contraste = $valor ? 'alto' : 'normal';
                 break;
             case 'readableFonts':
             case 'fontMode':
-                $preferenciasBanco->readablefonts = (int) $valor;
+                $preferenciasBanco->fontes_legiveis = (int) $valor;
+                $preferenciasBanco->modo_fonte = isset($preferenciasBanco->modo_fonte) ? (int)$preferenciasBanco->modo_fonte : (int)$valor;
                 break;
             case 'lineSpacing':
                 $valor = (int) $valor;
                 $percentuais = [100, 150, 200, 250];
-                $preferenciasBanco->linespacing = $percentuais[$valor] ?? 100;
+                $preferenciasBanco->espaco_linhas = $percentuais[$valor] ?? 100;
                 break;
             case 'textToSpeech':
-                $preferenciasBanco->speech = $valor ? 1 : 0;
+                $preferenciasBanco->texto_para_fala = $valor ? 1 : 0;
                 break;
             case 'readingHelper':
-                $preferenciasBanco->texthelper = $valor ? 1 : 0;
+                $preferenciasBanco->auxiliar_leitura = $valor ? 1 : 0;
                 break;
             case 'colorblind':
                 $valoresPermitidos = ['none', 'protanopia', 'deuteranopia', 'tritanopia'];
-                $preferenciasBanco->colorblind = in_array($valor, $valoresPermitidos) ? $valor : 'none';
+                $preferenciasBanco->daltonismo = in_array($valor, $valoresPermitidos) ? $valor : 'none';
+                break;
+            case 'colorIntensityMode':
+                $preferenciasBanco->intensidade_cores = (int)$valor;
+                break;
+            case 'letterSpacing':
+                $preferenciasBanco->espaco_letras = (int)$valor;
+                break;
+            case 'emphasizeLinks':
+                $preferenciasBanco->destaque_links = $valor ? 1 : 0;
+                break;
+            case 'headerHighlight':
+                $preferenciasBanco->destaque_cabecalho = $valor ? 1 : 0;
+                break;
+            case 'readingMaskMode':
+                $preferenciasBanco->mascara_leitura_modo = (int)$valor;
+                break;
+            case 'horizontalMaskLevel':
+                $preferenciasBanco->mascara_horizontal_nivel = (int)$valor;
+                break;
+            case 'verticalMaskLevel':
+                $preferenciasBanco->mascara_vertical_nivel = (int)$valor;
+                break;
+            case 'customCursor':
+                $preferenciasBanco->cursor_personalizado = $valor ? 1 : 0;
                 break;
             default:
                 if (function_exists('aguia_debug_log')) {

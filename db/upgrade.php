@@ -33,18 +33,7 @@ function xmldb_local_aguiaplugin_upgrade($oldversion) {
     global $DB, $CFG;
     $dbman = $DB->get_manager();
     
-    if ($oldversion < 2025080400) {
-        // Adicionar campo colorblind para modos de daltonismo
-        $table = new xmldb_table('local_aguiaplugin_prefs');
-        $field = new xmldb_field('colorblind', XMLDB_TYPE_CHAR, '20', null, null, null, 'none', 'texthelper');
-        
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
-        }
-        
-        // Salvar nova versão
-        upgrade_plugin_savepoint(true, 2025080400, 'local', 'aguiaplugin');
-    }
+    // Removido: passos antigos de compatibilidade com colunas em inglês.
     
     if ($oldversion < 2025080401) {
         // Remove a configuração de estilo obsoleta
@@ -62,47 +51,47 @@ function xmldb_local_aguiaplugin_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2025080402, 'local', 'aguiaplugin');
     }
 
-    if ($oldversion < 2025070100) {
-        // Define table local_aguiaplugin_prefs.
+    // Removido: criação/migração para esquema antigo. Instalação usa install.xml atual.
+
+    // Migração para colunas em português e inclusão de novas preferências.
+    if ($oldversion < 2025101505) {
         $table = new xmldb_table('local_aguiaplugin_prefs');
 
-        // Add fields.
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('fontsize', XMLDB_TYPE_INTEGER, '3', null, null, null, '100');
-        $table->add_field('contrast', XMLDB_TYPE_CHAR, '20', null, null, null, 'normal');
-        $table->add_field('readablefonts', XMLDB_TYPE_INTEGER, '1', null, null, null, '0');
-        $table->add_field('linespacing', XMLDB_TYPE_INTEGER, '3', null, null, null, '100');
-        $table->add_field('speech', XMLDB_TYPE_INTEGER, '1', null, null, null, '0');
-        $table->add_field('texthelper', XMLDB_TYPE_INTEGER, '1', null, null, null, '0');
-        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-
-    // Add keys.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
-        $table->add_key('userid', XMLDB_KEY_UNIQUE, ['userid']);
-    // Foreign key to core user table.
-    $table->add_key('fk_userid', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
-
-        // Create table if it doesn't exist.
-        if (!$dbman->table_exists($table)) {
-            $dbman->create_table($table);
+        // Garante as novas colunas (se não existirem).
+        $newfields = [
+            new xmldb_field('intensidade_cores', XMLDB_TYPE_INTEGER, '2', null, null, null, '0', 'daltonismo'),
+            new xmldb_field('modo_fonte', XMLDB_TYPE_INTEGER, '2', null, null, null, '0', 'intensidade_cores'),
+            new xmldb_field('espaco_letras', XMLDB_TYPE_INTEGER, '3', null, null, null, '0', 'modo_fonte'),
+            new xmldb_field('destaque_links', XMLDB_TYPE_INTEGER, '1', null, null, null, '0', 'espaco_letras'),
+            new xmldb_field('destaque_cabecalho', XMLDB_TYPE_INTEGER, '1', null, null, null, '0', 'destaque_links'),
+            new xmldb_field('mascara_leitura_modo', XMLDB_TYPE_INTEGER, '1', null, null, null, '0', 'destaque_cabecalho'),
+            new xmldb_field('mascara_horizontal_nivel', XMLDB_TYPE_INTEGER, '2', null, null, null, '0', 'mascara_leitura_modo'),
+            new xmldb_field('mascara_vertical_nivel', XMLDB_TYPE_INTEGER, '2', null, null, null, '0', 'mascara_horizontal_nivel'),
+            new xmldb_field('cursor_personalizado', XMLDB_TYPE_INTEGER, '1', null, null, null, '0', 'mascara_vertical_nivel'),
+        ];
+        foreach ($newfields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                try {
+                    $dbman->add_field($table, $field);
+                } catch (Exception $e) {
+                    // Continua mesmo se alguma coluna já existir ou falhar em alguns SGBDs.
+                }
+            }
         }
 
-        // Aguiaplugin savepoint reached.
-        upgrade_plugin_savepoint(true, 2025070100, 'local', 'aguiaplugin');
-    }
-
-    // Add foreign key on existing installs if missing.
-    if ($oldversion < 2025101501) {
-        $table = new xmldb_table('local_aguiaplugin_prefs');
-        $key = new xmldb_key('fk_userid', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
-        // Add foreign key if it does not exist.
+        // Garante as chaves sobre usuarioid (se a coluna existir).
         try {
-            $dbman->add_key($table, $key);
-        } catch (Exception $e) {
-            // Some DBs may not support adding FK if data violates constraint or it already exists; ignore and proceed.
-        }
-        upgrade_plugin_savepoint(true, 2025101501, 'local', 'aguiaplugin');
+            $newuni = new xmldb_key('usuarioid', XMLDB_KEY_UNIQUE, ['usuarioid']);
+            $dbman->add_key($table, $newuni);
+        } catch (Exception $e) { /* noop */ }
+        try {
+            $newfk = new xmldb_key('fk_usuarioid', XMLDB_KEY_FOREIGN, ['usuarioid'], 'user', ['id']);
+            $dbman->add_key($table, $newfk);
+        } catch (Exception $e) { /* noop */ }
+
+        // Sem migração de valores legados (como 'high' -> 'alto').
+
+        upgrade_plugin_savepoint(true, 2025101505, 'local', 'aguiaplugin');
     }
 
     return true;

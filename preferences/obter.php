@@ -130,11 +130,20 @@ if ($moodleConfigExists) {
 $defaultPreferences = [
     'fontSize' => 100,
     'highContrast' => false,
+    'colorIntensityMode' => 0,
     'readableFonts' => false,
+    'fontMode' => 0,
+    'lineSpacing' => 0,
+    'letterSpacing' => 0,
     'textToSpeech' => false,
     'readingHelper' => false,
+    'emphasizeLinks' => false,
+    'headerHighlight' => false,
     'colorblind' => 'none',
-    'lineSpacing' => 0
+    'readingMaskMode' => 0,
+    'horizontalMaskLevel' => 0,
+    'verticalMaskLevel' => 0,
+    'customCursor' => false
 ];
 
 $preferences = $defaultPreferences;

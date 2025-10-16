@@ -60,7 +60,7 @@
 
 /* Estilo para a faixa lateral com o nome AGUIA no hover */
 button#aguiaButton.aguia-button::before {
-    content: "";
+    content: "AGUIA";
     position: absolute;
     left: -100px; /* Posição inicial fora da tela */
     top: 0;
@@ -70,14 +70,18 @@ button#aguiaButton.aguia-button::before {
     padding: 0 30px; /* Aumentado horizontalmente */
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center; /* Centraliza o texto para evitar cortes visuais */
     border-radius: 10px;
     font-weight: bold;
     font-size: 14px;
+    line-height: 40px; /* Garante alinhamento vertical quando flex não aplicar */
+    min-width: 90px; /* Largura mínima para comportar o texto AGUIA */
+    text-indent: 0; /* Anula heranças que escondem texto */
+    font-family: inherit; /* Usa a fonte do documento */
     box-shadow: 0 5px 15px rgba(0, 86, 179, 0.5);
     border: 1px solid #2271ff;
     white-space: nowrap;
-    z-index: 9998;
+    z-index: 10000; /* Acima do botão para evitar sobreposição do texto */
     opacity: 0;
     transform: translateX(20px);
     transition: all 0.3s ease;
@@ -1004,7 +1008,7 @@ button#aguiaButton.aguia-button img.aguia-logo {
 
 /* Estilo definitivo para o hover do botão AGUIA com máxima prioridade */
 button#aguiaButton.aguia-button::before {
-    content: "" !important;
+    content: "AGUIA" !important;
     position: absolute !important;
     left: -100px !important;
     top: 0 !important;
@@ -1014,14 +1018,18 @@ button#aguiaButton.aguia-button::before {
     padding: 0 30px !important; /* Aumentado horizontalmente */
     display: flex !important;
     align-items: center !important;
-    justify-content: flex-end !important;
+    justify-content: center !important; /* Centraliza o texto para evitar cortes visuais */
     border-radius: 10px !important;
     font-weight: bold !important;
     font-size: 14px !important;
+    line-height: 40px !important; /* Garante alinhamento vertical quando flex não aplicar */
+    min-width: 90px !important; /* Largura mínima para comportar o texto AGUIA */
+    text-indent: 0 !important; /* Anula heranças que escondem texto */
+    font-family: inherit !important; /* Usa a fonte do documento */
     box-shadow: 0 3px 10px rgba(0, 86, 179, 0.5) !important;
     border: 1px solid #2271ff !important;
     white-space: nowrap !important;
-    z-index: 9998 !important;
+    z-index: 10000 !important; /* Acima do botão para evitar sobreposição do texto */
     opacity: 0 !important;
     transform: translateX(20px) !important;
     transition: all 0.3s ease !important;
