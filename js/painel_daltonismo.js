@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Inicializa os modos de daltonismo salvos
     initializeColorblindModes();
     
-    // VLibras removido
+    
 });
 
 // Aplica estilos visuais fortes para o item selecionado (evita conflitos de CSS com !important)

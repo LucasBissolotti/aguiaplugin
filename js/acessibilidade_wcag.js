@@ -2040,8 +2040,6 @@ document.addEventListener('DOMContentLoaded', function() {
         colorBlindMode = 'none';
         saveUserPreference('colorblind', 'none');
         
-        // VLibras removido
-        
     // Reset da Lupa de Conteúdo
     AGUIA_SCOPE.classList.remove('aguia-magnifier-active');
         
@@ -2506,7 +2504,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // VLibras removido: nenhuma inicialização
+        
 
         // Aplicar máscara de leitura (compatibilidade com versões anteriores)
         if (preferences.readingMaskMode && preferences.readingMaskMode > 0) {
@@ -2639,11 +2637,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Carrega o CSS necessário
-            const linkExists = document.querySelector('link[href*="highlighted_letters.css"]');
+            const linkExists = document.querySelector('link[href*="letras_destaque.css"]');
             if (!linkExists) {
                 const link = document.createElement('link');
                 link.rel = 'stylesheet';
-                link.href = M.cfg.wwwroot + '/local/aguiaplugin/styles/highlighted_letters.css';
+                link.href = M.cfg.wwwroot + '/local/aguiaplugin/styles/letras_destaque.css';
                 document.head.appendChild(link);
             }
         }
@@ -3023,7 +3021,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }    // Cria a máscara de leitura após o carregamento da página
     createReadingMask();
     
-    // VLibras removido
+    
     
     // Função para alternar letras destacadas
     function toggleHighlightedLetters(silent = false) {
@@ -3073,7 +3071,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!linkExists) {
                     const link = document.createElement('link');
                     link.rel = 'stylesheet';
-                    link.href = M.cfg.wwwroot + '/local/aguiaplugin/styles/highlighted_letters.css';
+                    link.href = M.cfg.wwwroot + '/local/aguiaplugin/styles/letras_destaque.css';
                     document.head.appendChild(link);
                 }
             }

@@ -25,13 +25,33 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
+ * Indica se o log de depuração do plugin está habilitado via configuração.
+ * @return bool
+ */
+function aguia_is_debug_enabled(): bool {
+    if (function_exists('get_config')) {
+        $val = get_config('local_aguiaplugin', 'debuglog');
+        return ($val === '1' || $val === 1 || $val === true);
+    }
+    return false;
+}
+
+/**
  * Adiciona logs de debug para diagnóstico do plugin AGUIA
  *
- * @param string $message Mensagem para registrar
- * @param string|array $data Dados opcionais para registrar
+ * @param string
+ * @param string|array
  */
 function aguia_debug_log($message, $data = null) {
-    error_log('AGUIA Debug: ' . $message . ($data !== null ? ' - ' . (is_array($data) || is_object($data) ? json_encode($data) : $data) : ''));
+    // Só registra quando a configuração do plugin estiver explicitamente habilitada.
+    if (!aguia_is_debug_enabled()) {
+        return;
+    }
+    $suffix = '';
+    if ($data !== null) {
+        $suffix = ' - ' . (is_array($data) || is_object($data) ? json_encode($data) : $data);
+    }
+    error_log('AGUIA Debug: ' . $message . $suffix);
 }
 
 /**

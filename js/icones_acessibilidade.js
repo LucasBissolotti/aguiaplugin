@@ -16,7 +16,6 @@ const AguiaIcons = {
     tritanopia: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Tritanopia</title><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1" fill="#0000FF"/></svg>',
     
     achromatopsia: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Monocromacia</title><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1" fill="#000000"/></svg>',
-        // VLibras removido
     
     // Ícone para texto para fala - Pessoa com ondas sonoras (cabeça e corpo preenchidos em preto; ondas só com traço)
     textToSpeech: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Texto para fala</title><path d="M8,10 C8,8.34 9.34,7 11,7 C12.66,7 14,8.34 14,10 C14,11.66 12.66,13 11,13 C9.34,13 8,11.66 8,10 Z" fill="#000000" style="fill:#000000!important"/><path d="M6,19 L16,19 C16,16.5 14,14 11,14 C8,14 6,16.5 6,19 Z" fill="#000000" style="fill:#000000!important"/><path d="M15.5,8 C15.5,8 16.5,9 16.5,10 C16.5,11 15.5,12 15.5,12" stroke="#000000" fill="none" stroke-width="1.5" stroke-linecap="round" style="stroke:#000000!important"/><path d="M18,6.5 C18,6.5 20,8.25 20,10 C20,11.75 18,13.5 18,13.5" stroke="#000000" fill="none" stroke-width="1.5" stroke-linecap="round" style="stroke:#000000!important"/></svg>',

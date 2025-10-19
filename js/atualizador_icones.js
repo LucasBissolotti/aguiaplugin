@@ -1,6 +1,6 @@
 /**
  * Script para atualizar ícones no plugin AGUIA
- * Garante que os ícones SVG são aplicados corretamente e substitui os emojis problemáticos
+ * Garante que os ícones SVG são aplicados corretamente
  */
 document.addEventListener('DOMContentLoaded', function() {
     // Aguarda o carregamento completo do DOM e do plugin AGUIA
@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 readableIconForMode = AguiaIcons.fontAaOpenDyslexic;
             }
         } catch (e) {
-            // mantém o fallback para fontSingleA
         }
         // Associação de IDs de botões aos seus ícones correspondentes
         const iconMapping = {
@@ -36,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
             'aguiaColorBlindBtn': AguiaIcons.colorblind,
             'aguiaMagnifierBtn': AguiaIcons.magnifier,
             'aguiaIncreaseFontBtn': AguiaIcons.increaseText,
-            // Sempre iniciar com A dentro de quadrado; se houver modo salvo, usar o correspondente
             'aguiaReadableFontsBtn': readableIconForMode,
             'aguiaSpacingBtn': AguiaIcons.spacing,
             'aguiaEmphasizeLinksBtn': AguiaIcons.emphasizeLinks

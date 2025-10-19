@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $services = [
-    'Serviço de Acessibilidade AGUIA' => [
+    'AGUIA accessibility service' => [
         'functions' => [
             'local_aguiaplugin_get_preferences',
             'local_aguiaplugin_save_preferences'
@@ -38,17 +38,15 @@ $services = [
 
 $functions = [
     'local_aguiaplugin_get_preferences' => [
-        'classname' => 'local_aguiaplugin\preferences\ExternoObter',
+        'classname' => 'local_aguiaplugin\\external\\get_preferences',
         'methodname' => 'execute',
-        'classpath' => 'local/aguiaplugin/preferences/externo_obter.php',
         'description' => 'Retorna as preferências de acessibilidade do usuário',
         'type' => 'read',
         'ajax' => true
     ],
     'local_aguiaplugin_save_preferences' => [
-        'classname' => 'local_aguiaplugin\preferences\ExternoSalvar',
+        'classname' => 'local_aguiaplugin\\external\\save_preferences',
         'methodname' => 'execute',
-        'classpath' => 'local/aguiaplugin/preferences/externo_salvar.php',
         'description' => 'Salva as preferências de acessibilidade do usuário',
         'type' => 'write',
         'ajax' => true

@@ -26,15 +26,13 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Upgrade function for plugin
- * @param int $oldversion The old version of the plugin
+ * @param int
  * @return bool
  */
 function xmldb_local_aguiaplugin_upgrade($oldversion) {
     global $DB, $CFG;
     $dbman = $DB->get_manager();
-    
-    // Removido: passos antigos de compatibilidade com colunas em inglês.
-    
+        
     if ($oldversion < 2025080401) {
         // Remove a configuração de estilo obsoleta
         unset_config('use_legacy_style', 'local_aguiaplugin');
@@ -43,17 +41,11 @@ function xmldb_local_aguiaplugin_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2025080401, 'local', 'aguiaplugin');
     }
     
-    if ($oldversion < 2025080402) {
-        // Consolida os arquivos JS em uma estrutura mais organizada
-        // Remove referências redundantes e melhora manutenibilidade
-        
+    if ($oldversion < 2025080402) {        
         // Salvar nova versão
         upgrade_plugin_savepoint(true, 2025080402, 'local', 'aguiaplugin');
     }
 
-    // Removido: criação/migração para esquema antigo. Instalação usa install.xml atual.
-
-    // Migração para colunas em português e inclusão de novas preferências.
     if ($oldversion < 2025101505) {
         $table = new xmldb_table('local_aguiaplugin_prefs');
 
@@ -74,7 +66,6 @@ function xmldb_local_aguiaplugin_upgrade($oldversion) {
                 try {
                     $dbman->add_field($table, $field);
                 } catch (Exception $e) {
-                    // Continua mesmo se alguma coluna já existir ou falhar em alguns SGBDs.
                 }
             }
         }
@@ -88,9 +79,6 @@ function xmldb_local_aguiaplugin_upgrade($oldversion) {
             $newfk = new xmldb_key('fk_usuarioid', XMLDB_KEY_FOREIGN, ['usuarioid'], 'user', ['id']);
             $dbman->add_key($table, $newfk);
         } catch (Exception $e) { /* noop */ }
-
-        // Sem migração de valores legados (como 'high' -> 'alto').
-
         upgrade_plugin_savepoint(true, 2025101505, 'local', 'aguiaplugin');
     }
 

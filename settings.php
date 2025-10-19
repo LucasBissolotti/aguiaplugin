@@ -11,6 +11,14 @@ if ($hassiteconfig) {
         get_string('enableplugin_desc', 'local_aguiaplugin'),
         1
     ));
+
+    // Ativar logs de depuração do plugin (controla aguia_debug_log)
+    $settings->add(new admin_setting_configcheckbox(
+        'local_aguiaplugin/debuglog',
+        get_string('debuglog', 'local_aguiaplugin'),
+        get_string('debuglog_desc', 'local_aguiaplugin'),
+        0
+    ));
     
     // Informação sobre a interface de acessibilidade
     $settings->add(new admin_setting_heading(
