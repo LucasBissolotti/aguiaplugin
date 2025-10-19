@@ -782,48 +782,70 @@ input:checked + .aguia-switch-slider:before {
     background-color: #fafafa;
 }
 
+.aguia-menu-footer {
+    padding: 10px 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end; /* Alinha os botões à direita */
+    align-items: center;
+    background-color: #fafafa;
+    gap: 10px; /* Adiciona espaço entre os botões */
+}
+
 .aguia-reset-button {
-    color: var(--aguia-error-color);
-    background: transparent;
-    border: 1px solid #eaeaea;
+    color: #fff; /* Texto branco para contraste */
+    background-color: #e74c3c; /* Tom de vermelho moderno */
+    border: none; /* Remove a borda para um visual mais limpo */
     border-radius: var(--aguia-border-radius);
-    padding: 6px 12px;
+    padding: 8px 16px;
     font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    margin-left: 8px;
+    box-shadow: 0 2px 5px rgba(231, 76, 60, 0.3); /* Sombra sutil na cor do botão */
 }
 
 .aguia-reset-button:hover {
-    background-color: #fff5f5;
-    border-color: var(--aguia-error-color);
+    background-color: #c0392b; /* Vermelho mais escuro no hover */
+    box-shadow: 0 4px 8px rgba(192, 57, 43, 0.4); /* Sombra mais pronunciada no hover */
+    transform: translateY(-1px); /* Leve elevação no hover */
 }
 
 /* Botão de salvar preferências */
 .aguia-save-button {
-    background-color: var(--aguia-primary-color);
+    background-color: #2271ff; /* Cor primária mais vibrante */
     color: #fff;
     border: none;
     border-radius: var(--aguia-border-radius);
-    padding: 6px 12px;
+    padding: 8px 16px; /* Aumenta o padding */
     font-size: 13px;
+    font-weight: 500; /* Fonte um pouco mais forte */
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.05s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
 }
+
 .aguia-save-button:hover {
-    background-color: var(--aguia-secondary-color);
+    background-color: #1a58cc; /* Tom mais escuro no hover */
 }
+
 .aguia-save-button:active {
     transform: translateY(1px);
+    box-shadow: none; /* Remove a sombra ao clicar */
 }
+
 .aguia-save-button[disabled] {
-    opacity: 0.6;
+    background-color: #a0b4d1;
+    opacity: 0.7;
     cursor: not-allowed;
+    box-shadow: none;
 }
 
 .aguia-credits {
     font-size: 11px;
     color: #888;
+    position: absolute; /* Posiciona os créditos à esquerda */
+    left: 20px;
 }
 
 /* Estilos para o painel de daltonismo */
