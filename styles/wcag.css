@@ -23,6 +23,13 @@
     --aguia-box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16); /* Sombra padrão */
 }
 
+/* Cursor de lupa quando a lupa de conteúdo está ativa.
+   Espera-se que você coloque a imagem em /local/aguiaplugin/pix/magnifier_cursor.png
+   Caso a imagem não exista, o cursor padrão 'zoom-in' será usado como fallback. */
+.aguia-magnifier-active, .aguia-magnifier-active * {
+    cursor: url('/local/aguiaplugin/pix/magnifier_cursor.png') 12 12, zoom-in !important;
+}
+
 /* Estilos para garantir foco visível - WCAG 2.4.7 */
 *:focus {
     outline: 3px solid var(--aguia-focus-color) !important;

@@ -53,8 +53,10 @@ const AguiaMagnifier = {
     // Criar elementos do leitor expandido (overlay)
     this.createReaderOverlay();
         
-    // Adicionar evento de movimento do mouse
-    document.addEventListener('mousemove', this.updateMagnifier.bind(this));
+        // Adicionar evento de movimento do mouse (throttled via rAF)
+    this._pendingMouseEvent = null;
+    this._pendingRaf = null;
+    document.addEventListener('mousemove', this._onMouseMove.bind(this));
 
     // Habilitar rolagem com a roda do mouse dentro da caixa da lupa
     // Mesmo com pointer-events: none, capturamos no documento e redirecionamos para a lupa
@@ -243,6 +245,7 @@ const AguiaMagnifier = {
             if (menuButton) {
                 menuButton.classList.remove('active');
             }
+            try { document.body.classList.remove('aguia-magnifier-active'); } catch (e) {}
         } else {
             // Ativar a lupa
             this.state.button.classList.add('active');
@@ -254,9 +257,24 @@ const AguiaMagnifier = {
             if (menuButton) {
                 menuButton.classList.add('active');
             }
+            // Aplicar cursor de lupa no escopo completo (estilo adicional em CSS)
+            try { document.body.classList.add('aguia-magnifier-active'); } catch (e) {}
         }
     },
     
+    // Mousemove scheduling (throttle with requestAnimationFrame)
+    _onMouseMove: function(e) {
+        this._pendingMouseEvent = e;
+        if (this._pendingRaf) return;
+        this._pendingRaf = window.requestAnimationFrame(() => {
+            this._pendingRaf = null;
+            if (this._pendingMouseEvent) {
+                this.updateMagnifier(this._pendingMouseEvent);
+                this._pendingMouseEvent = null;
+            }
+        });
+    },
+
     // Atualizar a posição e conteúdo da lupa
     updateMagnifier: function(e) {
         // Obter o escopo do AGUIA
@@ -276,10 +294,14 @@ const AguiaMagnifier = {
     this.state.lastMouseClientX = e.clientX;
     this.state.lastMouseClientY = e.clientY;
         
-        // Obter o elemento sob o cursor
-        const element = document.elementFromPoint(e.clientX, e.clientY);
+    // Obter o elemento sob o cursor
+    const element = document.elementFromPoint(e.clientX, e.clientY);
         
         // Verificar se o elemento é válido para exibir a lupa
+        try {
+            // if element is detached, ignore
+        } catch (err) {}
+
         if (!element || 
             element.id === 'aguia-content-magnifier' || 
             element.id === 'aguia-standalone-magnifier' ||
@@ -322,8 +344,10 @@ const AguiaMagnifier = {
             }
         }
         
-        // Se o elemento não tem texto, não mostramos a lupa
-        if (!text) {
+        // If text empty or element too small, don't show
+        const elRect = element.getBoundingClientRect();
+        const area = elRect.width * elRect.height;
+        if (!text || area < 400) {
             magnifier.classList.add('aguia-magnifier-hidden');
             if (this.state.expandFab) this.state.expandFab.style.display = 'none';
             return;
@@ -341,9 +365,11 @@ const AguiaMagnifier = {
             magnifier.textContent = text;
         }
         
-        // Posicionar a lupa abaixo do cursor
-        magnifier.style.left = `${e.pageX}px`;
-        magnifier.style.top = `${e.pageY + 35}px`; // 35px abaixo do cursor
+    // Posicionar a lupa abaixo do cursor (use page coords to follow scroll)
+    const pageX = (e.pageX !== undefined) ? e.pageX : e.clientX + (window.pageXOffset || document.documentElement.scrollLeft);
+    const pageY = (e.pageY !== undefined) ? e.pageY : e.clientY + (window.pageYOffset || document.documentElement.scrollTop);
+    magnifier.style.left = `${pageX}px`;
+    magnifier.style.top = `${pageY + 35}px`; // 35px abaixo do cursor
         
         // Mostrar a lupa
         magnifier.classList.remove('aguia-magnifier-hidden');
@@ -528,9 +554,11 @@ const AguiaMagnifier = {
         this.state.overlayPanel.setAttribute('tabindex', '-1');
         this.state.overlayPanel.focus({ preventScroll: true });
 
-        // Instalar handler de teclado no overlay
+        // Instalar handler de teclado no document (capturing) para garantir ESC e trap de foco
         if (this.state.overlay._aguiaKeyHandler) {
-            this.state.overlay.addEventListener('keydown', this.state.overlay._aguiaKeyHandler);
+            // store ref so we can remove later
+            this.state.overlay._docKeyHandler = (e) => this.state.overlay._aguiaKeyHandler(e);
+            document.addEventListener('keydown', this.state.overlay._docKeyHandler, true);
         }
         if (this.state.expandFab) this.state.expandFab.style.display = 'none';
     },
@@ -546,7 +574,13 @@ const AguiaMagnifier = {
             this.state.overlay.removeAttribute('aria-modal');
         } catch (e) {}
         if (this.state.overlay._aguiaKeyHandler) {
-            this.state.overlay.removeEventListener('keydown', this.state.overlay._aguiaKeyHandler);
+            // remove document-level capturing handler if installed
+            try {
+                if (this.state.overlay._docKeyHandler) {
+                    document.removeEventListener('keydown', this.state.overlay._docKeyHandler, true);
+                    this.state.overlay._docKeyHandler = null;
+                }
+            } catch (e) {}
         }
         try {
             if (this.state.overlay._aguiaPreviousFocus && typeof this.state.overlay._aguiaPreviousFocus.focus === 'function') {

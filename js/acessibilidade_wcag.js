@@ -628,13 +628,31 @@ document.addEventListener('DOMContentLoaded', function() {
                         window.AguiaMagnifier.toggleMagnifier();
                         
                         if (!wasActive) {
-                            // Esconde o menu quando ativa a lupa
-                            if (menu) menu.style.display = 'none';
+                            // Esconde o menu quando ativa a lupa. Use toggleMenu() para manter estado ARIA consistente
+                            try {
+                                const menuButton = document.getElementById('aguiaButton');
+                                const expanded = menuButton && menuButton.getAttribute('aria-expanded') === 'true';
+                                if (expanded) {
+                                    toggleMenu();
+                                } else if (menu) {
+                                    // ensure hidden if somehow visible
+                                    menu.style.display = 'none';
+                                }
+                            } catch (e) {}
                             if (button) button.classList.add('active');
                             showStatusMessage('Lupa de conteúdo ativada', 'success');
                         } else {
-                            // Mostra o menu quando desativa a lupa
-                            if (menu) menu.style.display = 'block';
+                            // Mostra o menu quando desativa a lupa. Use toggleMenu to open if currently closed
+                            try {
+                                const menuButton = document.getElementById('aguiaButton');
+                                const expanded = menuButton && menuButton.getAttribute('aria-expanded') === 'true';
+                                if (!expanded) {
+                                    toggleMenu();
+                                } else if (menu) {
+                                    // ensure visible
+                                    menu.style.display = 'block';
+                                }
+                            } catch (e) {}
                             if (button) button.classList.remove('active');
                             showStatusMessage('Lupa de conteúdo desativada', 'success');
                         }
@@ -649,7 +667,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         } else if (aguiaScope) {
                             aguiaScope.classList.add('aguia-magnifier-active');
                             if (button) button.classList.add('active');
-                            if (menu) menu.style.display = 'none';
+                            try {
+                                const menuButton = document.getElementById('aguiaButton');
+                                const expanded = menuButton && menuButton.getAttribute('aria-expanded') === 'true';
+                                if (expanded) toggleMenu();
+                                else if (menu) menu.style.display = 'none';
+                            } catch (e) {}
                             showStatusMessage('Lupa de conteúdo ativada', 'success');
                             saveUserPreference('magnifier', true);
                         }
