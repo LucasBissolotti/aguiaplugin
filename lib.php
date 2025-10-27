@@ -52,7 +52,6 @@ function local_aguiaplugin_require_js() {
         $PAGE->requires->js('/local/aguiaplugin/js/botoes_acessibilidade.js');
     $PAGE->requires->js('/local/aguiaplugin/js/api_preferencias.js'); 
     $PAGE->requires->js('/local/aguiaplugin/js/acessibilidade_wcag.js'); 
-    $PAGE->requires->js('/local/aguiaplugin/js/painel_daltonismo.js');
     $PAGE->requires->js('/local/aguiaplugin/js/inicializar_daltonismo.js');
     $PAGE->requires->js('/local/aguiaplugin/js/atualizador_icones.js');
     $PAGE->requires->js('/local/aguiaplugin/js/letras_destaque.js');

@@ -204,13 +204,63 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isExpanded) {
             menu.style.display = 'none';
             button.setAttribute('aria-expanded', 'false');
+            // Remove aria-modal and keyboard trap when fechando
+            try {
+                menu.removeAttribute('aria-modal');
+            } catch (e) {}
+            if (menu._aguiaKeyHandler) {
+                menu.removeEventListener('keydown', menu._aguiaKeyHandler);
+                menu._aguiaKeyHandler = null;
+            }
+            // Restaurar foco para o elemento que abriu o menu
+            try {
+                if (menu._aguiaPreviousFocus && typeof menu._aguiaPreviousFocus.focus === 'function') {
+                    menu._aguiaPreviousFocus.focus();
+                }
+            } catch (e) {}
         } else {
             menu.style.display = 'block';
             button.setAttribute('aria-expanded', 'true');
+            // Marcar modal para tecnologias assistivas
+            menu.setAttribute('aria-modal', 'true');
+            // Guardar o elemento previamente focado para restaurar depois
+            try {
+                menu._aguiaPreviousFocus = document.activeElement;
+            } catch (e) {
+                menu._aguiaPreviousFocus = null;
+            }
             // Foco no primeiro elemento do menu (WCAG 2.4.3)
             const firstFocusable = menu.querySelector('button, [tabindex="0"]');
             if (firstFocusable) {
                 firstFocusable.focus();
+            }
+
+            // Instala um trap simples de foco + handler Esc para fechar o diálogo
+            if (!menu._aguiaKeyHandler) {
+                menu._aguiaKeyHandler = function(e) {
+                    // Fecha com ESC
+                    if (e.key === 'Escape' || e.key === 'Esc') {
+                        e.preventDefault();
+                        toggleMenu();
+                        return;
+                    }
+
+                    if (e.key === 'Tab') {
+                        // manter o foco dentro do menu
+                        const focusable = menu.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                        if (!focusable || focusable.length === 0) return;
+                        const first = focusable[0];
+                        const last = focusable[focusable.length - 1];
+                        if (!e.shiftKey && document.activeElement === last) {
+                            e.preventDefault();
+                            first.focus();
+                        } else if (e.shiftKey && document.activeElement === first) {
+                            e.preventDefault();
+                            last.focus();
+                        }
+                    }
+                };
+                menu.addEventListener('keydown', menu._aguiaKeyHandler);
             }
         }
     }
@@ -477,10 +527,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Aplica o modo de daltonismo
                 setColorBlindMode(this.dataset.value);
                 
-                // Fecha o painel após a seleção
-                setTimeout(() => {
-                    toggleColorblindPanel();
-                }, 500);
+                // Manter o painel aberto após a seleção (não fechar automaticamente)
+                // Garantir que o foco permaneça no botão selecionado
+                try { this.focus(); } catch (e) {}
             });
             
             colorblindOptionsContainer.appendChild(optionButton);
@@ -2759,31 +2808,89 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Função para alternar o painel de daltonismo
+    // Função para alternar o painel de daltonismo (implementação robusta consolidada)
     function toggleColorblindPanel() {
         const menu = document.getElementById('aguiaMenu');
         const colorblindPanel = document.getElementById('aguiaColorblindPanel');
-        
+        if (!colorblindPanel) return;
+
+        // Handler robusto usando document (capturing) para garantir que capturamos Tab/Esc independentemente
+        const installHandler = function() {
+            if (colorblindPanel._aguiaKeyHandler) return;
+            colorblindPanel._aguiaKeyHandler = function(e) {
+                // Apenas agir se o painel estiver visível
+                if (colorblindPanel.style.display === 'none') return;
+
+                if (e.key === 'Escape' || e.key === 'Esc') {
+                    e.preventDefault();
+                    toggleColorblindPanel();
+                    return;
+                }
+
+                if (e.key === 'Tab') {
+                    const focusable = colorblindPanel.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                    if (!focusable || focusable.length === 0) return;
+                    const first = focusable[0];
+                    const last = focusable[focusable.length - 1];
+                    if (!e.shiftKey && document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    } else if (e.shiftKey && document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    }
+                }
+            };
+
+            // Usar capture para interceptar antes de outros listeners e evitar fuga de foco
+            document.addEventListener('keydown', colorblindPanel._aguiaKeyHandler, true);
+        };
+
+        const removeHandler = function() {
+            if (colorblindPanel._aguiaKeyHandler) {
+                document.removeEventListener('keydown', colorblindPanel._aguiaKeyHandler, true);
+                colorblindPanel._aguiaKeyHandler = null;
+            }
+        };
+
         if (colorblindPanel.style.display === 'none') {
-            // Anima a transição do menu principal para o painel de daltonismo
-            menu.style.display = 'none';
+            // Abrir painel
+            if (menu) menu.style.display = 'none';
             colorblindPanel.style.display = 'block';
-            
+
+            // Guardar foco anterior e expor como modal para AT
+            try { colorblindPanel._aguiaPreviousFocus = document.activeElement; } catch (e) { colorblindPanel._aguiaPreviousFocus = null; }
+            try { colorblindPanel.setAttribute('aria-modal', 'true'); } catch (e) {}
+
             // Foca no primeiro elemento do painel
             const firstOption = colorblindPanel.querySelector('button');
             if (firstOption) {
                 firstOption.focus();
             }
+
+            // Instalar handler global para ESC/Tab
+            installHandler();
         } else {
-            // Anima a transição do painel de daltonismo para o menu principal
+            // Fechar painel
             colorblindPanel.style.display = 'none';
-            menu.style.display = 'block';
-            
+            if (menu) menu.style.display = 'block';
+
             // Foca no botão de daltonismo
             const colorblindButton = document.getElementById('aguiaColorblindButton');
             if (colorblindButton) {
                 colorblindButton.focus();
             }
+
+            // Remover aria-modal e handler
+            try { colorblindPanel.removeAttribute('aria-modal'); } catch (e) {}
+            removeHandler();
+
+            // Restaurar foco anterior se possível
+            try {
+                if (colorblindPanel._aguiaPreviousFocus && typeof colorblindPanel._aguiaPreviousFocus.focus === 'function') {
+                    colorblindPanel._aguiaPreviousFocus.focus();
+                }
+            } catch (e) {}
         }
     }
 

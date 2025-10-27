@@ -474,13 +474,34 @@ const AguiaMagnifier = {
         this.state.overlayPanel = panel;
         this.state.overlayContent = content;
 
-        // Fechar com ESC
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.isReaderOpen()) {
-                e.preventDefault();
-                this.closeReaderOverlay();
-            }
-        });
+        // Fechar com ESC e trap de foco no overlay (instalamos no próprio overlay)
+        if (!overlay._aguiaKeyHandler) {
+            overlay._aguiaKeyHandler = (e) => {
+                // Fecha com ESC
+                if (e.key === 'Escape' || e.key === 'Esc') {
+                    if (this.isReaderOpen()) {
+                        e.preventDefault();
+                        this.closeReaderOverlay();
+                    }
+                    return;
+                }
+
+                if (e.key === 'Tab') {
+                    // manter o foco dentro do overlay
+                    const focusable = overlay.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                    if (!focusable || focusable.length === 0) return;
+                    const first = focusable[0];
+                    const last = focusable[focusable.length - 1];
+                    if (!e.shiftKey && document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    } else if (e.shiftKey && document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    }
+                }
+            };
+        }
     },
 
     isReaderOpen: function() {
@@ -494,9 +515,23 @@ const AguiaMagnifier = {
         this.state.overlay.style.display = 'block';
         this.state.overlay.setAttribute('aria-hidden', 'false');
         document.body.classList.add('aguia-reader-open');
-        // Foco no painel para navegação por teclado
+        // Foco no painel para navegação por teclado. Guardar foco anterior e instalar trap
+        try {
+            this.state.overlay._aguiaPreviousFocus = document.activeElement;
+        } catch (e) {
+            this.state.overlay._aguiaPreviousFocus = null;
+        }
+
+        // Marcar como modal para AT
+        this.state.overlay.setAttribute('aria-modal', 'true');
+
         this.state.overlayPanel.setAttribute('tabindex', '-1');
         this.state.overlayPanel.focus({ preventScroll: true });
+
+        // Instalar handler de teclado no overlay
+        if (this.state.overlay._aguiaKeyHandler) {
+            this.state.overlay.addEventListener('keydown', this.state.overlay._aguiaKeyHandler);
+        }
         if (this.state.expandFab) this.state.expandFab.style.display = 'none';
     },
 
@@ -505,6 +540,19 @@ const AguiaMagnifier = {
         this.state.overlay.style.display = 'none';
         this.state.overlay.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('aguia-reader-open');
+
+        // Remover aria-modal e handler de teclado e restaurar foco
+        try {
+            this.state.overlay.removeAttribute('aria-modal');
+        } catch (e) {}
+        if (this.state.overlay._aguiaKeyHandler) {
+            this.state.overlay.removeEventListener('keydown', this.state.overlay._aguiaKeyHandler);
+        }
+        try {
+            if (this.state.overlay._aguiaPreviousFocus && typeof this.state.overlay._aguiaPreviousFocus.focus === 'function') {
+                this.state.overlay._aguiaPreviousFocus.focus();
+            }
+        } catch (e) {}
     },
     
     // Encontrar o elemento de texto relevante mais próximo

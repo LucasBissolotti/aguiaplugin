@@ -8,15 +8,15 @@
 /* Variáveis CSS com cores com contraste suficiente para WCAG 2.1 AA */
 :root {
     --aguia-primary-color: #0056b3;        /* Azul principal - identidade do plugin */
-    --aguia-secondary-color: #2196f3;      /* Azul médio - para elementos destacados */
-    --aguia-accent-color: #4dabff;         /* Azul claro - para elementos decorativos */
+    --aguia-secondary-color: #1a73e8;      /* Azul médio - ajustado para contraste melhor */
+    --aguia-accent-color: #1976d2;         /* Azul claro (ajustado) - para elementos decorativos com melhor contraste */
     --aguia-background-light: #ffffff;     /* Fundo branco */
     --aguia-background-dark: #1a1a1a;      /* Fundo escuro */
     --aguia-text-light: #ffffff;           /* Texto claro para fundos escuros */
     --aguia-text-dark: #333333;            /* Texto escuro para fundos claros */
     --aguia-focus-color: #ffbf47;          /* Amarelo destaque para foco - alto contraste */
     --aguia-error-color: #d32f2f;          /* Vermelho para erros - com bom contraste */
-    --aguia-success-color: #388e3c;        /* Verde para sucesso - com bom contraste */
+    --aguia-success-color: #2e7d32;        /* Verde para sucesso - ajustado para melhor contraste */
     --aguia-hover-bg: #f5f9ff;             /* Fundo hover para itens do menu */
     --aguia-disabled-color: #757575;       /* Cor para elementos desabilitados */
     --aguia-border-radius: 8px;            /* Arredondamento de bordas */
@@ -812,7 +812,8 @@ input:checked + .aguia-switch-slider:before {
 
 .aguia-reset-button {
     color: #fff; /* Texto branco para contraste */
-    background-color: #e74c3c; /* Tom de vermelho moderno */
+    /* Cor ajustada para melhorar contraste e passar WCAG AA */
+    background-color: #c0392b; /* Tom de vermelho mais escuro e acessível */
     border: none; /* Remove a borda para um visual mais limpo */
     border-radius: var(--aguia-border-radius);
     padding: 8px 16px;
@@ -824,14 +825,15 @@ input:checked + .aguia-switch-slider:before {
 }
 
 .aguia-reset-button:hover {
-    background-color: #c0392b; /* Vermelho mais escuro no hover */
-    box-shadow: 0 4px 8px rgba(192, 57, 43, 0.4); /* Sombra mais pronunciada no hover */
+    background-color: #b71c1c; /* Vermelho ainda mais escuro no hover */
+    box-shadow: 0 4px 8px rgba(183, 28, 28, 0.4); /* Sombra mais pronunciada no hover */
     transform: translateY(-1px); /* Leve elevação no hover */
 }
 
 /* Botão de salvar preferências */
 .aguia-save-button {
-    background-color: #2271ff; /* Cor primária mais vibrante */
+    /* Usa a cor primária definida em :root para garantir bom contraste */
+    background-color: var(--aguia-primary-color); /* #0056b3 - contraste melhor */
     color: #fff;
     border: none;
     border-radius: var(--aguia-border-radius);
