@@ -531,25 +531,7 @@ button#aguiaButton.aguia-button:hover::before {
 }
 
 /* Status message - WCAG 4.1.3 */
-.aguia-status-message {
-    position: fixed;
-    bottom: 110px;
-    right: 30px;
-    transform: translateY(-10px);
-    padding: 12px 20px;
-    background-color: var(--aguia-background-light);
-    color: var(--aguia-text-dark);
-    border-left: 4px solid var(--aguia-primary-color);
-    border-radius: var(--aguia-border-radius);
-    box-shadow: var(--aguia-box-shadow);
-    display: none;
-    z-index: 10000;
-    font-size: 14px;
-    font-weight: 500;
-    min-width: 200px;
-    max-width: 320px;
-    animation: slideInRight 0.3s forwards;
-}
+
 
 @keyframes slideInRight {
     from {
@@ -562,33 +544,69 @@ button#aguiaButton.aguia-button:hover::before {
     }
 }
 
+@keyframes slideOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(18px);
+    }
+}
+
 .aguia-status-message.success {
     border-left-color: var(--aguia-success-color);
 }
 
-.aguia-status-message.error {
-    border-left-color: var(--aguia-error-color);
+
+.aguia-status-message {
+    position: fixed;
+    /* posicionamento será controlado via inline styles pela função showStatusMessage */
+    padding: 14px 20px;
+    background-color: var(--aguia-background-light);
+    color: var(--aguia-text-dark);
+    border-left: 4px solid var(--aguia-primary-color);
+    border-radius: var(--aguia-border-radius);
+    box-shadow: var(--aguia-box-shadow);
+    display: none;
+    z-index: 10001;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: left;
+    max-width: 360px;
+    word-wrap: break-word;
+    /* entrada por padrão; saída aplicada via JS para garantir sincronização */
+    animation: slideInRight 0.28s cubic-bezier(.2,.9,.2,1) forwards;
 }
 
-/* Classes para ajustar tamanhos de texto - WCAG 1.4.4 */
-.aguia-text-size-100 {
-    font-size: 100% !important;
-}
-
-.aguia-text-size-110 {
-    font-size: 110% !important;
-}
-
-.aguia-text-size-120 {
-    font-size: 120% !important;
-}
-
-.aguia-text-size-130 {
-    font-size: 130% !important;
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-20px);
+    }
 }
 
 .aguia-text-size-140 {
     font-size: 140% !important;
+}
+
+/* Respeita preferência do usuário por reduzir movimento */
+@media (prefers-reduced-motion: reduce) {
+    .aguia-status-message,
+    .aguia-button,
+    .aguia-menu,
+    .aguia-option,
+    .aguia-save-button,
+    .aguia-reset-button {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+    }
 }
 
 .aguia-text-size-150 {

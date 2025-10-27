@@ -741,13 +741,96 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para exibir mensagem de status
     function showStatusMessage(text, type = '') {
         const message = document.getElementById('aguiaStatusMessage');
+        if (!message) return;
+
+        // Define texto e classes
         message.textContent = text;
         message.className = 'aguia-status-message ' + type;
+
+        // Limpa posicionamento inline anterior
+        message.style.left = '';
+        message.style.top = '';
+        message.style.right = '';
+        message.style.bottom = '';
+        message.style.visibility = 'hidden';
         message.style.display = 'block';
-        
-        // Oculta a mensagem após 3 segundos
-        setTimeout(function() {
-            message.style.display = 'none';
+
+        // Calcula posicionamento com base no menu, se presente e visível
+        const menu = document.getElementById('aguiaMenu');
+        const msgRect = message.getBoundingClientRect();
+
+        if (menu && menu.style.display !== 'none') {
+            const mRect = menu.getBoundingClientRect();
+
+            // Posiciona acima do menu, alinhado à borda direita do menu
+            let top = mRect.top - msgRect.height - 8; // 8px de espaçamento
+            let left = mRect.left + mRect.width - msgRect.width - 8; // alinhado à direita com 8px de folga
+
+            // Proteções contra sair da tela
+            if (top < 8) top = 8;
+            if (left < 8) left = 8;
+
+            message.style.left = left + 'px';
+            message.style.top = top + 'px';
+        } else {
+            // Fallback: canto inferior direito (comportamento anterior)
+            message.style.right = '30px';
+            message.style.bottom = 'calc(100px + 350px + 16px)';
+        }
+
+        message.style.visibility = 'visible';
+
+        // Garantir que timeouts/handlers anteriores sejam limpos
+        if (message._aguiaTimeout) {
+            clearTimeout(message._aguiaTimeout);
+        }
+        if (message._aguiaHideHandler) {
+            message.removeEventListener('animationend', message._aguiaHideHandler);
+            message._aguiaHideHandler = null;
+        }
+
+        // Forçar reprodução da animação de entrada (reinicia caso já tenha sido reproduzida)
+        try {
+            if (!window.matchMedia || !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                message.style.animation = 'none';
+                // Força reflow para reiniciar a animação
+                // eslint-disable-next-line no-unused-expressions
+                message.offsetHeight;
+                message.style.animation = 'slideInRight 0.28s cubic-bezier(.2,.9,.2,1) forwards';
+            } else {
+                // Sem animação para quem prefere reduzir movimento
+                message.style.animation = 'none';
+            }
+        } catch (e) {
+            // fallback silencioso
+            message.style.animation = '';
+        }
+
+        // Oculta a mensagem após 3 segundos, com animação de saída se permitido
+        message._aguiaTimeout = setTimeout(function() {
+            // Se o usuário preferir reduzir movimento, não anima, apenas oculta
+            var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (reduce) {
+                message.style.display = 'none';
+                return;
+            }
+
+            // Reproduz animação de saída e depois remove do DOM visual
+            message.style.animation = 'none';
+            // Força reflow
+            // eslint-disable-next-line no-unused-expressions
+            message.offsetHeight;
+            message.style.animation = 'slideOutRight 0.18s ease forwards';
+
+            // Handler para esconder após animação
+            message._aguiaHideHandler = function() {
+                message.style.display = 'none';
+                message.style.animation = '';
+                message.removeEventListener('animationend', message._aguiaHideHandler);
+                message._aguiaHideHandler = null;
+            };
+
+            message.addEventListener('animationend', message._aguiaHideHandler);
         }, 3000);
     }
     
