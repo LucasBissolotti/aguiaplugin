@@ -2340,6 +2340,22 @@ document.addEventListener('DOMContentLoaded', function() {
         highlightedLettersLevel = 0;
         colorBlindMode = 'none';
         
+        // Garantir que a preferência de reduzir animações também seja desativada
+        try {
+            reduceAnimationsEnabled = false;
+        } catch (e) {}
+        try {
+            if (document && document.documentElement && document.documentElement.classList) {
+                document.documentElement.classList.remove('aguia-reduce-animations');
+            }
+        } catch (e) {}
+        const reduceBtn = document.getElementById('aguiaReduceAnimationsBtn');
+        if (reduceBtn) {
+            reduceBtn.classList.remove('active');
+        }
+        // Salvar preferência desativada
+        saveUserPreference('reduceAnimations', false);
+
         showStatusMessage('AGUIA Resetado', 'success');
     }
     

@@ -23,11 +23,9 @@
     --aguia-box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16); /* Sombra padrão */
 }
 
-/* Cursor de lupa quando a lupa de conteúdo está ativa.
-   Espera-se que você coloque a imagem em /local/aguiaplugin/pix/magnifier_cursor.png
-   Caso a imagem não exista, o cursor padrão 'zoom-in' será usado como fallback. */
+/* Cursor de lupa quando a lupa de conteúdo está ativa. */
 .aguia-magnifier-active, .aguia-magnifier-active * {
-    cursor: url('/local/aguiaplugin/pix/magnifier_cursor.png') 12 12, zoom-in !important;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><circle cx="10" cy="10" r="7" stroke="black" stroke-width="2" fill="white"/><line x1="15" y1="15" x2="22" y2="22" stroke="black" stroke-width="2" stroke-linecap="round"/></svg>') 12 12, zoom-in !important;
 }
 
 /* Estilos para garantir foco visível - WCAG 2.4.7 */

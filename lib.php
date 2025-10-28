@@ -121,7 +121,6 @@ function local_aguiaplugin_before_standard_html_head() {
     'icons/ajuste_icone_destaque_cabecalho.css',
     'icons/ajuste_intensidade_cor.css',
     'icons/ajuste_texto_para_fala.css',
-    'icons/ajuste_texto_para_fala_adicional.css',
     'icons/ajuste_ocultar_imagens.css',
     'icons/ajuste_tamanho_texto.css',
     'icons/ajuste_altura_linha.css',

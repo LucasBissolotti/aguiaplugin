@@ -807,73 +807,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Erro ao inicializar AguiaMagnifier:', e);
     }
 });
-    // Função para atualizar a posição e conteúdo da lupa
-    function updateMagnifier(e) {
-        const scope = document.getElementById('page') || document.querySelector('#page-content') || document.querySelector('main') || document.body;
-        if (!scope.classList.contains('aguia-magnifier-active')) {
-            return;
-        }
-        
-        // Obter o elemento sob o cursor
-        const element = document.elementFromPoint(e.clientX, e.clientY);
-        
-        // Verificar se o elemento é um texto ou possui texto
-        if (!element || 
-            element.id === 'aguia-content-magnifier' || 
-            element.closest('#aguia-accessibility-panel') || 
-            element === magnifier) {
-            magnifier.classList.add('aguia-magnifier-hidden');
-            return;
-        }
-        
-        // Obter o texto do elemento
-        let text = '';
-        
-        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-            text = element.value;
-        } else {
-            // Para outros elementos, obtemos o texto visível
-            text = element.textContent.trim();
-        }
-        
-        // Se o elemento não tem texto, não mostramos a lupa
-        if (!text) {
-            magnifier.classList.add('aguia-magnifier-hidden');
-            return;
-        }
-        
-        // Definir o conteúdo da lupa
-        magnifier.textContent = text;
-        
-        // Posicionar a lupa abaixo do cursor
-        magnifier.style.left = `${e.pageX}px`;
-        magnifier.style.top = `${e.pageY + 25}px`; // 25px abaixo do cursor
-        
-        // Mostrar a lupa
-        magnifier.classList.remove('aguia-magnifier-hidden');
-    }
-    
-    // Adicionar o evento de movimento do mouse
-    document.addEventListener('mousemove', updateMagnifier);
-    
-    // Inicializar a lupa quando o documento estiver pronto
-    createMagnifierButton();
-    
-    // Adicionar a lupa ao menu de acessibilidade se ele existir
-    const addToAccessibilityMenu = function() {
-        const accessibilityMenu = document.querySelector('.aguia-accessibility-menu');
-        if (accessibilityMenu) {
-            const menuItem = document.createElement('li');
-            menuItem.innerHTML = '<a href="#" id="aguia-menu-magnifier"><i class="fa fa-search-plus"></i> Lupa de Conteúdo</a>';
-            
-            menuItem.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.getElementById('aguia-magnifier-button').click();
-            });
-            
-            accessibilityMenu.appendChild(menuItem);
-        }
-    };
-    
-// Executar após um pequeno atraso para garantir que o menu já esteja disponível
-setTimeout(addToAccessibilityMenu, 1000);
+    // (Removido código legado: função global createMagnifierButton e listeners redundantes)
+    // Esta implementação agora usa o namespace `AguiaMagnifier` e sua inicialização via `AguiaMagnifier.init()`.
+    // O código antigo que referenciava `createMagnifierButton()` e `updateMagnifier()` foi removido para evitar erros
+    // no console quando a versão atualizada do módulo está presente.
