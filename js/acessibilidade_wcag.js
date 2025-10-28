@@ -930,35 +930,46 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Forçar reprodução da animação de entrada (reinicia caso já tenha sido reproduzida)
-        try {
-            var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            // prefers-reduced-motion checked; we respect the user's setting
-            // Limpa classes de animação anteriores
-            message.classList.remove('aguia-status-enter', 'aguia-status-exit');
-            if (!reduce) {
-                // Definir estado inicial inline para garantir que a animação seja percebida
-                try {
-                    message.style.transform = 'translateX(120px)';
-                    message.style.opacity = '0';
-                } catch (e) {}
+            try {
+                // Verifica se o usuário prefere reduzir motion via media query
+                var prefersReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                // Também respeitamos a preferência interna do plugin (reduceAnimationsEnabled)
+                // e a presença da classe global .aguia-reduce-animations no documento
+                var reduce = !!(prefersReduce || reduceAnimationsEnabled || (document.documentElement && document.documentElement.classList && document.documentElement.classList.contains && document.documentElement.classList.contains('aguia-reduce-animations')));
 
-                // Força reflow para garantir os estilos iniciais aplicados
-                // eslint-disable-next-line no-unused-expressions
-                void message.offsetHeight;
+                // Limpa classes de animação anteriores
+                message.classList.remove('aguia-status-enter', 'aguia-status-exit');
+                if (!reduce) {
+                    // Definir estado inicial inline para garantir que a animação seja percebida
+                    try {
+                        message.style.transform = 'translateX(120px)';
+                        message.style.opacity = '0';
+                    } catch (e) {}
 
-                // Adiciona classe que inicia a animação de entrada
-                message.classList.add('aguia-status-enter');
-                // animation class added for entry
-            }
+                    // Força reflow para garantir os estilos iniciais aplicados
+                    // eslint-disable-next-line no-unused-expressions
+                    void message.offsetHeight;
+
+                    // Adiciona classe que inicia a animação de entrada
+                    message.classList.add('aguia-status-enter');
+                    // animation class added for entry
+                } else {
+                    // Se animações foram reduzidas (pelo usuário ou plugin), garantir estado visível
+                    try {
+                        message.style.transform = '';
+                        message.style.opacity = '1';
+                    } catch (e) {}
+                }
         } catch (e) {
             // fallback silencioso
         }
 
         // Oculta a mensagem após 3 segundos, com animação de saída se permitido
         message._aguiaTimeout = setTimeout(function() {
-            // Se o usuário preferir reduzir movimento, não anima, apenas oculta
-            var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (reduce) {
+            // Se o usuário preferir reduzir movimento (via media query ou preferência do plugin), não anima, apenas oculta
+            var prefersReduceTimeout = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var reduceTimeout = !!(prefersReduceTimeout || reduceAnimationsEnabled || (document.documentElement && document.documentElement.classList && document.documentElement.classList.contains && document.documentElement.classList.contains('aguia-reduce-animations')));
+            if (reduceTimeout) {
                 message.style.display = 'none';
                 return;
             }
