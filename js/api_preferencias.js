@@ -126,6 +126,8 @@
             fontSize: getFromLocalStorage('fontSize', 100),
             highContrast: getFromLocalStorage('highContrast', false),
             colorIntensityMode: getFromLocalStorage('colorIntensityMode', 0),
+                reduceAnimations: getFromLocalStorage('reduceAnimations', false),
+                highlightedLetters: getFromLocalStorage('highlightedLetters', 0),
             readableFonts: getFromLocalStorage('readableFonts', false),
             fontMode: getFromLocalStorage('fontMode', 0),
             lineSpacing: getFromLocalStorage('lineSpacing', 0),

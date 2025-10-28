@@ -97,6 +97,9 @@ const AguiaIcons = {
     
     // Ícone para destaque de cabeçalhos - Design minimalista com linha grossa
     headerHighlight: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Destacar cabeçalhos</title><rect x="4" y="4" width="16" height="16" rx="2" ry="2" style="fill:none!important; stroke:#000000!important; stroke-width:2!important"/><path d="M8 8 L12 8" style="fill:none!important; stroke:#000000!important; stroke-width:3!important; stroke-linecap:round!important"/></svg>',
+
+    // Ícone para reduzir animações - símbolo de movimento reduzido (meia-lua com traço)
+    reduceAnimations: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Reduzir animações</title><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M8 12h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
     
     // Novos ícones acessíveis
     

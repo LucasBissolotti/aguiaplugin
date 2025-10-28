@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let verticalMaskLevel = 0; // 0: desativado, 1: pequeno, 2: médio, 3: grande
     let customCursorEnabled = false; // Nova variável para controlar o cursor personalizado
     let highlightedLettersLevel = 0; // 0: desativado, 1: pequeno, 2: médio, 3: grande
+    let reduceAnimationsEnabled = false; // Nova preferência: reduzir animações do plugin e do site
     
     // Define um contêiner de escopo para aplicar os estilos de acessibilidade apenas no conteúdo da página
     function getAguiaScopeElement() {
@@ -612,6 +613,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 id: 'aguiaHeaderHighlightBtn'
             },
             {
+                iconSvg: AguiaIcons.reduceAnimations,
+                text: 'Reduzir Animações',
+                action: function() {
+                    // Toggle reduce animations
+                    toggleReduceAnimations();
+                },
+                ariaLabel: 'Ativar ou desativar redução de animações',
+                id: 'aguiaReduceAnimationsBtn'
+            },
+            {
                 iconSvg: AguiaIcons.magnifier,
                 text: 'Lupa de Conteúdo',
                 action: function() {
@@ -788,12 +799,33 @@ document.addEventListener('DOMContentLoaded', function() {
         button.appendChild(textSpan);
         
         // Eventos
-        button.addEventListener('click', option.action);
+        // Envolver a chamada em um wrapper para evitar que o objeto Event seja passado
+        // como argumento para funções que usam a assinatura (silent = false).
+        button.addEventListener('click', function(e) {
+            try { e.preventDefault(); } catch (err) {}
+            try {
+                // Marcar o botão como âncora temporária para a mensagem de status
+                const msg = document.getElementById('aguiaStatusMessage');
+                if (msg) {
+                    // Limpa timeout anterior se existir
+                    if (msg._aguiaAnchorClearTimeout) {
+                        clearTimeout(msg._aguiaAnchorClearTimeout);
+                        msg._aguiaAnchorClearTimeout = null;
+                    }
+                    msg._aguiaAnchor = button;
+                    // Limpar a âncora depois de 3.5s (alinha com duração da mensagem)
+                    msg._aguiaAnchorClearTimeout = setTimeout(function() {
+                        try { if (msg) { msg._aguiaAnchor = null; } } catch (e) {}
+                    }, 3500);
+                }
+                option.action();
+            } catch (err) { console.error('Erro ao executar ação do botão AGUIA', err); }
+        });
         button.addEventListener('keydown', function(e) {
             // Permitir navegação por teclado (WCAG 2.1.1)
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                option.action();
+                try { option.action(); } catch (err) { console.error('Erro ao executar ação do botão AGUIA via teclado', err); }
             }
         });
         
@@ -815,11 +847,28 @@ document.addEventListener('DOMContentLoaded', function() {
         const message = document.getElementById('aguiaStatusMessage');
         if (!message) return;
 
-        // Define texto e classes
+        // Define texto
         message.textContent = text;
-        message.className = 'aguia-status-message ' + type;
 
-        // Limpa posicionamento inline anterior
+        // Ajusta classes sem sobrescrever outras classes (preserva classes de animação)
+        // Remove classes de tipo anteriores e adiciona a classe base e a nova classe de tipo quando fornecida
+        try {
+            message.classList.remove('success', 'warning', 'error');
+            if (!message.classList.contains('aguia-status-message')) {
+                message.classList.add('aguia-status-message');
+            }
+            if (type) {
+                // type pode vir vazio ou ser 'success'|'warning'|'error'
+                message.classList.add(type);
+            }
+        } catch (e) {
+            // fallback simples
+            message.className = 'aguia-status-message' + (type ? ' ' + type : '');
+        }
+
+    // (debug logs removed for production)
+
+    // Limpa posicionamento inline anterior
         message.style.left = '';
         message.style.top = '';
         message.style.right = '';
@@ -844,10 +893,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
             message.style.left = left + 'px';
             message.style.top = top + 'px';
+        } else if (message._aguiaAnchor && document.body.contains(message._aguiaAnchor)) {
+            // Se houver um botão que disparou a ação, ancoramos a mensagem acima dele
+            try {
+                const aRect = message._aguiaAnchor.getBoundingClientRect();
+                let top = aRect.top - msgRect.height - 8;
+                let left = aRect.left + (aRect.width / 2) - (msgRect.width / 2);
+
+                // Proteções contra sair da tela
+                if (top < 8) top = 8;
+                if (left < 8) left = 8;
+                if (left + msgRect.width > window.innerWidth - 8) left = Math.max(8, window.innerWidth - msgRect.width - 8);
+
+                message.style.left = left + 'px';
+                message.style.top = top + 'px';
+            } catch (e) {
+                // fallback para canto inferior direito se algo falhar
+                message.style.right = '30px';
+                message.style.bottom = '30px';
+            }
         } else {
-            // Fallback: canto inferior direito (comportamento anterior)
+            // Fallback: canto inferior direito — usar valores fixos para evitar posicionamento fora da tela
             message.style.right = '30px';
-            message.style.bottom = 'calc(100px + 350px + 16px)';
+            message.style.bottom = '30px';
         }
 
         message.style.visibility = 'visible';
@@ -863,19 +931,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Forçar reprodução da animação de entrada (reinicia caso já tenha sido reproduzida)
         try {
-            if (!window.matchMedia || !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                message.style.animation = 'none';
-                // Força reflow para reiniciar a animação
+            var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            // prefers-reduced-motion checked; we respect the user's setting
+            // Limpa classes de animação anteriores
+            message.classList.remove('aguia-status-enter', 'aguia-status-exit');
+            if (!reduce) {
+                // Definir estado inicial inline para garantir que a animação seja percebida
+                try {
+                    message.style.transform = 'translateX(120px)';
+                    message.style.opacity = '0';
+                } catch (e) {}
+
+                // Força reflow para garantir os estilos iniciais aplicados
                 // eslint-disable-next-line no-unused-expressions
-                message.offsetHeight;
-                message.style.animation = 'slideInRight 0.28s cubic-bezier(.2,.9,.2,1) forwards';
-            } else {
-                // Sem animação para quem prefere reduzir movimento
-                message.style.animation = 'none';
+                void message.offsetHeight;
+
+                // Adiciona classe que inicia a animação de entrada
+                message.classList.add('aguia-status-enter');
+                // animation class added for entry
             }
         } catch (e) {
             // fallback silencioso
-            message.style.animation = '';
         }
 
         // Oculta a mensagem após 3 segundos, com animação de saída se permitido
@@ -887,22 +963,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Reproduz animação de saída e depois remove do DOM visual
-            message.style.animation = 'none';
+            // Reproduz animação de saída via classe e depois remove do DOM visual
+            // Limpa entrada caso esteja presente
+            message.classList.remove('aguia-status-enter');
             // Força reflow
             // eslint-disable-next-line no-unused-expressions
-            message.offsetHeight;
-            message.style.animation = 'slideOutRight 0.18s ease forwards';
+            void message.offsetHeight;
 
             // Handler para esconder após animação
             message._aguiaHideHandler = function() {
+                // animation end handler fired
                 message.style.display = 'none';
-                message.style.animation = '';
+                // Limpar quaisquer estilos inline que possam ter sido adicionados
+                try {
+                    message.style.transform = '';
+                    message.style.opacity = '';
+                } catch (e) {}
+                message.classList.remove('aguia-status-exit');
                 message.removeEventListener('animationend', message._aguiaHideHandler);
                 message._aguiaHideHandler = null;
             };
 
             message.addEventListener('animationend', message._aguiaHideHandler);
+            // Inicia animação de saída
+            message.classList.add('aguia-status-exit');
+            // animation class added for exit
         }, 3000);
     }
     
@@ -1650,7 +1735,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 document.removeEventListener('mousemove', updateReadingHelper);
             }
-            showStatusMessage('Guia de leitura desativado');
         }
         
         // Salva preferência
@@ -2386,7 +2470,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 readingMaskMode: getFromLocalStorage('readingMaskMode', 0),
                 horizontalMaskLevel: getFromLocalStorage('horizontalMaskLevel', 0),
                 verticalMaskLevel: getFromLocalStorage('verticalMaskLevel', 0),
-                customCursor: getFromLocalStorage('customCursor', false)
+                customCursor: getFromLocalStorage('customCursor', false),
+                reduceAnimations: getFromLocalStorage('reduceAnimations', false)
             };
             
             // Compatibilidade com versões anteriores
@@ -2769,6 +2854,23 @@ document.addEventListener('DOMContentLoaded', function() {
             const cursorBtn = document.getElementById('aguiaCustomCursorBtn');
             if (cursorBtn) {
                 cursorBtn.classList.add('active');
+            }
+        }
+
+        // Aplicar redução de animações (se o usuário tiver salvo a preferência)
+        if (typeof preferences.reduceAnimations !== 'undefined') {
+            reduceAnimationsEnabled = !!preferences.reduceAnimations;
+            try {
+                if (reduceAnimationsEnabled) {
+                    document.documentElement.classList.add('aguia-reduce-animations');
+                } else {
+                    document.documentElement.classList.remove('aguia-reduce-animations');
+                }
+            } catch (e) {}
+
+            const reduceBtn = document.getElementById('aguiaReduceAnimationsBtn');
+            if (reduceBtn) {
+                if (reduceAnimationsEnabled) reduceBtn.classList.add('active'); else reduceBtn.classList.remove('active');
             }
         }
         
@@ -3175,6 +3277,32 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Salva preferência
         saveUserPreference('customCursor', customCursorEnabled);
+    }
+
+    // Função para alternar redução de animações
+    function toggleReduceAnimations(silent = false) {
+        reduceAnimationsEnabled = !reduceAnimationsEnabled;
+
+        try {
+            if (reduceAnimationsEnabled) {
+                document.documentElement.classList.add('aguia-reduce-animations');
+            } else {
+                document.documentElement.classList.remove('aguia-reduce-animations');
+            }
+        } catch (e) {}
+
+        const reduceBtn = document.getElementById('aguiaReduceAnimationsBtn');
+        if (reduceBtn) {
+            if (reduceAnimationsEnabled) reduceBtn.classList.add('active'); else reduceBtn.classList.remove('active');
+        }
+
+        if (!silent) {
+            showStatusMessage(reduceAnimationsEnabled ? 'Animações reduzidas' : 'Animações restauradas', 'success');
+        }
+
+        // Certifica-se de não passar o evento acidentalmente
+        // Salva preferência
+        saveUserPreference('reduceAnimations', reduceAnimationsEnabled);
     }
     
     // Função para resetar as novas configurações

@@ -17,10 +17,12 @@
                 <FIELD NAME="espaco_letras" TYPE="int" LENGTH="3" DEFAULT="0" COMMENT="Espaçamento entre letras (nível)"/>
                 <FIELD NAME="destaque_links" TYPE="int" LENGTH="1" DEFAULT="0" COMMENT="Destaque de links (1=sim, 0=não)"/>
                 <FIELD NAME="destaque_cabecalho" TYPE="int" LENGTH="1" DEFAULT="0" COMMENT="Destaque de cabeçalhos (1=sim, 0=não)"/>
+                <FIELD NAME="destaque_letras" TYPE="int" LENGTH="1" DEFAULT="0" COMMENT="Letras destacadas (1=sim, 0=não)"/>
                 <FIELD NAME="mascara_leitura_modo" TYPE="int" LENGTH="1" DEFAULT="0" COMMENT="Modo da máscara de leitura"/>
                 <FIELD NAME="mascara_horizontal_nivel" TYPE="int" LENGTH="2" DEFAULT="0" COMMENT="Nível da máscara horizontal"/>
                 <FIELD NAME="mascara_vertical_nivel" TYPE="int" LENGTH="2" DEFAULT="0" COMMENT="Nível da máscara vertical"/>
                 <FIELD NAME="cursor_personalizado" TYPE="int" LENGTH="1" DEFAULT="0" COMMENT="Cursor personalizado (1=sim, 0=não)"/>
+                <FIELD NAME="reduzir_animacoes" TYPE="int" LENGTH="1" DEFAULT="0" COMMENT="Reduzir animações (1=sim, 0=não)"/>
                 <FIELD NAME="modificado_em" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" COMMENT="Timestamp da última modificação"/>
             </FIELDS>
             <KEYS>

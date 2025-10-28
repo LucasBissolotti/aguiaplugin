@@ -543,7 +543,11 @@ button#aguiaButton.aguia-button:hover::before {
 @keyframes slideInRight {
     from {
         opacity: 0;
-        transform: translateX(30px);
+        transform: translateX(120px);
+    }
+    60% {
+        opacity: 1;
+        transform: translateX(-10px);
     }
     to {
         opacity: 1;
@@ -556,9 +560,13 @@ button#aguiaButton.aguia-button:hover::before {
         opacity: 1;
         transform: translateX(0);
     }
+    40% {
+        opacity: 1;
+        transform: translateX(-6px);
+    }
     to {
         opacity: 0;
-        transform: translateX(18px);
+        transform: translateX(120px);
     }
 }
 
@@ -583,8 +591,17 @@ button#aguiaButton.aguia-button:hover::before {
     text-align: left;
     max-width: 360px;
     word-wrap: break-word;
-    /* entrada por padrão; saída aplicada via JS para garantir sincronização */
-    animation: slideInRight 0.28s cubic-bezier(.2,.9,.2,1) forwards;
+}
+
+/* Entradas/saídas aplicadas via classes adicionadas por JS */
+.aguia-status-enter {
+    animation: slideInRight 0.36s cubic-bezier(.22,.9,.28,1) forwards;
+    will-change: transform, opacity;
+}
+
+.aguia-status-exit {
+    animation: slideOutRight 0.32s cubic-bezier(.3,0,.1,1) forwards;
+    will-change: transform, opacity;
 }
 
 @keyframes slideInDown {
@@ -614,6 +631,20 @@ button#aguiaButton.aguia-button:hover::before {
         transition: none !important;
         transform: none !important;
     }
+}
+
+/* Classe para reduzir animações do plugin e do site quando usuário escolher */
+.aguia-reduce-animations,
+.aguia-reduce-animations * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+}
+
+/* Regras adicionais para suavizar mudanças de layout quando animações estiverem reduzidas */
+.aguia-reduce-animations img,
+.aguia-reduce-animations svg {
+    will-change: auto !important;
 }
 
 .aguia-text-size-150 {

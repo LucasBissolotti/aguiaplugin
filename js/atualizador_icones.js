@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'aguiaInvertBtn': AguiaIcons.invertColors,
             'aguiaColorBlindBtn': AguiaIcons.colorblind,
             'aguiaMagnifierBtn': AguiaIcons.magnifier,
+            'aguiaReduceAnimationsBtn': AguiaIcons.reduceAnimations,
             'aguiaIncreaseFontBtn': AguiaIcons.increaseText,
             'aguiaReadableFontsBtn': readableIconForMode,
             'aguiaSpacingBtn': AguiaIcons.spacing,
@@ -67,5 +68,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const cursorBtn = document.getElementById('aguiaCustomCursorBtn');
             if (cursorBtn) cursorBtn.classList.add('active');
         }
+
+        // Marca botão de reduzir animações se aplicado globalmente (na raíz do documento)
+        try {
+            if (document.documentElement.classList.contains('aguia-reduce-animations')) {
+                const reduceBtn = document.getElementById('aguiaReduceAnimationsBtn');
+                if (reduceBtn) reduceBtn.classList.add('active');
+            }
+        } catch (e) {}
     }
 });

@@ -44,10 +44,12 @@ class ApiPreferencias {
             'espaco_letras' => 0,
             'destaque_links' => 0,
             'destaque_cabecalho' => 0,
+            'destaque_letras' => 0,
             'mascara_leitura_modo' => 0,
             'mascara_horizontal_nivel' => 0,
             'mascara_vertical_nivel' => 0,
-            'cursor_personalizado' => 0
+            'cursor_personalizado' => 0,
+            'reduzir_animacoes' => 0
         ];
         $record = $DB->get_record('local_aguiaplugin_prefs', ['usuarioid' => $usuarioid]);
         if ($record) {
@@ -79,10 +81,12 @@ class ApiPreferencias {
         $registro->espaco_letras = isset($preferencias->espaco_letras) ? (int)$preferencias->espaco_letras : (isset($preferencias->letterSpacing) ? (int)$preferencias->letterSpacing : 0);
         $registro->destaque_links = isset($preferencias->destaque_links) ? (int)$preferencias->destaque_links : (isset($preferencias->emphasizeLinks) ? (int)$preferencias->emphasizeLinks : 0);
         $registro->destaque_cabecalho = isset($preferencias->destaque_cabecalho) ? (int)$preferencias->destaque_cabecalho : (isset($preferencias->headerHighlight) ? (int)$preferencias->headerHighlight : 0);
+    $registro->destaque_letras = isset($preferencias->destaque_letras) ? (int)$preferencias->destaque_letras : (isset($preferencias->highlightedLetters) ? (int)$preferencias->highlightedLetters : 0);
         $registro->mascara_leitura_modo = isset($preferencias->mascara_leitura_modo) ? (int)$preferencias->mascara_leitura_modo : (isset($preferencias->readingMaskMode) ? (int)$preferencias->readingMaskMode : 0);
         $registro->mascara_horizontal_nivel = isset($preferencias->mascara_horizontal_nivel) ? (int)$preferencias->mascara_horizontal_nivel : (isset($preferencias->horizontalMaskLevel) ? (int)$preferencias->horizontalMaskLevel : 0);
         $registro->mascara_vertical_nivel = isset($preferencias->mascara_vertical_nivel) ? (int)$preferencias->mascara_vertical_nivel : (isset($preferencias->verticalMaskLevel) ? (int)$preferencias->verticalMaskLevel : 0);
         $registro->cursor_personalizado = isset($preferencias->cursor_personalizado) ? (int)$preferencias->cursor_personalizado : (isset($preferencias->customCursor) ? (int)$preferencias->customCursor : 0);
+    $registro->reduzir_animacoes = isset($preferencias->reduzir_animacoes) ? (int)$preferencias->reduzir_animacoes : (isset($preferencias->reduceAnimations) ? ($preferencias->reduceAnimations ? 1 : 0) : 0);
         $registro->modificado_em = time();
 
         if ($existing) {
@@ -110,6 +114,9 @@ class ApiPreferencias {
             'horizontalMaskLevel' => (int) ($preferenciasBanco->mascara_horizontal_nivel ?? 0),
             'verticalMaskLevel' => (int) ($preferenciasBanco->mascara_vertical_nivel ?? 0),
             'customCursor' => (bool) ($preferenciasBanco->cursor_personalizado ?? 0)
+            ,
+            'highlightedLetters' => (int) ($preferenciasBanco->destaque_letras ?? 0),
+            'reduceAnimations' => (bool) ($preferenciasBanco->reduzir_animacoes ?? 0)
         ];
     }
 
@@ -170,6 +177,12 @@ class ApiPreferencias {
                 break;
             case 'customCursor':
                 $preferenciasBanco->cursor_personalizado = $valor ? 1 : 0;
+                break;
+            case 'highlightedLetters':
+                $preferenciasBanco->destaque_letras = $valor ? 1 : 0;
+                break;
+            case 'reduceAnimations':
+                $preferenciasBanco->reduzir_animacoes = $valor ? 1 : 0;
                 break;
         }
         return $preferenciasBanco;

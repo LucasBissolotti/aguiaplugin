@@ -127,6 +127,8 @@ function aguia_get_preferences_result(array $env) {
         'horizontalMaskLevel' => 0,
         'verticalMaskLevel' => 0,
         'customCursor' => false,
+    'reduceAnimations' => false,
+    'highlightedLetters' => 0,
     ];
     $preferences = $default;
     $source = 'default';
