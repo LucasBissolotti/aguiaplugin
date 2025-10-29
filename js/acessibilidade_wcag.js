@@ -213,6 +213,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 menu.removeEventListener('keydown', menu._aguiaKeyHandler);
                 menu._aguiaKeyHandler = null;
             }
+            // Remove outside-click handler if presente
+            if (menu._aguiaOutsideClickHandler) {
+                document.removeEventListener('pointerdown', menu._aguiaOutsideClickHandler);
+                menu._aguiaOutsideClickHandler = null;
+            }
             // Restaurar foco para o elemento que abriu o menu
             try {
                 if (menu._aguiaPreviousFocus && typeof menu._aguiaPreviousFocus.focus === 'function') {
@@ -262,6 +267,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 };
                 menu.addEventListener('keydown', menu._aguiaKeyHandler);
+            }
+            // Instala um handler para fechar o menu ao clicar fora dele
+            if (!menu._aguiaOutsideClickHandler) {
+                menu._aguiaOutsideClickHandler = function(e) {
+                    try {
+                        const btn = document.getElementById('aguiaButton');
+                        // Se o clique aconteceu dentro do menu ou no botão que abre o menu, ignora
+                        if (!menu || menu.style.display === 'none') return;
+                        if (menu.contains(e.target) || (btn && btn.contains(e.target))) return;
+                        // Caso contrário, fecha o menu
+                        toggleMenu();
+                    } catch (err) {
+                        // silencioso
+                    }
+                };
+                // Usamos pointerdown para cobrir mouse e touch de forma consistente
+                document.addEventListener('pointerdown', menu._aguiaOutsideClickHandler);
             }
         }
     }

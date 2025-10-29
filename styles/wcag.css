@@ -187,13 +187,12 @@ button#aguiaButton.aguia-button:hover::before {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: all 0.2s ease;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .aguia-menu-close:hover {
     background-color: rgba(255, 255, 255, 0.25);
-    transform: rotate(90deg); /* Efeito de rotação ao passar o mouse */
+    /* Removida rotação/transform para evitar animação no botão de fechar */
 }
 
 .aguia-menu-content {
