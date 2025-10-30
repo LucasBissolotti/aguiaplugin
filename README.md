@@ -17,6 +17,7 @@ O plugin AGUIA (Acessibilidade e Guia para Inclusão e Aprendizagem) é uma ferr
   - Deuteranomalia/Deuteranopia (dificuldade em perceber verde)
   - Tritanomalia/Tritanopia (dificuldade em perceber azul)
 - **Leitura de texto (Text-to-Speech)**: Lê o texto quando o usuário clica em um elemento.
+- **Interpretação de imagens**: Identifica e descreve automaticamente o conteúdo de imagens, gerando alternativas textuais (descrições) para auxiliar usuários com deficiência visual. A análise é feita pelo modelo de inteligência artificial do Gemini configurado no plugin.
 - **Auxiliar de leitura (WCAG 2.4.8)**: Realça a linha de texto onde o cursor está posicionado.
 - **Destaque para links (WCAG 1.4.1)**: Permite destacar visualmente os links para melhor identificação.
 - **Foco visível (WCAG 2.4.7)**: Destaca claramente os elementos com foco durante a navegação por teclado.
@@ -95,8 +96,6 @@ O AGUIA persiste as escolhas dos usuários de duas formas:
 
 - **Banco de dados Moodle**: a API `\local_aguiaplugin\preferences\ApiPreferencias` grava e atualiza as preferências na tabela `local_aguiaplugin_prefs`.
 - **Fallback em arquivo**: quando o banco não está disponível, `preferences/armazenamento_arquivos.php` registra JSONs no diretório `preferences/data/` para manter a experiência consistente.
-
-Observação: o estilo para “Letras destacadas” é `styles/letras_destaque.css`.
 
 ## Conformidade com WCAG 2.1 Nível AA
 

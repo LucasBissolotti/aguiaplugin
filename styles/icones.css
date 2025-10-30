@@ -1,4 +1,13 @@
-/* Estilos para os ícones SVG nos botões de acessibilidade */
+/*
+ * AguiaPlugin — Estilos de ícones
+ *
+ * Descrição:
+ *   Regras CSS que definem a aparência dos ícones SVG usados nos botões
+ *   de acessibilidade (tamanho, cor, alinhamento e estados ativo/hover).
+ *
+ * @module styles/icones.css
+ * @license GNU GPL v3 or later
+ */
 
 .aguia-option .icon svg {
     width: 36px !important; /* Padronizado para 36px */
@@ -7,10 +16,10 @@
     fill: #000000 !important; /* Cor preta para melhor contraste - sempre fixa */
     stroke: #000000 !important; /* Cor fixa para traços */
     color: #000000 !important; /* Cor fixa para elementos coloridos */
-    stroke-width: 0 !important; /* Remover stroke para melhorar legibilidade */
-    filter: none !important; /* Remover sombra para aparência mais limpa */
-    transform: none !important; /* Remover qualquer transformação */
-    transition: none !important; /* Remover animações */
+    stroke-width: 0 !important; /* Remove stroke para melhorar legibilidade */
+    filter: none !important; /* Remove sombra para aparência mais limpa */
+    transform: none !important; /* Remove qualquer transformação */
+    transition: none !important; /* Remove animações */
 }
 
 /* Garantir que os ícones fiquem centralizados */
@@ -37,7 +46,7 @@
     background-color: rgba(34, 113, 255, 0.08); /* Fundo azul claro para botão ativo */
     box-shadow: 0 4px 10px rgba(0, 86, 179, 0.25);
     transform: translateY(-2px);
-    background: linear-gradient(to bottom, #f5f9ff, #e6f0ff); /* Gradiente sutil quando ativo */
+    background: linear-gradient(to bottom, #f5f9ff, #e6f0ff);
 }
 
 /* Melhorar contraste dos textos */
@@ -63,7 +72,6 @@
 }
 
 /* Todos os ícones são pretos em todos os estados */
-/* Estas cores serão mantidas em todos os estados */
 .aguia-option[id="aguiaHorizontalMaskBtn"] .icon svg,
 .aguia-option[id="aguiaHorizontalMaskBtn"]:hover .icon svg,
 .aguia-option[id="aguiaHorizontalMaskBtn"].active .icon svg {
@@ -163,7 +171,6 @@
 /* Ícones coloridos no estado ativo */
 .aguia-option.active .icon svg {
     transform: scale(1.1);
-    /* Garante preto no estado ativo em regras posteriores */
     fill: #000000;
     color: #000000;
     stroke: #000000;
@@ -172,7 +179,7 @@
 /* Estilos específicos para o ícone de Aumentar Texto */
 .aguia-option[id="aguiaIncreaseFontBtn"] .icon svg {
     fill: #000000;
-    width: 36px !important; /* Padronizado para 36px */
+    width: 36px !important;
     height: 36px !important;
 }
 

@@ -1,6 +1,12 @@
 /**
- * Estilos específicos para o painel de daltonismo
- * 
+ * AguiaPlugin — Painel de Daltonismo
+ *
+ * Descrição:
+ *   Regras específicas para o painel de seleção de filtros de daltonismo,
+ *   incluindo estilo de botões, contêineres e estados ativos para melhor
+ *   usabilidade e contraste.
+ *
+ * @module styles/painel_daltonismo.css
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

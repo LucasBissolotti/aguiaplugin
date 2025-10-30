@@ -15,7 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * External function to get user accessibility preferences
+ * Função externa para obter preferências de acessibilidade do usuário
+ *
+ * Implementa as especificações do external_api do Moodle para disponibilizar
+ * as preferências do usuário via webservice/WS. As chaves retornadas seguem o
+ * formato legado esperado pelo frontend para compatibilidade.
  *
  * @package    local_aguiaplugin
  * @copyright  2025
@@ -36,14 +40,19 @@ use external_value;
 
 class get_preferences extends external_api {
     /**
-     * No parameters are required to get current user preferences.
+     * Parâmetros do webservice: nenhum parâmetro é necessário para esta chamada.
+     *
+     * @return external_function_parameters
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([]);
     }
 
     /**
-     * Returns structure for the preferences array.
+     * Estrutura retornada pelo webservice (array associativo de preferências).
+     * As descrições são em inglês por compatibilidade com a API do Moodle.
+     *
+     * @return external_single_structure
      */
     public static function execute_returns(): external_single_structure {
         return new external_single_structure([
@@ -58,13 +67,15 @@ class get_preferences extends external_api {
     }
 
     /**
-     * Get preferences for the current user.
-     * @return array
+     * Executa a chamada e retorna as preferências do usuário atual.
+     * Utiliza a API de domínio `ApiPreferencias` para obter os dados.
+     *
+     * @return array Dados no formato esperado pelo frontend.
      */
     public static function execute(): array {
         \core_external\external_api::validate_context(\context_system::instance());
 
-        // Reuse existing domain API.
+        // Reaproveita a API de domínio para obter valores (DB ou defaults).
         $preferences = \local_aguiaplugin\preferences\ApiPreferencias::buscar_preferencias_usuario();
 
         return [

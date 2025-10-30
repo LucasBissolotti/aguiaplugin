@@ -1,4 +1,14 @@
-/* OpenDyslexic font styles for AGUIA plugin */
+/*
+ * AguiaPlugin — Fonte OpenDyslexic
+ *
+ * Descrição:
+ *   Define o uso da fonte OpenDyslexic para melhorar a leitura para
+ *   usuários com dificuldade de leitura. Inclui declarações @font-face
+ *   e uma classe utilitária para aplicar a fonte em áreas específicas.
+ *
+ * @module styles/fonte_opendyslexic.css
+ * @license GNU GPL v3 or later
+ */
 
 /* Import the OpenDyslexic font */
 @font-face {

@@ -1,6 +1,11 @@
 /**
- * Estilos específicos para corrigir o ícone "Destacar Cabeçalhos"
+ * AguiaPlugin — Ajuste do ícone Destacar Cabeçalhos
  *
+ * Descrição:
+ *   Regras para garantir que o ícone de destaque de cabeçalhos mantenha
+ *   tamanho e aparência consistentes em todos os estados (hover/active).
+ *
+ * @module styles/icons/ajuste_icone_destaque_cabecalho.css
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

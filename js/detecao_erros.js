@@ -2,6 +2,7 @@
  * Utilitário para detecção e registro de erros do plugin AGUIA
  * Captura erros de JavaScript e os registra para análise
  *
+ * @module     local_aguiaplugin/detecao_erros
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,7 +30,7 @@
                     timestamp: new Date().toISOString()
                 };
                 
-                console.error('AGUIA Plugin Error:', error);
+                console.error('Erro do plugin AGUIA:', error);
                 errorLog.push(error);
                 errorCount++;
                 
@@ -59,7 +60,7 @@
                     timestamp: new Date().toISOString()
                 };
                 
-                console.error('AGUIA Plugin Unhandled Promise Rejection:', error);
+                console.error('Rejeição de promessa não tratada (AGUIA):', error);
                 errorLog.push(error);
                 errorCount++;
             } catch (e) {
@@ -90,10 +91,20 @@
     /**
      * Exporta funções de diagnóstico
      */
+    /**
+     * Retorna uma cópia do log interno de erros do plugin.
+     * Uso: `const log = window.aguia_getErrorLog();`
+     * @returns {Array<Object>} Cópia do array com objetos de erro.
+     */
     window.aguia_getErrorLog = function() {
         return [...errorLog]; // Retorna uma cópia do log
     };
     
+    /**
+     * Limpa o log interno de erros e reseta o contador de erros.
+     * Útil em ambiente de dev para reiniciar a coleta de erros.
+     * @returns {void}
+     */
     window.aguia_clearErrorLog = function() {
         errorLog.length = 0;
         errorCount = 0;

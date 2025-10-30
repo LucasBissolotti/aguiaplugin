@@ -28,6 +28,20 @@ use core_privacy\local\request\plugin\provider as plugin_provider;
 use core_privacy\local\request\userlist_provider;
 use context_system;
 
+/**
+ * Provider de privacidade do plugin Águia.
+ *
+ * Responsável por declarar os metadados de privacidade, exportar preferências
+ * do usuário e implementar exclusão/exportação conforme a API de privacidade do Moodle.
+ * As preferências são armazenadas na tabela `local_aguiaplugin_prefs` no contexto do sistema.
+ *
+ * Todas as descrições e comentários foram padronizados para pt-BR.
+ *
+ * @package    local_aguiaplugin
+ * @copyright  2025 Águia Plugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 class provider implements
     \core_privacy\local\metadata\provider,
     \core_privacy\local\request\user_preference_provider,
@@ -67,20 +81,20 @@ class provider implements
         }
         // Exporte preferências principais com descrições simples (não dependem de strings).
         $component = 'local_aguiaplugin';
-        writer::export_user_preference($component, 'fontSize', (int)($record->tamanho_fonte ?? 100), 'Font size percentage');
-        writer::export_user_preference($component, 'highContrast', (int)($record->contraste ?? 0), 'High contrast enabled');
-        writer::export_user_preference($component, 'readableFonts', (int)($record->fontes_legiveis ?? 0), 'Readable fonts enabled');
-        writer::export_user_preference($component, 'lineSpacing', (int)($record->espaco_linhas ?? 0), 'Line spacing level');
-        writer::export_user_preference($component, 'textToSpeech', (int)($record->texto_para_fala ?? 0), 'Text-to-speech enabled');
-        writer::export_user_preference($component, 'readingHelper', (int)($record->auxiliar_leitura ?? 0), 'Reading helper enabled');
-        writer::export_user_preference($component, 'colorblind', (string)($record->daltonismo ?? 'none'), 'Colorblind mode');
-        writer::export_user_preference($component, 'letterSpacing', (int)($record->espaco_letras ?? 0), 'Letter spacing level');
-        writer::export_user_preference($component, 'emphasizeLinks', (int)($record->destaque_links ?? 0), 'Emphasize links');
-        writer::export_user_preference($component, 'headerHighlight', (int)($record->destaque_cabecalho ?? 0), 'Emphasize headings');
-        writer::export_user_preference($component, 'readingMaskMode', (int)($record->mascara_leitura_modo ?? 0), 'Reading mask mode');
-        writer::export_user_preference($component, 'horizontalMaskLevel', (int)($record->mascara_horizontal_nivel ?? 0), 'Horizontal mask level');
-        writer::export_user_preference($component, 'verticalMaskLevel', (int)($record->mascara_vertical_nivel ?? 0), 'Vertical mask level');
-        writer::export_user_preference($component, 'customCursor', (int)($record->cursor_personalizado ?? 0), 'Custom cursor enabled');
+    writer::export_user_preference($component, 'fontSize', (int)($record->tamanho_fonte ?? 100), 'Tamanho da fonte (porcentagem)');
+    writer::export_user_preference($component, 'highContrast', (int)($record->contraste ?? 0), 'Alto contraste habilitado');
+    writer::export_user_preference($component, 'readableFonts', (int)($record->fontes_legiveis ?? 0), 'Fontes legíveis habilitadas');
+    writer::export_user_preference($component, 'lineSpacing', (int)($record->espaco_linhas ?? 0), 'Nível de espaçamento entre linhas');
+    writer::export_user_preference($component, 'textToSpeech', (int)($record->texto_para_fala ?? 0), 'Texto para fala habilitado');
+    writer::export_user_preference($component, 'readingHelper', (int)($record->auxiliar_leitura ?? 0), 'Auxiliar de leitura habilitado');
+    writer::export_user_preference($component, 'colorblind', (string)($record->daltonismo ?? 'none'), 'Modo de daltonismo');
+    writer::export_user_preference($component, 'letterSpacing', (int)($record->espaco_letras ?? 0), 'Nível de espaço entre letras');
+    writer::export_user_preference($component, 'emphasizeLinks', (int)($record->destaque_links ?? 0), 'Destaque de links');
+    writer::export_user_preference($component, 'headerHighlight', (int)($record->destaque_cabecalho ?? 0), 'Destaque de cabeçalhos');
+    writer::export_user_preference($component, 'readingMaskMode', (int)($record->mascara_leitura_modo ?? 0), 'Modo da máscara de leitura');
+    writer::export_user_preference($component, 'horizontalMaskLevel', (int)($record->mascara_horizontal_nivel ?? 0), 'Nível da máscara horizontal');
+    writer::export_user_preference($component, 'verticalMaskLevel', (int)($record->mascara_vertical_nivel ?? 0), 'Nível da máscara vertical');
+    writer::export_user_preference($component, 'customCursor', (int)($record->cursor_personalizado ?? 0), 'Cursor personalizado habilitado');
     }
 
     // === Plugin provider (export/delete) ===

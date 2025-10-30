@@ -1,4 +1,13 @@
-/* Estilos para melhorar a seleção e interatividade dos botões do plugin AGUIA */
+/*
+ * AguiaPlugin — Interações dos botões
+ *
+ * Descrição:
+ *   Regras que melhoram interatividade, foco e feedback visual dos botões
+ *   do plugin AGUIA (clic, foco, toque e estados ativos).
+ *
+ * @module styles/interacoes_botoes.css
+ * @license GNU GPL v3 or later
+ */
 
 /* Garantir que todos os botões do menu de acessibilidade sejam interativos */
 .aguia-option {
@@ -25,7 +34,7 @@
 /* Garantir que os botões sejam visíveis em dispositivos de toque */
 @media (hover: none) {
     .aguia-option {
-        min-height: 44px !important; /* Tamanho mínimo para alvos táteis - Guideline WCAG 2.5.5 */
+        min-height: 44px !important;
         min-width: 44px !important;
     }
 }
@@ -39,7 +48,7 @@
 
 /* Manter aparência dos ícones consistente em botões ativos */
 .aguia-option.active .icon svg {
-    filter: none !important; /* Removido brightness para manter aparência consistente */
+    filter: none !important;
 }
 
 /* Garantir visibilidade em alto contraste */

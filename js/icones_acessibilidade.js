@@ -2,9 +2,20 @@
  * Biblioteca de ícones SVG para o plugin AGUIA de Acessibilidade
  * Estes ícones são otimizados para acessibilidade e alta visibilidade
  * Seguindo as diretrizes WCAG 2.1 e as recomendações da W3C para acessibilidade SVG
+ *
+ * @module     local_aguiaplugin/icones_acessibilidade
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 // Namespace para os ícones
+/**
+ * Objeto que agrupa SVGs (strings) usados como ícones do plugin AGUIA.
+ * Cada propriedade é um SVG inline (string) pronto para ser injetado em
+ * um botão via innerHTML (por exemplo: element.querySelector('.icon').innerHTML = AguiaIcons.x).
+ * Os ícones seguem propriedades de acessibilidade: possuem <title>, role="img"
+ * e atributos que melhoram compatibilidade com leitores de tela.
+ * @namespace AguiaIcons
+ */
 const AguiaIcons = {
     // Ícones para tipos de daltonismo - Material Design
     colorblindNone: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Sem filtro de daltonismo</title><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1" fill="#FFFFFF"/><path d="M7 7 L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',

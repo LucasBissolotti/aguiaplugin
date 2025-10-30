@@ -1,6 +1,10 @@
 /**
- * Estilos específicos para corrigir o ícone "Lupa de Conteúdo"
+ * AguiaPlugin — Ajuste do ícone Lupa de Conteúdo
  *
+ * Descrição:
+ *   Normaliza a renderização do ícone da lupa (tamanho, cores e visibilidade)
+ *
+ * @module styles/icons/ajuste_icone_ampliador.css
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

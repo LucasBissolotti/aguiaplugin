@@ -9,7 +9,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// Criar botão de acessibilidade
+/**
+ * Cria e injeta o botão principal do AGUIA na página.
+ * - Gerencia eventos de teclado e hover.
+ * - Fornece o wrapper e o banner de hover.
+ * - Garante atributos ARIA e foco adequado para acessibilidade.
+ */
 function createAccessibilityButton() {
     // Verificar se já existe um botão
     if (document.getElementById('aguiaButton')) {
@@ -76,6 +81,12 @@ function createAccessibilityButton() {
         }
     });
     
+    /**
+     * Alterna a visualização do menu de acessibilidade (abrir/fechar).
+     * Atualiza o atributo ARIA `aria-expanded` do botão e tenta colocar o
+     * foco no primeiro elemento focável do menu quando aberto.
+     * @returns {void}
+     */
     // Função para alternar o menu
     function toggleMenu() {
         const menu = document.getElementById('aguiaMenu');

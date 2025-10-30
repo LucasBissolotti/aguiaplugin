@@ -1,7 +1,12 @@
 /**
- * Arquivo de manutenção para garantir que todos os ícones mantenham aparência consistente
- * Este arquivo tem prioridade alta para sobrescrever outros estilos específicos
+ * AguiaPlugin — Manutenção de ícones
  *
+ * Descrição:
+ *   Arquivo de manutenção que sobrescreve e normaliza estilos de ícones
+ *   problemáticos, garantindo consistência de tamanho, transformações e
+ *   preenchimento em todos os estados dos botões.
+ *
+ * @module styles/manutencao_icones.css
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

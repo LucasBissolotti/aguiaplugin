@@ -2,6 +2,8 @@
  * Plugin AGUIA - Estilos para destaque de cabeçalhos
  * Implementa destaque visual para melhorar a orientação e navegação
  * Referente à diretriz WCAG 2.4.6 (Headings and Labels)
+ *
+ * @module     local_aguiaplugin/destaque_cabecalho
  */
 
 /* Estilos para cabeçalhos quando o destaque está ativado */

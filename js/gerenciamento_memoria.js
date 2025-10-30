@@ -2,6 +2,7 @@
  * Gerenciamento de memória para o plugin AGUIA de Acessibilidade
  * Lida com limpeza de event listeners e outros recursos para evitar vazamentos de memória
  *
+ * @module     local_aguiaplugin/gerenciamento_memoria
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

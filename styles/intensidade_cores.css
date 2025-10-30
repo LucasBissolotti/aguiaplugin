@@ -1,4 +1,16 @@
-/* Estilos para os modos de intensidade de cores */
+/*
+ * AguiaPlugin — Intensidade de cores
+ *
+ * Descrição:
+ *   Regras que ajustam intensidade/contraste das cores da interface (baixa,
+ *   alta e escala de cinza) para melhorar percepção visual.
+ *
+ * Observações:
+ *   Mantém foco em filtros CSS que afetam imagens e elementos visuais.
+ *
+ * @module styles/intensidade_cores.css
+ * @license GNU GPL v3 or later
+ */
 
 /* Modo de baixa intensidade - cores mais suaves e reduzidas */
 .aguia-color-intensity-low {

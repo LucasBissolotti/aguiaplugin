@@ -1,6 +1,11 @@
 /**
- * Estilos específicos para corrigir o ícone "Ocultar Imagem"
+ * AguiaPlugin — Ajuste do ícone Ocultar Imagens
  *
+ * Descrição:
+ *   Regras que garantem que o ícone de ocultar imagens mantenha proporção,
+ *   cor e ausência de efeitos que prejudiquem a legibilidade do ícone.
+ *
+ * @module styles/icons/ajuste_ocultar_imagens.css
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

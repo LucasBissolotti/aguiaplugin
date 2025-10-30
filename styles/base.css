@@ -1,4 +1,10 @@
-/* Arquivo de estilo base para o plugin AGUIA */
+/**
+ * Estilos base do plugin AGUIA.
+ * Contém regras comuns para logo e botão principal.
+ *
+ * @module     local_aguiaplugin/base
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 .aguia-logo {
     width: 36px;
     height: 36px;
@@ -19,5 +25,3 @@
     align-items: center;
     justify-content: center;
 }
-
-/* Efeito hover já implementado no wcag.css */

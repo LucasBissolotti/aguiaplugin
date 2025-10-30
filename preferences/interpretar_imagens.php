@@ -1,7 +1,11 @@
 <?php
-// Endpoint para interpretar imagens via Gemini (generateContent)
-// Recebe um arquivo via multipart/form-data (campo 'image') ou uma URL (campo 'imageUrl')
-// Retorna JSON com { success: bool, description: string, api_response: mixed }
+/**
+ * Endpoint para interpretar imagens usando Gemini (Google Generative Language API)
+ *
+ * Aceita upload via multipart/form-data (campo 'image') ou POST com 'imageUrl'.
+ * Retorna JSON contendo 'success', 'description' (texto gerado) e 'api_response'
+ * com o conteúdo bruto retornado pela API externa.
+ */
 
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
@@ -15,12 +19,12 @@ $env = aguia_boot_environment();
 
 try {
     $imageData = null;
-    // primeiro, arquivo enviado via multipart
+    // Primeiro tenta receber arquivo enviado via multipart/form-data.
     if (!empty($_FILES['image']) && isset($_FILES['image']['tmp_name']) && is_uploaded_file($_FILES['image']['tmp_name'])) {
         $imageData = @file_get_contents($_FILES['image']['tmp_name']);
     }
 
-    // se não houver arquivo, verificar se foi enviada uma URL para o servidor buscar
+    // Se não houver arquivo, tenta buscar via URL informada no campo 'imageUrl'.
     if (empty($imageData) && !empty($_POST['imageUrl'])) {
         $imageUrl = trim($_POST['imageUrl']);
         if (!empty($imageUrl)) {
@@ -35,7 +39,7 @@ try {
             if ($fdata && $status >= 200 && $status < 300) {
                 $imageData = $fdata;
             } else {
-                // fallback para file_get_contents
+                // Fallback para file_get_contents quando curl falhar.
                 try {
                     $f2 = @file_get_contents($imageUrl);
                     if ($f2) $imageData = $f2;
@@ -49,7 +53,7 @@ try {
         exit;
     }
 
-    // Obter chave/config do Gemini
+    // Obtém a chave/config do Gemini (prioriza variável de ambiente).
     $apiKey = getenv('GEMINI_API_KEY');
     if (!$apiKey && function_exists('get_config')) {
         $apiKey = get_config('local_aguiaplugin', 'gemini_api_key');
@@ -112,12 +116,12 @@ try {
         'generationConfig' => [ 'temperature' => 0.2, 'maxOutputTokens' => $maxOutputTokens, 'responseMimeType' => 'text/plain' ]
     ];
 
-    // detectar tipo de autenticação (OAuth token vs API key)
+    // Detecta tipo de autenticação: OAuth token ou API key simples.
     $is_oauth_token = preg_match('/^ya29\./', $apiKey) || preg_match('/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/', $apiKey);
 
-    // construir endpoint e cabeçalhos, escapando segmentos do model
+    // Monta endpoint e cabeçalhos, escapando o nome do modelo quando necessário.
     $modelEscaped = implode('/', array_map('rawurlencode', explode('/', $model)));
-    // Selecionar versão da API: alguns modelos 2.x podem exigir v1beta
+    // Alguns modelos 2.x usam a versão v1beta da API.
     $apiver = (preg_match('/^gemini-2(\.|-)/i', $model) || stripos($model, '2.5') !== false || stripos($model, '2.0') !== false)
         ? 'v1beta'
         : 'v1';
@@ -311,7 +315,7 @@ try {
     exit;
 
 } catch (Exception $e) {
-    aguia_log_error('Erro em interpret_image endpoint: ' . $e->getMessage());
+    aguia_log_error('Erro no endpoint interpretar_imagens: ' . $e->getMessage());
     echo json_encode(['success' => false, 'error' => 'Erro interno: ' . $e->getMessage()]);
     exit;
 }

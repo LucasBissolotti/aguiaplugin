@@ -6,7 +6,7 @@
  */
 
 (function() {
-    // Namespace
+    // Namespace (espaço de nomes)
     window.AguiaAPI = window.AguiaAPI || {};
 
     // Controle de sincronização automática com o servidor (por padrão habilitada)
@@ -14,7 +14,11 @@
         window.AguiaAPI.autoSync = true;
     }
 
-    // Sesskey helper
+    /**
+     * Recupera a sesskey do Moodle (se disponível) usada para chamadas seguras ao servidor.
+     * Retorna null quando a variável global M ou M.cfg.sesskey não estiver disponível.
+     * @returns {string|null} Sesskey do Moodle ou null
+     */
     function getSesskey() {
         if (typeof M !== 'undefined' && M.cfg && M.cfg.sesskey) {
             return M.cfg.sesskey;
@@ -22,6 +26,16 @@
         return null;
     }
 
+    /**
+     * Salva uma preferência do usuário.
+     * - Faz backup local em localStorage sempre.
+     * - Quando aplicável (autoSync true ou options.server=true) tenta enviar ao servidor.
+     * Retorna uma Promise que resolve com o resultado (objeto com chave `success`).
+     * @param {string} preference Nome da preferência
+     * @param {*} value Valor a ser salvo (qualquer JSON-serializável)
+     * @param {Object} [options] Opções extras (ex: {server: true} força sincronizar no servidor)
+     * @returns {Promise<Object>} Resultado da operação
+     */
     // Salvar preferência
     window.AguiaAPI.savePreference = function(preference, value, options) {
         return new Promise((resolve, reject) => {
@@ -73,6 +87,12 @@
         });
     };
 
+    /**
+     * Carrega preferências mesclando valores locais (localStorage) e valores do servidor.
+     * Se o servidor responder com sucesso, as preferências são mescladas e escritas
+     * em localStorage. Retorna uma Promise que resolve com o objeto de preferências.
+     * @returns {Promise<Object>} Preferências mescladas
+     */
     // Carregar preferências (server -> local merge)
     window.AguiaAPI.loadPreferences = function() {
         return new Promise((resolve) => {
@@ -113,6 +133,13 @@
         });
     };
 
+    /**
+     * Lê uma preferência do localStorage com namespace 'aguia_'.
+     * Retorna `defaultValue` quando a chave não existe ou o JSON é inválido.
+     * @param {string} key Chave da preferência (sem prefixo)
+     * @param {*} defaultValue Valor padrão a retornar quando não existir
+     * @returns {*} Valor desserializado ou defaultValue
+     */
     // Utilitários de localStorage
     window.AguiaAPI.getFromLocalStorage = function(key, defaultValue) {
         const item = localStorage.getItem('aguia_' + key);

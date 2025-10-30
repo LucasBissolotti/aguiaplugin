@@ -1,31 +1,13 @@
 /**
- * Estilos adicionais para espaçamento
- * Aplicados a elementos comuns em ambi.aguia-spacing-level-1 .card,
-.aguia-spacing-level-1 .box,
-.aguia-spacing-level-1 .section {
-    margin-bottom: 1.2em !important;
-    padding: 0.6em !important;
-}
-
-.aguia-spacing-level-2 .card,
-.aguia-spacing-level-2 .box,
-.aguia-spacing-level-2 .section {
-    margin-bottom: 1.8em !important;
-    padding: 0.9em !important;
-}
-
-.aguia-spacing-level-3 .card,
-.aguia-spacing-level-3 .box,
-.aguia-spacing-level-3 .section {
-    margin-bottom: 2.4em !important;
-    padding: 1.2em !important;
-}m
+ * Estilos adicionais para espaçamento em diversos elementos da página
  *
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-/* Aplicação de espaçamento em elementos de formulário (estilo Hand Talk) */
+/**
+ * @module     local_aguiaplugin/espacamento_adicional
+ */
+/* Aplicação de espaçamento em elementos de formulário */
 .aguia-spacing-level-1 input, 
 .aguia-spacing-level-1 select, 
 .aguia-spacing-level-1 textarea,
@@ -50,7 +32,7 @@
     padding: 0.7em !important;
 }
 
-/* Aplicação de espaçamento em tabelas (estilo Hand Talk) */
+/* Aplicação de espaçamento em tabelas */
 .aguia-spacing-level-1 td,
 .aguia-spacing-level-1 th {
     padding: 0.6em !important;
@@ -66,7 +48,7 @@
     padding: 1.2em !important;
 }
 
-/* Aplicação de espaçamento em elementos de lista (estilo Hand Talk) */
+/* Aplicação de espaçamento em elementos de lista */
 .aguia-spacing-level-1 ul,
 .aguia-spacing-level-1 ol {
     padding-left: 1.8em !important;
@@ -100,7 +82,7 @@
     margin-bottom: 1.1em !important;
 }
 
-/* Espaçamento em cards e boxes (estilo Hand Talk) */
+/* Espaçamento em cards e boxes */
 .aguia-spacing-level-1 .card,
 .aguia-spacing-level-1 .box,
 .aguia-spacing-level-1 .section {
@@ -122,7 +104,7 @@
     padding: 1.8em !important;
 }
 
-/* Ajustes específicos para ambiente Moodle (estilo Hand Talk) */
+/* Ajustes específicos para ambiente Moodle */
 .aguia-spacing-level-1 .activity,
 .aguia-spacing-level-1 .block {
     padding: 0.8em !important;
@@ -141,7 +123,7 @@
     margin-bottom: 2.5em !important;
 }
 
-/* Estilos adicionais inspirados no Hand Talk para melhorar a legibilidade */
+/* Estilos adicionais para melhorar a legibilidade */
 .aguia-spacing-level-1 {
     --spacing-content-gap: 1.2rem !important;
 }

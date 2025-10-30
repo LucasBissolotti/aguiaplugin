@@ -15,7 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * External function to save user accessibility preferences
+ * Função externa para salvar preferências de acessibilidade do usuário
+ *
+ * Implementa o webservice que recebe as preferências e as persiste usando
+ * a API de domínio (`ApiPreferencias`). Mantém descrições em inglês nas
+ * declarações de parâmetros por compatibilidade com o Moodle externallib.
  *
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -34,6 +38,10 @@ use external_single_structure;
 use external_value;
 
 class save_preferences extends external_api {
+    /**
+     * Parâmetros aceitos pelo webservice (com valores padrão quando aplicável).
+     * @return external_function_parameters
+     */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
             'fontsize' => new external_value(PARAM_INT, 'Font size percentage', VALUE_DEFAULT, 100),
@@ -46,6 +54,10 @@ class save_preferences extends external_api {
         ]);
     }
 
+    /**
+     * Estrutura de retorno do webservice (status e mensagem).
+     * @return external_single_structure
+     */
     public static function execute_returns(): external_single_structure {
         return new external_single_structure([
             'success' => new external_value(PARAM_BOOL, 'Operation status'),
@@ -53,11 +65,17 @@ class save_preferences extends external_api {
         ]);
     }
 
+    /**
+     * Executa o salvamento das preferências do usuário.
+     * Verifica permissões e invoca a API de domínio para persistência.
+     *
+     * @return array Resultado com 'success' e 'message'.
+     */
     public static function execute($fontsize = 100, $contrast = 'normal', $readablefonts = 0,
                                   $linespacing = 100, $speech = 0, $texthelper = 0, $colorblind = 'none'): array {
         $context = \context_system::instance();
         self::validate_context($context);
-        // Basic capability for editing own preferences/profile.
+        // Capability mínima para editar o próprio perfil/preferências.
         require_capability('moodle/user:editownprofile', $context);
 
         $preferences = (object) [

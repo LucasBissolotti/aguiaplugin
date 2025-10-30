@@ -6,7 +6,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/* CORREÇÕES PARA OS BOTÕES COM PROBLEMAS DE CONSISTÊNCIA */
+/**
+ * @module     local_aguiaplugin/correcao_icones_final
+ */
 
 /* Aumentar Texto */
 #aguiaIncreaseFontBtn .icon svg *,
@@ -135,11 +137,8 @@
 }
 
 /* Destacar Links */
-/* Exceção: o ícone de Destacar Links usa máscara com recorte; manter apenas o preenchimento preto do retângulo via inline style
-   e permitir que o currentColor do SVG defina a cor do recorte (sem forçar fill/stroke aqui). */
-/* Removido o forçamento de fill/stroke para este ícone específico. */
+/* Exceção: o ícone de Destacar Links usa máscara com recorte; manter apenas o preenchimento preto do retângulo via inline style */
 
-/* Destacar Cabeçalhos */
 /* Destacar Cabeçalhos - sempre preto, independente do estado */
 #aguiaEmphasizeHeadingsBtn .icon svg *,
 #aguiaEmphasizeHeadingsBtn:hover .icon svg *,
@@ -162,7 +161,7 @@
     animation: none !important;
 }
 
-/* Destacar Links: manter traço sem preenchimento (compatível com a nova corrente diagonal) */
+/* Destacar Links: manter traço sem preenchimento */
 #aguiaEmphasizeLinksBtn .icon svg rect,
 #aguiaEmphasizeLinksBtn:hover .icon svg rect,
 #aguiaEmphasizeLinksBtn.active .icon svg rect,
@@ -191,7 +190,7 @@
     height: 68px !important;
 }
 
-/* Afinar o risco horizontal do ícone (sobrepõe stroke dos rects) */
+/* Afinar o risco horizontal do ícone */
 #aguiaEmphasizeLinksBtn .icon svg line {
     stroke-width: 1.2px !important;
 }

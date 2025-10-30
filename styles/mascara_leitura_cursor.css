@@ -1,4 +1,17 @@
-/* Estilos para a máscara de leitura e cursor personalizado */
+/*
+ * AguiaPlugin — Máscara de leitura e cursor
+ *
+ * Descrição:
+ *   Regras para máscara de leitura (horizontal/vertical) e cursor personalizado,
+ *   incluindo níveis, overlays e cursores ampliados que melhoram o foco de leitura.
+ *
+ * Observações:
+ *   - Mantém o comportamento funcional existente; apenas padroniza a documentação
+ *     em pt-BR e adiciona @module/@license.
+ *
+ * @module styles/mascara_leitura_cursor.css
+ * @license GNU GPL v3 or later
+ */
 
 /* Estilo para a máscara de leitura */
 /* Máscara horizontal: área normal acompanha o cursor, resto mais escuro */

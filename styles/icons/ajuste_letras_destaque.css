@@ -1,11 +1,16 @@
 /**
  * Estilos específicos para corrigir o ícone "Letras Destacadas"
+/**
+ * AguiaPlugin — Ajuste do ícone Letras Destaque
  *
+ * Descrição:
+ *   Normaliza o ícone relacionado às letras destacadas, mantendo tamanho,
+ *   alinhamento e garantindo ausência de transformações inesperadas.
+ *
+ * @module styles/icons/ajuste_letras_destaque.css
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-/* Resetar estilos padrão do ícone */
 #aguiaHighlightedLettersBtn .icon {
     position: static !important;
     display: flex !important;

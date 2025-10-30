@@ -2,8 +2,15 @@
  * Função para inicializar os modos de daltonismo a partir do localStorage
  * Suporta múltiplos modos simultâneos
  *
+ * @module     local_aguiaplugin/inicializar_daltonismo
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+/**
+ * Inicializa os modos de daltonismo a partir do armazenamento local.
+ * Recupera modos previamente salvos (compatível com formato legado) e aplica
+ * filtros visuais adequados, além de atualizar a interface do painel.
+ * @returns {void}
  */
 function initializeColorblindModes() {
     // Tenta recuperar os modos salvos no localStorage

@@ -15,22 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Sistema de armazenamento de preferências baseado em arquivo
- * Usado como fallback quando o banco de dados não está disponível
+ * Armazenamento de preferências em arquivos (fallback)
+ *
+ * Quando o plugin não estiver rodando dentro de um Moodle funcional, ou quando
+ * o acesso ao banco de dados não estiver disponível, este módulo fornece um
+ * mecanismo simples baseado em JSON por usuário no diretório `local_aguiaplugin/data`.
  *
  * @package    local_aguiaplugin
  * @copyright  2025 AGUIA
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// Verificamos se estamos sendo chamados diretamente ou através do Moodle
+// Caso chamado fora do Moodle define MOODLE_INTERNAL para false.
 if (!defined('MOODLE_INTERNAL')) {
     define('MOODLE_INTERNAL', false);
 }
 
 /**
- * Salva as preferências do usuário em um arquivo JSON
- * 
+ * Salva as preferências do usuário em um arquivo JSON.
+ *
  * @param int $userid ID do usuário
  * @param array $preferences Array associativo com as preferências
  * @return bool True se salvou com sucesso
@@ -61,8 +64,8 @@ function aguia_salvar_preferencias_arquivo($userid, $preferences) {
 }
 
 /**
- * Carrega as preferências do usuário de um arquivo JSON
- * 
+ * Carrega as preferências do usuário de um arquivo JSON.
+ *
  * @param int $userid ID do usuário
  * @return array|null Array associativo com as preferências ou null se não existir
  */
@@ -87,8 +90,8 @@ function aguia_obter_preferencias_arquivo($userid) {
 }
 
 /**
- * Atualiza uma preferência específica no arquivo JSON
- * 
+ * Atualiza uma preferência específica no arquivo JSON.
+ *
  * @param int $userid ID do usuário
  * @param string $key Nome da preferência
  * @param mixed $value Valor da preferência

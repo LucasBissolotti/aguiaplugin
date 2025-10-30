@@ -1,5 +1,12 @@
 <?php
-// Endpoint para salvar preferência – versão unificada (pt-BR)
+/**
+ * Endpoint unificado para salvar uma preferência via AJAX
+ *
+ * Recebe JSON no corpo com os campos: { preference: string, value: mixed, sesskey?: string }
+ * Tenta persistir usando o Moodle (quando disponível) e, se falhar, utiliza o
+ * fallback por arquivos definido em `preferences/armazenamento_arquivos.php`.
+ */
+
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', dirname(__FILE__) . '/../../aguia_error.log');
@@ -17,7 +24,7 @@ if (!$data || empty($data['preference']) || !array_key_exists('value', $data)) {
 require_once(__DIR__ . '/endpoints_core.php');
 $env = aguia_boot_environment();
 
-// Validar sesskey se fornecida e Moodle disponível (mantém fallback em arquivo se falhar)
+// Se estamos rodando dentro do Moodle, tenta validar sesskey quando provida.
 if (!empty($env['moodle'])) {
     $sesskey = isset($_GET['sesskey']) ? $_GET['sesskey'] : (isset($data['sesskey']) ? $data['sesskey'] : null);
     if ($sesskey && empty($_REQUEST['sesskey'])) {

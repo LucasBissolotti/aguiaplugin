@@ -1,11 +1,16 @@
 /**
  * Estilos específicos para corrigir o ícone "Espaçamento de Letras"
+/**
+ * AguiaPlugin — Ajuste do ícone Espaçamento entre Letras
  *
+ * Descrição:
+ *   Normaliza a aparência do ícone de espaçamento entre letras para garantir
+ *   consistência de tamanho, alinhamento e ausência de efeitos indesejados.
+ *
+ * @module styles/icons/ajuste_icone_espacamento_letras.css
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-/* Resetar estilos padrão do ícone */
 #aguiaLetterSpacingBtn .icon {
     position: static !important;
     display: flex !important;

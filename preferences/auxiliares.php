@@ -15,8 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * API helpers para o AGUIA plugin
- * 
+ * Funções auxiliares do plugin AGUIA
+ *
+ * Contém helpers para logging, formatação de preferências e verificações
+ * de configuração. Comentários padronizados em pt-BR.
+ *
  * @package    local_aguiaplugin
  * @copyright  2025 AGUIA
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,7 +28,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Indica se o log de depuração do plugin está habilitado via configuração.
+ * Verifica se o log de depuração do plugin está habilitado nas configurações.
  * @return bool
  */
 function aguia_is_debug_enabled(): bool {
@@ -37,10 +40,10 @@ function aguia_is_debug_enabled(): bool {
 }
 
 /**
- * Adiciona logs de debug para diagnóstico do plugin AGUIA
+ * Registra mensagens de depuração quando explicitamente habilitado.
  *
- * @param string
- * @param string|array
+ * @param string $message Mensagem descritiva
+ * @param mixed $data Dados adicionais (string/array/object)
  */
 function aguia_debug_log($message, $data = null) {
     // Só registra quando a configuração do plugin estiver explicitamente habilitada.
@@ -55,8 +58,11 @@ function aguia_debug_log($message, $data = null) {
 }
 
 /**
- * Formata o valor de uma preferência para o formato correto do banco de dados
- * 
+ * Formata o valor de uma preferência para o formato correto do banco de dados.
+ *
+ * Converte tipos conhecidos (inteiro, booleano) e validador para o caso de
+ * preferências específicas (ex.: daltonismo).
+ *
  * @param string $preference Nome da preferência
  * @param mixed $value Valor da preferência
  * @return mixed Valor formatado para o banco de dados

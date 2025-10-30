@@ -1,11 +1,16 @@
 /**
  * Estilos específicos para corrigir o ícone "Cursor Grande"
+/**
+ * AguiaPlugin — Correção do cursor personalizado (ícone)
  *
+ * Descrição:
+ *   Regras para garantir que o ícone do cursor personalizado seja aplicado
+ *   corretamente e mantenha proporções quando usado em diferentes elementos.
+ *
+ * @module styles/icons/correcao_cursor_personalizado.css
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-/* Resetar estilos padrão do ícone */
 #aguiaCustomCursorBtn .icon {
     position: static !important;
     display: flex !important;

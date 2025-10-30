@@ -1,4 +1,14 @@
 <?php
+/**
+ * Núcleo dos endpoints AJAX do plugin AGUIA
+ *
+ * Aqui ficam helpers que inicializam o ambiente (tenta detectar Moodle),
+ * logging condicional, e funções que montam os resultados de GET/POST para as
+ * preferências, com fallback para armazenamento em arquivo.
+ *
+ * Comentários padronizados em pt-BR; preserva a lógica existente.
+ */
+
 defined('MOODLE_INTERNAL') || define('MOODLE_INTERNAL', false);
 
 if (!function_exists('aguia_log_error')) {
@@ -45,6 +55,10 @@ if (!function_exists('aguia_find_moodle_config')) {
 }
 
 /**
+ * Inicializa o ambiente do endpoint: detecta se existe um Moodle no caminho
+ * esperado, carrega config.php quando possível e retorna informações úteis
+ * (se está rodando dentro do Moodle, id do usuário e se está autenticado).
+ *
  * @return array{moodle:bool, userid:int, authenticated:bool}
  */
 function aguia_boot_environment() {
@@ -107,7 +121,10 @@ function aguia_boot_environment() {
 }
 
 /**
- * Monta o resultado de GET de preferências (db -> file -> defaults).
+ * Monta o resultado de GET de preferências (ordem de prioridade: DB -> arquivo -> defaults).
+ *
+ * @param array $env Resultado de `aguia_boot_environment()`.
+ * @return array Resultado com sucesso, preferências e origem.
  */
 function aguia_get_preferences_result(array $env) {
     $default = [
@@ -174,7 +191,12 @@ function aguia_get_preferences_result(array $env) {
 }
 
 /**
- * Processa salvamento de uma preferência específica com fallback.
+ * Processa salvamento de uma preferência específica com fallback para arquivo.
+ *
+ * @param array $env Ambiente retornado por `aguia_boot_environment()`
+ * @param string $preference Nome da preferência
+ * @param mixed $value Valor a ser salvo
+ * @return array Resultado padronizado com status e mensagem
  */
 function aguia_save_preference_result(array $env, $preference, $value) {
     $userid = (int)$env['userid'];

@@ -1,6 +1,11 @@
 /**
- * Estilos específicos para corrigir o ícone "Texto para Fala"
+ * AguiaPlugin — Ajuste do ícone Texto para Fala
  *
+ * Descrição:
+ *   Regras CSS para manter o ícone de Texto para Fala consistente em tamanho
+ *   e contorno, evitando preenchimentos indesejados que prejudiquem leitura.
+ *
+ * @module styles/icons/ajuste_texto_para_fala.css
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

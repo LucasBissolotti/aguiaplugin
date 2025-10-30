@@ -15,7 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Domain API to manage accessibility preferences
+ * API de domínio para gerenciamento de preferências de acessibilidade
+ *
+ * Esta classe fornece métodos estáticos para ler, salvar e converter as
+ * preferências de acessibilidade dos usuários entre a representação do banco
+ * de dados e a forma consumida pelo frontend (JavaScript).
+ *
+ * Comentários padronizados em pt-BR; mantém compatibilidade com chaves legadas.
  *
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,6 +32,12 @@ namespace local_aguiaplugin\preferences;
 defined('MOODLE_INTERNAL') || die();
 
 class ApiPreferencias {
+    /**
+     * Retorna as preferências do usuário (ou valores padrão se não existir registro).
+     *
+     * @param int|null $usuarioid ID do usuário; por padrão usa o usuário atual.
+     * @return stdClass Objeto com os campos de preferência.
+     */
     public static function buscar_preferencias_usuario($usuarioid = null) {
         global $USER, $DB;
         if ($usuarioid === null) {
@@ -60,6 +72,16 @@ class ApiPreferencias {
         return $defaults;
     }
 
+    /**
+     * Salva as preferências do usuário no banco, suportando chaves legadas.
+     *
+     * Converte nomes de propriedades antigos para os novos campos do banco
+     * e insere/atualiza o registro correspondente.
+     *
+     * @param object $preferencias Objeto (decodificado JSON) com preferências.
+     * @param int|null $usuarioid ID do usuário; por padrão usa o usuário atual.
+     * @return bool|int true/insert id ou resultado do update dependendo do caso.
+     */
     public static function salvar_preferencias_usuario($preferencias, $usuarioid = null) {
         global $USER, $DB;
         if ($usuarioid === null) {
@@ -68,7 +90,7 @@ class ApiPreferencias {
         $existing = $DB->get_record('local_aguiaplugin_prefs', ['usuarioid' => $usuarioid]);
         $registro = new \stdClass();
         $registro->usuarioid = $usuarioid;
-        // Map legacy and new keys.
+        // Mapeia chaves legadas (ex.: english keys) para os campos atuais do BD.
         $registro->tamanho_fonte = isset($preferencias->tamanho_fonte) ? (int)$preferencias->tamanho_fonte : (isset($preferencias->fontsize) ? (int)$preferencias->fontsize : 100);
         $registro->contraste = isset($preferencias->contraste) ? $preferencias->contraste : (isset($preferencias->contrast) ? ($preferencias->contrast === 'high' ? 'alto' : 'normal') : 'normal');
         $registro->fontes_legiveis = isset($preferencias->fontes_legiveis) ? (int)$preferencias->fontes_legiveis : (isset($preferencias->readablefonts) ? (int)$preferencias->readablefonts : 0);
@@ -81,12 +103,12 @@ class ApiPreferencias {
         $registro->espaco_letras = isset($preferencias->espaco_letras) ? (int)$preferencias->espaco_letras : (isset($preferencias->letterSpacing) ? (int)$preferencias->letterSpacing : 0);
         $registro->destaque_links = isset($preferencias->destaque_links) ? (int)$preferencias->destaque_links : (isset($preferencias->emphasizeLinks) ? (int)$preferencias->emphasizeLinks : 0);
         $registro->destaque_cabecalho = isset($preferencias->destaque_cabecalho) ? (int)$preferencias->destaque_cabecalho : (isset($preferencias->headerHighlight) ? (int)$preferencias->headerHighlight : 0);
-    $registro->destaque_letras = isset($preferencias->destaque_letras) ? (int)$preferencias->destaque_letras : (isset($preferencias->highlightedLetters) ? (int)$preferencias->highlightedLetters : 0);
+        $registro->destaque_letras = isset($preferencias->destaque_letras) ? (int)$preferencias->destaque_letras : (isset($preferencias->highlightedLetters) ? (int)$preferencias->highlightedLetters : 0);
         $registro->mascara_leitura_modo = isset($preferencias->mascara_leitura_modo) ? (int)$preferencias->mascara_leitura_modo : (isset($preferencias->readingMaskMode) ? (int)$preferencias->readingMaskMode : 0);
         $registro->mascara_horizontal_nivel = isset($preferencias->mascara_horizontal_nivel) ? (int)$preferencias->mascara_horizontal_nivel : (isset($preferencias->horizontalMaskLevel) ? (int)$preferencias->horizontalMaskLevel : 0);
         $registro->mascara_vertical_nivel = isset($preferencias->mascara_vertical_nivel) ? (int)$preferencias->mascara_vertical_nivel : (isset($preferencias->verticalMaskLevel) ? (int)$preferencias->verticalMaskLevel : 0);
         $registro->cursor_personalizado = isset($preferencias->cursor_personalizado) ? (int)$preferencias->cursor_personalizado : (isset($preferencias->customCursor) ? (int)$preferencias->customCursor : 0);
-    $registro->reduzir_animacoes = isset($preferencias->reduzir_animacoes) ? (int)$preferencias->reduzir_animacoes : (isset($preferencias->reduceAnimations) ? ($preferencias->reduceAnimations ? 1 : 0) : 0);
+        $registro->reduzir_animacoes = isset($preferencias->reduzir_animacoes) ? (int)$preferencias->reduzir_animacoes : (isset($preferencias->reduceAnimations) ? ($preferencias->reduceAnimations ? 1 : 0) : 0);
         $registro->modificado_em = time();
 
         if ($existing) {
@@ -96,6 +118,12 @@ class ApiPreferencias {
         return (bool)$DB->insert_record('local_aguiaplugin_prefs', $registro);
     }
 
+    /**
+     * Converte um registro do banco para o formato consumido pelo JavaScript.
+     *
+     * @param object $preferenciasBanco Registro do BD (stdClass)
+     * @return array Array associativo com chaves no formato esperado pelo frontend.
+     */
     public static function converter_banco_para_js($preferenciasBanco) {
         return [
             'fontSize' => (int) ($preferenciasBanco->tamanho_fonte ?? 100),
@@ -113,13 +141,23 @@ class ApiPreferencias {
             'readingMaskMode' => (int) ($preferenciasBanco->mascara_leitura_modo ?? 0),
             'horizontalMaskLevel' => (int) ($preferenciasBanco->mascara_horizontal_nivel ?? 0),
             'verticalMaskLevel' => (int) ($preferenciasBanco->mascara_vertical_nivel ?? 0),
-            'customCursor' => (bool) ($preferenciasBanco->cursor_personalizado ?? 0)
-            ,
+            'customCursor' => (bool) ($preferenciasBanco->cursor_personalizado ?? 0),
             'highlightedLetters' => (int) ($preferenciasBanco->destaque_letras ?? 0),
             'reduceAnimations' => (bool) ($preferenciasBanco->reduzir_animacoes ?? 0)
         ];
     }
 
+    /**
+     * Atualiza um campo de preferência no objeto de preferências em memória.
+     *
+     * Aceita chaves vindas do frontend (ex.: 'fontSize', 'highContrast') e
+     * atualiza os campos correspondentes do objeto que será persistido.
+     *
+     * @param string $preferencia Nome da preferência (formato frontend).
+     * @param mixed $valor Valor informado.
+     * @param object $preferenciasBanco Objeto com as preferências que será modificado.
+     * @return object Objeto $preferenciasBanco atualizado.
+     */
     public static function atualizar_preferencia($preferencia, $valor, $preferenciasBanco) {
         if (function_exists('aguia_format_preference_value')) {
             $valor = aguia_format_preference_value($preferencia, $valor);
@@ -188,6 +226,12 @@ class ApiPreferencias {
         return $preferenciasBanco;
     }
 
+    /**
+     * Converte percentual de espaçamento em um índice (0..3) usado pelo frontend.
+     *
+     * @param int $percentual Valor percentual (ex.: 100, 150, 200, 250)
+     * @return int Índice de espaçamento (0 = padrão, 1..3 correspondem a valores maiores)
+     */
     public static function obter_nivel_espacamento_linha($percentual) {
         if ($percentual >= 250) { return 3; }
         if ($percentual >= 200) { return 2; }

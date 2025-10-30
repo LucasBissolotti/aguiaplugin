@@ -1,6 +1,11 @@
 /**
- * Estilos unificados para todos os ícones do plugin AGUIA
+ * AguiaPlugin — Ícones unificados
  *
+ * Descrição:
+ *   Regras base e específicas para unificar aparência e dimensões dos ícones
+ *   usados pelo plugin, removendo transformações e garantindo consistência.
+ *
+ * @module styles/icons/icones_unificados.css
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

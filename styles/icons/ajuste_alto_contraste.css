@@ -1,6 +1,11 @@
 /**
- * Estilos específicos para corrigir o ícone "Alto Contraste"
+ * AguiaPlugin — Ajuste do ícone Alto Contraste
  *
+ * Descrição:
+ *   Regras CSS que garantem renderização consistente do ícone "Alto Contraste"
+ *   (tamanho, preenchimento e remoção de elementos sobrepostos).
+ *
+ * @module styles/icons/ajuste_alto_contraste.css
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

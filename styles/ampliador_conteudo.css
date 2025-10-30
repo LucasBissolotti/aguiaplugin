@@ -1,12 +1,15 @@
 /**
  * Estilos para a lupa de conteúdo do plugin AGUIA
- * Inspirada na funcionalidade do site Hand Talk
  * 
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * 
  * @note: Os estilos para ocultar o botão da lupa standalone foram incorporados no arquivo 
  * styles/icons/ajuste_icone_ampliador.css
+ */
+
+/**
+ * @module     local_aguiaplugin/ampliador_conteudo
  */
 
 /* Estilo base para o elemento da lupa */

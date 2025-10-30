@@ -6,6 +6,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/**
+ * @module     local_aguiaplugin/letras_destaque
+ */
+
 // Importando a variável do arquivo principal de acessibilidade
 // Evita duplicação de variáveis globais
 // highlightedLettersLevel é declarada em acessibilidade_wcag.js
@@ -20,8 +24,10 @@ const specialChars = ['.', ',', ';', ':', '!', '?', '-', '–', '—', '(', ')',
 const vowels = ['a', 'e', 'i', 'o', 'u', 'á', 'à', 'â', 'ã', 'é', 'ê', 'í', 'ó', 'ô', 'õ', 'ú', 'ü'];
 
 /**
- * Função principal para ativar/desativar o destaque de letras
- * Simplificado para apenas alternar entre ativado e desativado
+ * Ativa ou desativa o destaque de letras no escopo da página.
+ * Atualiza variável global `highlightedLettersLevel`, aplica/removem classes
+ * CSS e salva a preferência do usuário quando possível.
+ * @returns {void}
  */
 function toggleHighlightedLetters() {
     try {
@@ -79,8 +85,6 @@ function applyLetterHighlighting(level) {
     // Não precisamos fazer nada programaticamente, já que estamos usando apenas CSS para aplicar negrito
     // Os estilos CSS já aplicam o font-weight de acordo com o nível
     console.log(`Aplicando letras destacadas nível ${level} - apenas negrito`);
-    
-    // Não precisa de processamento de elementos individuais, pois o CSS já aplica o estilo globalmente
 }
 
 /**
@@ -92,16 +96,11 @@ function removeAllLetterHighlighting() {
     console.log("Removendo letras destacadas");
 }
 
-// Removemos as funções de destaque de letras individuais, pois estamos usando apenas negrito aplicado via CSS
-
-// Removemos as funções de processamento de HTML e observador do DOM, 
-// pois estamos usando apenas CSS para aplicar o negrito ao texto
-// Não precisamos mais manipular o DOM diretamente
-
 /**
- * Carrega as preferências do usuário para o destaque de letras
- * Esta função deve ser chamada durante a inicialização
- * Simplificado para aplicar apenas negrito
+ * Carrega a preferência do usuário para letras destacadas e aplica o
+ * estado correspondente no DOM (adiciona classes CSS quando necessário).
+ * Deve ser chamada na inicialização do plugin.
+ * @returns {void}
  */
 function loadHighlightedLettersPreference() {
     try {
@@ -162,5 +161,3 @@ function getStoredPreference(key) {
     }
     return undefined;
 }
-
-// Removemos os estilos dinâmicos, pois estamos usando apenas CSS para aplicar negrito

@@ -1,11 +1,16 @@
 /**
  * Estilos específicos para corrigir o ícone "Intensidade das Cores"
+/**
+ * AguiaPlugin — Ajuste do ícone Intensidade de Cores
  *
+ * Descrição:
+ *   Regras que padronizam o ícone de intensidade de cores para garantir
+ *   contraste e tamanho consistentes entre estados.
+ *
+ * @module styles/icons/ajuste_intensidade_cor.css
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-/* Resetar estilos padrão do ícone */
 #aguiaColorIntensityBtn .icon {
     position: static !important;
     display: flex !important;

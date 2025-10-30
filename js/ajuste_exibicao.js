@@ -6,8 +6,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/**
+ * @module     local_aguiaplugin/ajuste_exibicao
+ */
+
 (function() {
-    // Função para remover elementos indesejados que estão aparecendo na tela
+    /**
+     * Remove elementos indesejados que estão aparecendo na tela.
+     * Limpa nós de texto soltos e containers sem id/class que contenham
+     * textos como "Ferramentas de Acessibilidade" ou "Lupa de Conteúdo".
+     * Chamado em DOMContentLoaded e load para reforçar a limpeza.
+     * @returns {void}
+     */
     function removeUnwantedElements() {
         // Busca por elementos de texto sem container adequado
         const bodyChildren = document.body.childNodes;

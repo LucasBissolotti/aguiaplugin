@@ -197,6 +197,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
 
+    /**
+     * Alterna o modo de interpretação de imagens (Image Interpreter).
+     * Quando ativado, o usuário pode clicar em imagens para obter uma descrição
+     * (se houver integração com um serviço de interpretação). Atualiza botões
+     * de interface, anexa/remova listeners e salva a preferência do usuário.
+     * @returns {void}
+     */
     // Alterna o modo de interpretação de imagens
     function toggleImageInterpreter() {
         imageInterpreterEnabled = !imageInterpreterEnabled;
@@ -210,9 +217,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Mostrar mensagem de status e salvar preferência como as demais funcionalidades
         try {
-            if (imageInterpreterEnabled) {
+                if (imageInterpreterEnabled) {
                 attachImageListeners();
-                // Inform the user they must click an image to get a description
+                // Informa ao usuário que é necessário clicar em uma imagem para obter a descrição
                 showStatusMessage('Interpretação de imagens ativada — clique em qualquer imagem para obter a descrição', 'success');
             } else {
                 detachImageListeners();
@@ -226,6 +233,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handlers e utilitários para interpretação de imagens
     let _aguiaImageHandler = null;
 
+    /**
+     * Anexa listeners de clique em imagens dentro do escopo AGUIA para permitir
+     * a interpretação ao clique. Remove listeners anteriores antes de adicionar
+     * para evitar duplicidade. O handler é armazenado em `_aguiaImageHandler`.
+     * @returns {void}
+     */
     function attachImageListeners() {
         try {
             const scope = window.AGUIA_SCOPE || document.body;
@@ -297,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     form.append('imageUrl', imageUrl);
                 }
 
-                const endpoint = (typeof M !== 'undefined' && M.cfg && M.cfg.wwwroot) ? (M.cfg.wwwroot + '/local/aguiaplugin/preferences/interpret_image.php') : '/local/aguiaplugin/preferences/interpret_image.php';
+                const endpoint = (typeof M !== 'undefined' && M.cfg && M.cfg.wwwroot) ? (M.cfg.wwwroot + '/local/aguiaplugin/preferences/interpretar_imagens.php') : '/local/aguiaplugin/preferences/interpretar_imagens.php';
                 const resp = await fetch(endpoint, { method: 'POST', body: form, credentials: 'same-origin' });
                 if (!resp.ok) {
                     const txt = await resp.text();
@@ -1659,10 +1672,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Aplica a classe ao corpo do documento
         if (highContrastEnabled) {
             AGUIA_SCOPE.classList.add('aguia-high-contrast');
-            showStatusMessage('Alto contraste melhorado ativado', 'success');
+            showStatusMessage('Alto contraste ativado', 'success');
         } else {
             AGUIA_SCOPE.classList.remove('aguia-high-contrast');
-            showStatusMessage('Alto contraste melhorado desativado');
+            showStatusMessage('Alto contraste desativado');
         }
         
         // Salva preferência

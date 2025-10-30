@@ -1,19 +1,30 @@
 /**
  * Script adicional para garantir que o botão da lupa funcione independentemente
  * Implementação da lupa de conteúdo para o plugin AGUIA
- * Inspirada na funcionalidade da Hand Talk
  * 
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// Função auto-executável para evitar conflitos com outras bibliotecas
+/*
+ * @module     local_aguiaplugin/ampliador_autonomo
+ */
+
+/**
+ * Responsável por criar o botão e a lupa standalone.
+ */
 (function() {
     // Definições de constantes
     const STORAGE_KEY = 'aguia_magnifier_enabled';
     const BUTTON_ID = 'aguia-magnifier-standalone-button';
     const MAGNIFIER_ID = 'aguia-standalone-magnifier';
     
+    /**
+     * Cria o elemento da lupa no DOM se ainda não existir.
+     * Retorna o elemento criado ou o existente.
+     *
+     * @returns {HTMLElement|null} Elemento da lupa ou null se não for possível criá-lo
+     */
     // Criar o elemento da lupa
     function createMagnifier() {
         // Verificar se já existe
@@ -39,6 +50,13 @@
         return magnifier;
     }
     
+    /**
+     * Cria o botão flutuante da lupa (standalone). O botão é inserido no
+     * documento mas fica invisível por padrão para preservar funcionalidade
+     * sem afetar a interface visual.
+     *
+     * @returns {HTMLButtonElement} O botão criado
+     */
     // Criar o botão flutuante da lupa
     function createButton() {
         // Verificar se já existe ou se deve ser ocultado
@@ -58,7 +76,7 @@
         button.style.opacity = '0'; // Completamente transparente
         button.style.pointerEvents = 'none'; // Não interceptar eventos
         
-        // Ícone de lupa (mantido para preservar a estrutura do código)
+        // Ícone de lupa
         button.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5l-1.5 1.5l-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16A6.5 6.5 0 0 1 3 9.5A6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14S14 12 14 9.5S12 5 9.5 5Z"/>
@@ -73,12 +91,18 @@
             scope.classList.add('aguia-magnifier-active');
         }
         
-        // Adicionar ao body (mesmo oculto para preservar a funcionalidade)
+        // Adicionar ao body
         document.body.appendChild(button);
         
         return button;
     }
     
+    /**
+     * Alterna o estado da lupa (ativa/inativa) atualizando classes no
+     * escopo do AGUIA e persistindo o estado em localStorage.
+     * @param {HTMLElement} button Elemento botão que controla a lupa
+     * @returns {void}
+     */
     // Alternar o estado da lupa
     function toggleMagnifier(button) {
         const isActive = button.classList.contains('active');
@@ -102,6 +126,15 @@
         }
     }
     
+    /**
+     * Dado um elemento apontado (por exemplo, um nó clicado), procura o
+     * elemento que contém o texto mais relevante nas proximidades. Evita
+     * elementos não relevantes (scripts, estilos, pre/code) e retorna o
+     * elemento que melhor representa conteúdo legível.
+     *
+     * @param {Element} element Elemento de partida
+     * @returns {Element|null} Elemento de texto encontrado ou null
+     */
     // Encontrar o elemento de texto relevante mais próximo
     function findTextElement(element) {
         // Lista de tags que geralmente contêm conteúdo de texto legível
@@ -209,6 +242,14 @@
         return textElement || element;
     }
     
+    /**
+     * Limpa uma string de texto removendo trechos de CSS/estrutura que podem
+     * aparecer como ruído (linhas, declarações de estilo) e limita o
+     * comprimento para exibição na lupa.
+     *
+     * @param {string} text Texto bruto
+     * @returns {string} Texto limpo
+     */
     // Limpar o texto para remover apenas as linhas azuis estruturais
     function cleanupText(text) {
         // Remover linhas vazias e espaços extras

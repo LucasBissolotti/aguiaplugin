@@ -1,8 +1,14 @@
 /**
- * Estilos para a funcionalidade de letras destacadas
- * Inspirado no Hand Talk e adaptado para o plugin AGUIA
- * Simplificado para aplicar apenas negrito ao texto
+ * AguiaPlugin — Letras Destacadas
  *
+ * Descrição:
+ *   Estilos que aplicam destaque tipográfico (negrito) em elementos quando a
+ *   funcionalidade de letras destacadas está ativa, melhorando a legibilidade.
+ *
+ * Observações:
+ *   Baseado em adaptações do Hand Talk; mantido simples (apenas peso de fonte).
+ *
+ * @module styles/letras_destaque.css
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

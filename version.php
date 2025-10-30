@@ -15,7 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Versão do plugin AGUIA
+ * Informações de versão do plugin AGUIA
+ *
+ * Define meta-dados que o instalador/upgrade do Moodle usa para validar e
+ * instalar este plugin. Mantém o cabeçalho de licença padrão do Moodle.
  *
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -24,7 +27,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_aguiaplugin';
-$plugin->version = 2025101505;  // Data e versão (YYYYMMDD00)
-$plugin->requires = 2022041900;  // Versão mínima (4.0)
+$plugin->version = 2025101505;  // Formato: YYYYMMDDXX
+$plugin->requires = 2022041900;  // Versão mínima do Moodle exigida
 $plugin->maturity = MATURITY_BETA;
 $plugin->release = 'v1.5.0';

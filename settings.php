@@ -1,10 +1,17 @@
 <?php
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Configurações do plugin AGUIA
+ *
+ * Registra as opções exibidas na página de administração do Moodle
+ * para o plugin de acessibilidade (local_aguiaplugin).
+ */
+
 if ($hassiteconfig) {
     $settings = new admin_settingpage('local_aguiaplugin_settings', get_string('settings', 'local_aguiaplugin'));
 
-    // Configuração para escolher se o plugin será ativado ou não
+    // Habilita/desabilita o plugin globalmente (chave: local_aguiaplugin/enable).
     $settings->add(new admin_setting_configcheckbox(
         'local_aguiaplugin/enable',
         get_string('enableplugin', 'local_aguiaplugin'),
@@ -12,7 +19,7 @@ if ($hassiteconfig) {
         1
     ));
 
-    // Ativar logs de depuração do plugin (controla aguia_debug_log)
+    // Ativa o registro de depuração do plugin (chave: local_aguiaplugin/debuglog).
     $settings->add(new admin_setting_configcheckbox(
         'local_aguiaplugin/debuglog',
         get_string('debuglog', 'local_aguiaplugin'),
@@ -20,14 +27,14 @@ if ($hassiteconfig) {
         0
     ));
     
-    // Informação sobre a interface de acessibilidade
+    // Cabeçalho informativo sobre a interface de acessibilidade do plugin.
     $settings->add(new admin_setting_heading(
         'local_aguiaplugin/interface_info',
         'Interface de Acessibilidade',
         'Este plugin oferece uma interface moderna e completa para melhorar a acessibilidade do seu site.'
     ));
 
-    // Configurações para integração com Gemini (Generative AI)
+    // Chave de API para integração com Gemini (campo mascarado).
     $settings->add(new admin_setting_configpasswordunmask(
         'local_aguiaplugin/gemini_api_key',
         get_string('gemini_api_key', 'local_aguiaplugin'),
@@ -35,7 +42,7 @@ if ($hassiteconfig) {
         ''
     ));
 
-    // For convenience, provide a select of known Gemini model identifiers and allow a custom value.
+    // Lista de modelos Gemini conhecidos; inclui 'custom' para inserir identificador próprio.
     $modeloptions = [
         'gemini-pro' => 'gemini-pro',
         'gemini-1.5-pro' => 'gemini-1.5-pro',
@@ -47,11 +54,12 @@ if ($hassiteconfig) {
         'gemini-2.5-flash-lite' => 'gemini-2.5-flash-lite',
         'custom' => get_string('gemini_model_option_custom', 'local_aguiaplugin')
     ];
-    // If the saved value is not present in the current options (e.g. older keys like 'models/gemini-2.5-image'),
-    // add it to the options so Moodle won't show the "Valor atual inválido" warning. Keep label clear for admins.
+
+    // Se o valor salvo não estiver nas opções atuais (ex.: chaves legadas), adiciona-o
+    // para evitar que o Moodle exiba aviso de "Valor atual inválido".
     $currentmodel = get_config('local_aguiaplugin', 'gemini_model');
     if (!empty($currentmodel) && !array_key_exists($currentmodel, $modeloptions)) {
-        // Keep the exact stored value as the key and show a friendly label indicating it's a previous value.
+        // Mantém o valor exato como chave e informa que é um valor legado no rótulo.
         $modeloptions[$currentmodel] = $currentmodel . ' (' . get_string('gemini_model_option_legacy', 'local_aguiaplugin') . ')';
     }
     $settings->add(new admin_setting_configselect(
@@ -62,7 +70,7 @@ if ($hassiteconfig) {
         $modeloptions
     ));
 
-    // Allow admins to specify an explicit custom model string when 'custom' is selected above.
+    // Campo para inserir identificador de modelo personalizado quando 'custom' for selecionado.
     $settings->add(new admin_setting_configtext(
         'local_aguiaplugin/gemini_model_custom',
         get_string('gemini_model_custom', 'local_aguiaplugin'),
@@ -71,6 +79,6 @@ if ($hassiteconfig) {
         PARAM_TEXT
     ));
 
-    // Adiciona as configurações à página de administração
+    // Registra a página de configurações no menu de administração (categoria: localplugins).
     $ADMIN->add('localplugins', $settings);
 }

@@ -1,5 +1,10 @@
 <?php
-// Endpoint para obter preferências – versão unificada (pt-BR)
+/**
+ * Endpoint unificado para obter preferências do usuário
+ *
+ * Retorna JSON com o objeto de preferências e a origem (database/file/default).
+ */
+
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set('error_log', dirname(__FILE__) . '/../../aguia_error.log');

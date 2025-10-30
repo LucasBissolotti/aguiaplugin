@@ -1,10 +1,11 @@
-/**
- * Estilos para botões de acessibilidade 
- * Estado padrão: fundo branco com texto/ícones pretos
- * Estado ativo: fundo azul com texto/ícones brancos
+/*
+ * AguiaPlugin — Estilos de botões
  *
- * @package    local_aguiaplugin
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Descrição:
+ *   Regras visuais para os botões de acessibilidade (estado padrão, hover e ativo).
+ *
+ * @module styles/estilos_botoes.css
+ * @license GNU GPL v3 or later
  */
 
 /* Estilo base para todos os botões de acessibilidade (estado padrão) */
@@ -19,7 +20,6 @@
 .aguia-option:hover {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
     border-color: #2196f3 !important;
-    /* Removido transform para não afetar posicionamento dos ícones */
 }
 
 /* Estado ativo para todos os botões - azul no fundo, ícones permanecem pretos */

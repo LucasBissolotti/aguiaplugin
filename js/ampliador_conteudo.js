@@ -1,9 +1,12 @@
 /**
  * Implementação da lupa de conteúdo para o plugin AGUIA
- * Inspirada na funcionalidade da Hand Talk
  * 
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/*
+ * @module     local_aguiaplugin/ampliador_conteudo
  */
 
 // Definindo namespace para a funcionalidade da lupa de conteúdo
@@ -39,6 +42,9 @@ const AguiaMagnifier = {
         expandFab: null
     },
     
+    /**
+     * Inicializa a lupa: cria elementos, registra eventos e aplica estado salvo.
+     */
     // Inicialização da lupa
     init: function() {
         // Verificar estado inicial
@@ -53,7 +59,7 @@ const AguiaMagnifier = {
     // Criar elementos do leitor expandido (overlay)
     this.createReaderOverlay();
         
-        // Adicionar evento de movimento do mouse (throttled via rAF)
+        // Adicionar evento de movimento do mouse
     this._pendingMouseEvent = null;
     this._pendingRaf = null;
     document.addEventListener('mousemove', this._onMouseMove.bind(this));
@@ -89,9 +95,13 @@ const AguiaMagnifier = {
         // Expor a variável AGUIA_SCOPE globalmente para uso em outros scripts
         window.AGUIA_SCOPE = aguiaScope;
         
-        console.log('AGUIA Magnifier: Lupa de conteúdo inicializada');
+    console.log('Lupa de conteúdo AGUIA inicializada');
     },
     
+    /**
+     * Retorna se a lupa estava ativada (consultando localStorage ou estado do menu).
+     * @returns {boolean}
+     */
     // Verificar se a lupa estava ativada anteriormente
     isEnabled: function() {
         const savedState = localStorage.getItem(this.config.storageKey);
@@ -103,17 +113,30 @@ const AguiaMagnifier = {
         return savedState === 'true';
     },
     
-    // Método para verificar se a lupa está ativa (para compatibilidade com acessibilidade_wcag.js)
+    /**
+     * Indica se a lupa está atualmente ativa.
+     * @returns {boolean}
+     */
+    // Método para verificar se a lupa está ativa
     isActive: function() {
         return this.state.enabled;
     },
     
+    /**
+     * Persiste o estado da lupa em localStorage e atualiza o estado interno.
+     * @param {boolean} enabled
+     */
     // Salvar o estado da lupa
     saveState: function(enabled) {
         localStorage.setItem(this.config.storageKey, enabled);
         this.state.enabled = enabled;
     },
     
+    /**
+     * Cria e insere no DOM o elemento que funciona como lupa de conteúdo e
+     * seu painel interno rolável.
+     * @returns {void}
+     */
     // Criar o elemento da lupa que será mostrado ao usuário
     createMagnifierElement: function() {
         const magnifier = document.createElement('div');
@@ -153,6 +176,10 @@ const AguiaMagnifier = {
         this.state.expandFab = fab;
     },
     
+    /**
+     * Cria o botão que ativa/desativa a lupa e o insere no painel do plugin.
+     * @returns {void}
+     */
     // Criar o botão para ativar/desativar a lupa
     createMagnifierButton: function() {
         // Verificar se o botão já existe
@@ -180,7 +207,7 @@ const AguiaMagnifier = {
             aguiaPanel = document.createElement('div');
             aguiaPanel.id = 'aguia-menu-panel';
             aguiaPanel.className = 'aguia-menu-panel';
-            aguiaPanel.style.display = 'none'; // Garantir que o painel esteja oculto inicialmente
+            aguiaPanel.style.display = 'none';
             
             // Criar o título do painel
             const panelTitle = document.createElement('h3');
@@ -221,6 +248,10 @@ const AguiaMagnifier = {
         this.state.button = magnifierButton;
     },
     
+    /**
+     * Alterna o modo da lupa (liga/desliga), atualiza classes visuais e guarda
+     * @returns {void}
+     */
     // Alternar o estado da lupa (ativar/desativar)
     toggleMagnifier: function() {
         const isActive = this.state.enabled;
@@ -262,7 +293,6 @@ const AguiaMagnifier = {
         }
     },
     
-    // Mousemove scheduling (throttle with requestAnimationFrame)
     _onMouseMove: function(e) {
         this._pendingMouseEvent = e;
         if (this._pendingRaf) return;
@@ -275,6 +305,13 @@ const AguiaMagnifier = {
         });
     },
 
+    /**
+     * Atualiza a posição e o conteúdo da lupa com base no evento de mouse.
+     * Mostra/oculta a lupa conforme o elemento alvo e popula o painel com
+     * o texto extraído do elemento mais relevante próximo ao cursor.
+     * @param {MouseEvent} e Evento de movimento do mouse
+     * @returns {void}
+     */
     // Atualizar a posição e conteúdo da lupa
     updateMagnifier: function(e) {
         // Obter o escopo do AGUIA
@@ -299,7 +336,6 @@ const AguiaMagnifier = {
         
         // Verificar se o elemento é válido para exibir a lupa
         try {
-            // if element is detached, ignore
         } catch (err) {}
 
         if (!element || 
@@ -344,7 +380,6 @@ const AguiaMagnifier = {
             }
         }
         
-        // If text empty or element too small, don't show
         const elRect = element.getBoundingClientRect();
         const area = elRect.width * elRect.height;
         if (!text || area < 400) {
@@ -402,7 +437,7 @@ const AguiaMagnifier = {
         // Verificar se o cursor está sobre a lupa
         const overMagnifier = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
         if (!overMagnifier) {
-            return; // não interfere com a rolagem da página
+            return;
         }
 
         // Checar se há conteúdo para rolar na lupa
@@ -415,7 +450,6 @@ const AguiaMagnifier = {
         // Só previne a rolagem da página se a lupa puder rolar nessa direção
         if ((scrollingDown && canScrollDown) || (!scrollingDown && canScrollUp)) {
             e.preventDefault();
-            // Ajuste de sensibilidade: usar deltaY diretamente dá sensação natural
             magnifier.scrollTop += deltaY;
         }
     },
@@ -443,7 +477,7 @@ const AguiaMagnifier = {
         
         // Não truncar: precisamos do texto completo para leitura
         
-        // Remover linhas azuis (que geralmente são delimitadores de CSS/HTML)
+        // Remover linhas azuis causadas por bordas e contornos
         cleaned = cleaned.replace(/border(-[a-z]+)?:[^;]+;/g, '');
         cleaned = cleaned.replace(/outline(-[a-z]+)?:[^;]+;/g, '');
         
@@ -500,7 +534,7 @@ const AguiaMagnifier = {
         this.state.overlayPanel = panel;
         this.state.overlayContent = content;
 
-        // Fechar com ESC e trap de foco no overlay (instalamos no próprio overlay)
+        // Fechar com ESC e trap de foco no overlay
         if (!overlay._aguiaKeyHandler) {
             overlay._aguiaKeyHandler = (e) => {
                 // Fecha com ESC
@@ -548,7 +582,6 @@ const AguiaMagnifier = {
             this.state.overlay._aguiaPreviousFocus = null;
         }
 
-        // Marcar como modal para AT
         this.state.overlay.setAttribute('aria-modal', 'true');
 
         this.state.overlayPanel.setAttribute('tabindex', '-1');
@@ -556,7 +589,6 @@ const AguiaMagnifier = {
 
         // Instalar handler de teclado no document (capturing) para garantir ESC e trap de foco
         if (this.state.overlay._aguiaKeyHandler) {
-            // store ref so we can remove later
             this.state.overlay._docKeyHandler = (e) => this.state.overlay._aguiaKeyHandler(e);
             document.addEventListener('keydown', this.state.overlay._docKeyHandler, true);
         }
@@ -574,7 +606,6 @@ const AguiaMagnifier = {
             this.state.overlay.removeAttribute('aria-modal');
         } catch (e) {}
         if (this.state.overlay._aguiaKeyHandler) {
-            // remove document-level capturing handler if installed
             try {
                 if (this.state.overlay._docKeyHandler) {
                     document.removeEventListener('keydown', this.state.overlay._docKeyHandler, true);
@@ -749,7 +780,7 @@ const AguiaMagnifier = {
         }, 1000);
     },
     
-    // Função para criar botões de opção com estilo consistente (espelho da função em accessibility_wcag.js)
+    // Função para criar botões de opção com estilo consistente
     createOptionButton: function(option) {
         const button = document.createElement('button');
         button.className = 'aguia-option';
@@ -807,7 +838,3 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Erro ao inicializar AguiaMagnifier:', e);
     }
 });
-    // (Removido código legado: função global createMagnifierButton e listeners redundantes)
-    // Esta implementação agora usa o namespace `AguiaMagnifier` e sua inicialização via `AguiaMagnifier.init()`.
-    // O código antigo que referenciava `createMagnifierButton()` e `updateMagnifier()` foi removido para evitar erros
-    // no console quando a versão atualizada do módulo está presente.

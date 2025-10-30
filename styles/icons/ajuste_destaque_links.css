@@ -1,6 +1,11 @@
 /**
- * Estilos específicos para corrigir o ícone "Destacar links"
+ * AguiaPlugin — Ajuste do ícone Destacar Links
  *
+ * Descrição:
+ *   Força estilos estáveis para o ícone "Destacar links" (tamanho, overflow,
+ *   variáveis CSS usadas pelo SVG e remoção de elementos).
+ *
+ * @module styles/icons/ajuste_destaque_links.css
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

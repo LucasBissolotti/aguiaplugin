@@ -1,11 +1,16 @@
 /**
  * Estilos específicos para corrigir o ícone "Aumentar Texto"
+/**
+ * AguiaPlugin — Ajuste do ícone Tamanho de Texto
  *
+ * Descrição:
+ *   Normaliza o ícone de tamanho de texto garantindo tamanho, alinhamento
+ *   e remoção de pseudo-elementos que possam sobrepor o SVG.
+ *
+ * @module styles/icons/ajuste_tamanho_texto.css
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-/* Resetar estilos padrão do ícone */
 #aguiaIncreaseFontBtn .icon {
     position: static !important;
     display: flex !important;

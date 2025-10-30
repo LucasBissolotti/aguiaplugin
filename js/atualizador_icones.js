@@ -1,6 +1,9 @@
 /**
  * Script para atualizar ícones no plugin AGUIA
  * Garante que os ícones SVG são aplicados corretamente
+ *
+ * @module     local_aguiaplugin/atualizador_icones
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 document.addEventListener('DOMContentLoaded', function() {
     // Aguarda o carregamento completo do DOM e do plugin AGUIA
@@ -9,8 +12,15 @@ document.addEventListener('DOMContentLoaded', function() {
         updateButtonIcons();
     }, 1000); // Espera 1 segundo após o carregamento do DOM
     
+    /**
+     * Atualiza os ícones SVG dos botões do painel AGUIA.
+     * Faz a leitura do estado salvo (ex: modo de fonte legível) e aplica
+     * o SVG correto dentro do elemento '.icon' de cada botão.
+     * Esta função é chamada após o carregamento do DOM.
+     * @returns {void}
+     */
     function updateButtonIcons() {
-        // Determinar ícone correto para Fontes Legíveis baseado no modo salvo (0/1/2)
+    // Determinar ícone correto para Fontes Legíveis baseado no modo salvo (0/1/2)
         let readableIconForMode = AguiaIcons.fontSingleA;
         try {
             const savedMode = parseInt(localStorage.getItem('fontMode') || '0', 10);
