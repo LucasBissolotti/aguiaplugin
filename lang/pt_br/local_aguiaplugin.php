@@ -68,3 +68,12 @@ $string['privacy:metadata:modificado_em'] = 'Data da última modificação nas p
 // Configurações: log de depuração
 $string['debuglog'] = 'Ativar log de depuração do plugin';
 $string['debuglog_desc'] = 'Quando ativado, o plugin registrará mensagens diagnósticas no log de erros do PHP (recomendado apenas para desenvolvimento).';
+
+$string['gemini_api_key'] = 'Chave da API Gemini';
+$string['gemini_api_key_desc'] = 'Chave de API utilizada para acessar o serviço Gemini (pode ser definida também na variável de ambiente GEMINI_API_KEY).';
+$string['gemini_model'] = 'Modelo Gemini';
+$string['gemini_model_desc'] = 'Escolha um modelo de imagem compatível do Gemini. Selecione "Outro" para informar um modelo manualmente no campo abaixo.';
+$string['gemini_model_option_custom'] = 'Outro (especificar abaixo)';
+$string['gemini_model_custom'] = 'Modelo customizado do Gemini';
+$string['gemini_model_custom_desc'] = 'Se você selecionou "Outro" acima, informe o identificador completo do modelo.';
+$string['gemini_model_option_legacy'] = 'valor anterior (mantido para compatibilidade)';

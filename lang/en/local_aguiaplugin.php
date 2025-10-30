@@ -48,6 +48,15 @@ $string['hide_images'] = 'Hide Images';
 $string['debuglog'] = 'Enable plugin debug log';
 $string['debuglog_desc'] = 'When enabled, the plugin will write diagnostic messages to the PHP error log (only recommended for development).';
 
+$string['gemini_api_key'] = 'Gemini API key';
+$string['gemini_api_key_desc'] = 'API key used to access the Gemini generative service (can also be set via the GEMINI_API_KEY environment variable).';
+$string['gemini_model'] = 'Gemini model';
+$string['gemini_model_desc'] = 'Choose a Gemini image-capable model. Select "Other" to specify a custom model string in the field below.';
+$string['gemini_model_option_custom'] = 'Other (specify below)';
+$string['gemini_model_custom'] = 'Gemini model (custom)';
+$string['gemini_model_custom_desc'] = 'If you selected "Other" above, enter the full model identifier here.';
+$string['gemini_model_option_legacy'] = 'legacy value (kept for compatibility)';
+
 // Privacy strings
 $string['privacy:metadata:table'] = 'The AGUIA plugin stores user accessibility preferences to personalize the experience.';
 $string['privacy:metadata:usuarioid'] = 'User ID the preferences belong to.';

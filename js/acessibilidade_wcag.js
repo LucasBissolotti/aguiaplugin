@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let customCursorEnabled = false; // Nova variável para controlar o cursor personalizado
     let highlightedLettersLevel = 0; // 0: desativado, 1: pequeno, 2: médio, 3: grande
     let reduceAnimationsEnabled = false; // Nova preferência: reduzir animações do plugin e do site
+    let imageInterpreterEnabled = false; // Nova funcionalidade: interpretar imagens via Gemini
     
     // Define um contêiner de escopo para aplicar os estilos de acessibilidade apenas no conteúdo da página
     function getAguiaScopeElement() {
@@ -195,6 +196,469 @@ document.addEventListener('DOMContentLoaded', function() {
             button.classList.remove('pulse');
         }, 5000);
     }
+
+    // Alterna o modo de interpretação de imagens
+    function toggleImageInterpreter() {
+        imageInterpreterEnabled = !imageInterpreterEnabled;
+        // Atualiza preferência visual (se o botão existir)
+        try {
+            const btn = document.getElementById('aguiaImageInterpreterBtn');
+            if (btn) {
+                if (imageInterpreterEnabled) btn.classList.add('active'); else btn.classList.remove('active');
+            }
+        } catch (e) {}
+
+        // Mostrar mensagem de status e salvar preferência como as demais funcionalidades
+        try {
+            if (imageInterpreterEnabled) {
+                attachImageListeners();
+                // Inform the user they must click an image to get a description
+                showStatusMessage('Interpretação de imagens ativada — clique em qualquer imagem para obter a descrição', 'success');
+            } else {
+                detachImageListeners();
+                closeImageInterpreterModal();
+                showStatusMessage('Interpretação de imagens desativada');
+            }
+            // Salvar preferência (será persistida via API ou localStorage)
+            try { saveUserPreference('imageInterpreter', imageInterpreterEnabled); } catch (e) {}
+        } catch (e) {}
+    }
+    // Handlers e utilitários para interpretação de imagens
+    let _aguiaImageHandler = null;
+
+    function attachImageListeners() {
+        try {
+            const scope = window.AGUIA_SCOPE || document.body;
+            detachImageListeners();
+            _aguiaImageHandler = function(e) {
+                const target = e.target;
+                if (!target) return;
+                if (target.tagName && target.tagName.toLowerCase() === 'img') {
+                    // impedir navegação normal quando estiver no modo de interpretação
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleImageClick(target, e);
+                }
+            };
+            scope.addEventListener('pointerdown', _aguiaImageHandler);
+            // Indicar visualmente que o modo está ativo (aplicável via CSS se desejado)
+        } catch (e) {}
+    }
+
+    function detachImageListeners() {
+        try {
+            const scope = window.AGUIA_SCOPE || document.body;
+            if (_aguiaImageHandler) {
+                scope.removeEventListener('pointerdown', _aguiaImageHandler);
+                _aguiaImageHandler = null;
+            }
+        } catch (e) {}
+    }
+
+    function handleImageClick(img, event) {
+        try {
+            showImageInterpreterModal('Carregando descrição...', img && img.src ? img.src : null);
+            interpretImage(img).then(description => {
+                try { showStatusMessage('Descrição recebida', 'success'); } catch (e) {}
+                showImageInterpreterModal(description || 'Nenhuma descrição retornada.', img && img.src ? img.src : null);
+            }).catch(err => {
+                try { showStatusMessage('Erro ao obter descrição', 'error'); } catch (e) {}
+                showImageInterpreterModal('Erro: ' + (err && err.message ? err.message : String(err)), img && img.src ? img.src : null);
+            });
+        } catch (e) {
+        }
+    }
+
+    function interpretImage(img) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const imageUrl = img.src || img.getAttribute('data-src') || '';
+                const form = new FormData();
+
+                // Tentativa de buscar o blob da imagem (pode falhar por CORS)
+                let sentBlob = false;
+                if (imageUrl) {
+                    try {
+                        const res = await fetch(imageUrl, {mode: 'cors'});
+                        if (res && res.ok) {
+                            const blob = await res.blob();
+                            // inferir extensão a partir do tipo
+                            const ext = (blob.type && blob.type.split('/')[1]) ? ('.' + blob.type.split('/')[1]) : '.jpg';
+                            form.append('image', blob, 'image' + ext);
+                            sentBlob = true;
+                        }
+                    } catch (e) {
+                        // falha ao buscar blob, enviaremos a URL para o servidor
+                        sentBlob = false;
+                    }
+                }
+
+                if (!sentBlob) {
+                    form.append('imageUrl', imageUrl);
+                }
+
+                const endpoint = (typeof M !== 'undefined' && M.cfg && M.cfg.wwwroot) ? (M.cfg.wwwroot + '/local/aguiaplugin/preferences/interpret_image.php') : '/local/aguiaplugin/preferences/interpret_image.php';
+                const resp = await fetch(endpoint, { method: 'POST', body: form, credentials: 'same-origin' });
+                if (!resp.ok) {
+                    const txt = await resp.text();
+                    return reject(new Error('Erro no servidor: ' + resp.status + (txt ? ' - ' + txt : '')));
+                }
+                const json = await resp.json();
+                if (json.success && json.description) {
+                    return resolve(json.description);
+                }
+                if (json.error) {
+                    return reject(new Error(json.error));
+                }
+                if (json.api_response) {
+                    return resolve(JSON.stringify(json.api_response));
+                }
+                return reject(new Error('Resposta inesperada do servidor'));
+            } catch (err) {
+                return reject(err);
+            }
+        });
+    }
+
+    function showImageInterpreterModal(text, imageSrc) {
+        let overlay = document.getElementById('aguiaImageInterpreterModal');
+        const contentHtml = function(bodyContent, thumbImg, footerText) {
+            return '<div class="aguia-card">'
+                + (thumbImg ? ('<div class="aguia-card-thumb"><img src="' + thumbImg + '" alt="Imagem selecionada"/></div>') : '')
+                + '<div class="aguia-card-body">'
+                + '<div class="aguia-card-header">'
+                + '<strong class="aguia-card-title">Descrição da imagem</strong>'
+                + '<button class="aguia-card-close" aria-label="Fechar">&times;</button>'
+                + '</div>'
+                + '<div class="aguia-card-content">' + bodyContent + '</div>'
+                + '<div class="aguia-card-footer">' + (footerText || '') + '</div>'
+                + '</div>'
+                + '</div>';
+        };
+
+        const stripFormatting = function(s) {
+            if (!s) return '';
+            let t = String(s);
+            t = t.replace(/<[^>]*>/g, '');
+            t = t.replace(/```[\s\S]*?```/g, '');
+            t = t.replace(/`([^`]*)`/g, '$1');
+            t = t.replace(/\*\*(.*?)\*\*/g, '$1');
+            t = t.replace(/\*(.*?)\*/g, '$1');
+            t = t.replace(/__(.*?)__/g, '$1');
+            t = t.replace(/_(.*?)_/g, '$1');
+            t = t.replace(/~~(.*?)~~/g, '$1');
+            t = t.replace(/^[\s]*[-*·•]\s+/gm, '');
+            t = t.replace(/^[\s]*\d+\.?\s+/gm, '');
+            t = t.replace(/\r\n/g, '\n');
+            t = t.replace(/\n{3,}/g, '\n\n');
+            t = t.replace(/[ \t]{2,}/g, ' ');
+            return t.trim();
+        };
+
+        const escapeHtml = function(unsafe) {
+            return String(unsafe)
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#039;');
+        };
+
+        const renderFormatted = function(textToRender) {
+            const plain = stripFormatting(textToRender);
+            if (!plain) return '<p class="aguia-empty">Nenhuma descrição.</p>';
+            return '<pre class="aguia-plain-text" style="white-space:pre-wrap;margin:0;">' + escapeHtml(plain) + '</pre>';
+        };
+
+            const plainText = (function(){ try { return stripFormatting(String(text || '')); } catch(e){ return String(text || ''); } })();
+            const bodyContent = renderFormatted(String(text || ''))
+            + '<div class="aguia-card-actions">'
+            + '<button type="button" class="aguia-copy-btn">Copiar descrição</button>'
+            + '<button type="button" class="aguia-read-btn">Ler descrição</button>'
+            + '<button type="button" class="aguia-close-btn">Fechar</button>'
+            + '</div>';
+
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'aguiaImageInterpreterModal';
+            overlay.className = 'aguia-image-overlay';
+            overlay.setAttribute('role', 'dialog');
+            overlay.setAttribute('aria-modal', 'true');
+            overlay.innerHTML = contentHtml(bodyContent, imageSrc, '<small>Gerado por Gemini</small>');
+            document.body.appendChild(overlay);
+
+            overlay.style.position = 'fixed';
+            overlay.style.inset = '0';
+            overlay.style.background = 'rgba(0,0,0,0.48)';
+            overlay.style.display = 'flex';
+            overlay.style.alignItems = 'center';
+            overlay.style.justifyContent = 'center';
+            overlay.style.zIndex = '10000';
+            overlay.style.padding = '1.5rem';
+
+            const card = overlay.querySelector('.aguia-card');
+            card.style.maxWidth = '720px';
+            card.style.width = '100%';
+            card.style.background = '#fff';
+            card.style.borderRadius = '10px';
+            card.style.boxShadow = '0 12px 40px rgba(0,0,0,0.3)';
+            card.style.display = 'flex';
+            card.style.gap = '1rem';
+            card.style.overflow = 'hidden';
+
+            const thumb = card.querySelector('.aguia-card-thumb');
+            if (thumb) {
+                thumb.style.flex = '0 0 160px';
+                thumb.style.background = '#f4f6f8';
+                thumb.style.display = 'flex';
+                thumb.style.alignItems = 'center';
+                thumb.style.justifyContent = 'center';
+            }
+            const thumbImg = card.querySelector('.aguia-card-thumb img');
+            if (thumbImg) {
+                thumbImg.style.maxWidth = '140px';
+                thumbImg.style.maxHeight = '140px';
+                thumbImg.style.objectFit = 'cover';
+                thumbImg.style.borderRadius = '6px';
+            }
+
+            const body = card.querySelector('.aguia-card-body');
+            body.style.flex = '1 1 auto';
+            body.style.display = 'flex';
+            body.style.flexDirection = 'column';
+
+            const header = card.querySelector('.aguia-card-header');
+            header.style.display = 'flex';
+            header.style.alignItems = 'center';
+            header.style.justifyContent = 'space-between';
+            header.style.padding = '0.75rem 1rem';
+            header.style.borderBottom = '1px solid rgba(0,0,0,0.06)';
+
+            const title = card.querySelector('.aguia-card-title');
+            title.style.fontSize = '1.05rem';
+            title.style.fontWeight = '700';
+
+            const closeBtn = card.querySelector('.aguia-card-close');
+            closeBtn.style.fontSize = '1.4rem';
+            closeBtn.style.lineHeight = '1';
+            closeBtn.style.background = 'transparent';
+            closeBtn.style.border = 'none';
+            closeBtn.style.cursor = 'pointer';
+
+            const content = card.querySelector('.aguia-card-content');
+            content.style.padding = '1rem';
+            content.style.maxHeight = '60vh';
+            content.style.overflow = 'auto';
+
+            const footer = card.querySelector('.aguia-card-footer');
+            footer.style.padding = '0.5rem 1rem';
+            footer.style.borderTop = '1px solid rgba(0,0,0,0.04)';
+            footer.style.fontSize = '0.85rem';
+            footer.style.color = '#666';
+
+            const actionsContainer = card.querySelector('.aguia-card-actions');
+            if (actionsContainer) {
+                actionsContainer.style.display = 'flex';
+                actionsContainer.style.gap = '0.6rem';
+                actionsContainer.style.justifyContent = 'flex-end';
+                actionsContainer.style.alignItems = 'center';
+            }
+            const actions = card.querySelectorAll('.aguia-card-actions button');
+            actions.forEach(btn => {
+                btn.style.padding = '0.5rem 0.75rem';
+                btn.style.borderRadius = '6px';
+                btn.style.border = '1px solid rgba(0,0,0,0.08)';
+                btn.style.background = '#fff';
+                btn.style.cursor = 'pointer';
+            });
+            const copyBtn = card.querySelector('.aguia-copy-btn');
+            if (copyBtn) {
+                copyBtn.style.background = '#2271ff';
+                copyBtn.style.color = '#fff';
+                copyBtn.style.border = 'none';
+            }
+            const closeActionBtn = card.querySelector('.aguia-close-btn');
+            if (closeActionBtn) {
+                closeActionBtn.style.marginLeft = '0.5rem';
+            }
+
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) closeImageInterpreterModal();
+            });
+            closeBtn.addEventListener('click', closeImageInterpreterModal);
+            const closeAction = card.querySelector('.aguia-close-btn');
+            if (closeAction) closeAction.addEventListener('click', closeImageInterpreterModal);
+            const copyAction = card.querySelector('.aguia-copy-btn');
+            if (copyAction) copyAction.addEventListener('click', function() {
+                try { navigator.clipboard.writeText(String(plainText || '')); copyAction.textContent = 'Copiado!'; setTimeout(()=>{copyAction.textContent='Copiar descrição';}, 2000); }
+                catch (e) { /* noop */ }
+            });
+            const readActionInit = card.querySelector('.aguia-read-btn');
+            if (readActionInit) {
+                readActionInit.addEventListener('click', function() {
+                    try {
+                        if (window.speechSynthesis && window.speechSynthesis.speaking) {
+                            window.speechSynthesis.cancel();
+                            readActionInit.textContent = 'Ler descrição';
+                            return;
+                        }
+                        if (!window.speechSynthesis) return;
+                        const utter = new SpeechSynthesisUtterance(plainText || '');
+                        utter.lang = 'pt-BR';
+                        utter.rate = 1.0;
+                        const voices = window.speechSynthesis.getVoices();
+                        if (voices && voices.length) {
+                            const v = voices.find(vv => /pt(-|_)br/i.test(vv.lang) || /pt-BR/i.test(vv.lang) || /portuguese/i.test(vv.name));
+                            if (v) utter.voice = v;
+                        }
+                        utter.onend = function() { readActionInit.textContent = 'Ler descrição'; };
+                        readActionInit.textContent = 'Parar leitura';
+                        window.speechSynthesis.speak(utter);
+                    } catch (e) { /* noop */ }
+                });
+            }
+
+            overlay._keyHandler = function(e) { if (e.key === 'Escape' || e.key === 'Esc') closeImageInterpreterModal(); };
+            document.addEventListener('keydown', overlay._keyHandler);
+        } else {
+            overlay.innerHTML = contentHtml(bodyContent, imageSrc, '<small>Gerado por Gemini</small>');
+
+            const cardForStyles = overlay.querySelector('.aguia-card');
+            if (cardForStyles) {
+                cardForStyles.style.maxWidth = '720px';
+                cardForStyles.style.width = '100%';
+                cardForStyles.style.background = '#fff';
+                cardForStyles.style.borderRadius = '10px';
+                cardForStyles.style.boxShadow = '0 12px 40px rgba(0,0,0,0.3)';
+                cardForStyles.style.display = 'flex';
+                cardForStyles.style.gap = '1rem';
+                cardForStyles.style.overflow = 'hidden';
+
+                const thumbEl = cardForStyles.querySelector('.aguia-card-thumb');
+                if (thumbEl) {
+                    thumbEl.style.flex = '0 0 160px';
+                    thumbEl.style.background = '#f4f6f8';
+                    thumbEl.style.display = 'flex';
+                    thumbEl.style.alignItems = 'center';
+                    thumbEl.style.justifyContent = 'center';
+                }
+                const thumbImgEl = cardForStyles.querySelector('.aguia-card-thumb img');
+                if (thumbImgEl) {
+                    thumbImgEl.style.maxWidth = '140px';
+                    thumbImgEl.style.maxHeight = '140px';
+                    thumbImgEl.style.objectFit = 'cover';
+                    thumbImgEl.style.borderRadius = '6px';
+                }
+
+                const bodyEl = cardForStyles.querySelector('.aguia-card-body');
+                if (bodyEl) {
+                    bodyEl.style.flex = '1 1 auto';
+                    bodyEl.style.display = 'flex';
+                    bodyEl.style.flexDirection = 'column';
+                }
+
+                const headerEl = cardForStyles.querySelector('.aguia-card-header');
+                if (headerEl) {
+                    headerEl.style.display = 'flex';
+                    headerEl.style.alignItems = 'center';
+                    headerEl.style.justifyContent = 'space-between';
+                    headerEl.style.padding = '0.75rem 1rem';
+                    headerEl.style.borderBottom = '1px solid rgba(0,0,0,0.06)';
+                }
+
+                const titleEl = cardForStyles.querySelector('.aguia-card-title');
+                if (titleEl) { titleEl.style.fontSize = '1.05rem'; titleEl.style.fontWeight = '700'; }
+                const closeBtnEl = cardForStyles.querySelector('.aguia-card-close');
+                if (closeBtnEl) { closeBtnEl.style.fontSize = '1.4rem'; closeBtnEl.style.lineHeight = '1'; closeBtnEl.style.background = 'transparent'; closeBtnEl.style.border = 'none'; closeBtnEl.style.cursor = 'pointer'; }
+
+                const contentEl = cardForStyles.querySelector('.aguia-card-content');
+                if (contentEl) { contentEl.style.padding = '1rem'; contentEl.style.maxHeight = '60vh'; contentEl.style.overflow = 'auto'; }
+
+                const footerEl = cardForStyles.querySelector('.aguia-card-footer');
+                if (footerEl) { footerEl.style.padding = '0.5rem 1rem'; footerEl.style.borderTop = '1px solid rgba(0,0,0,0.04)'; footerEl.style.fontSize = '0.85rem'; footerEl.style.color = '#666'; }
+
+                const actionsContainerForStyles = cardForStyles.querySelector('.aguia-card-actions');
+                if (actionsContainerForStyles) {
+                    actionsContainerForStyles.style.display = 'flex';
+                    actionsContainerForStyles.style.gap = '0.6rem';
+                    actionsContainerForStyles.style.justifyContent = 'flex-end';
+                    actionsContainerForStyles.style.alignItems = 'center';
+                }
+                const actionsEls = cardForStyles.querySelectorAll('.aguia-card-actions button');
+                actionsEls.forEach(btn => { btn.style.padding = '0.5rem 0.75rem'; btn.style.borderRadius = '6px'; btn.style.border = '1px solid rgba(0,0,0,0.08)'; btn.style.background = '#fff'; btn.style.cursor = 'pointer'; });
+                const copyBtnEl = cardForStyles.querySelector('.aguia-copy-btn');
+                if (copyBtnEl) { copyBtnEl.style.background = '#2271ff'; copyBtnEl.style.color = '#fff'; copyBtnEl.style.border = 'none'; }
+                const closeActionEl = cardForStyles.querySelector('.aguia-close-btn');
+                if (closeActionEl) { closeActionEl.style.marginLeft = '0.5rem'; }
+            }
+
+            if (overlay._overlayClickHandler) {
+                overlay.removeEventListener('click', overlay._overlayClickHandler);
+            }
+            overlay._overlayClickHandler = function(e) { if (e.target === overlay) closeImageInterpreterModal(); };
+            overlay.addEventListener('click', overlay._overlayClickHandler);
+
+            if (!overlay._keyHandler) {
+                overlay._keyHandler = function(e) { if (e.key === 'Escape' || e.key === 'Esc') closeImageInterpreterModal(); };
+                document.addEventListener('keydown', overlay._keyHandler);
+            }
+
+            const card = overlay.querySelector('.aguia-card');
+            if (card) {
+                const closeBtn = card.querySelector('.aguia-card-close');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', closeImageInterpreterModal);
+                }
+                const closeAction = card.querySelector('.aguia-close-btn');
+                if (closeAction) closeAction.addEventListener('click', closeImageInterpreterModal);
+
+                    const copyAction = card.querySelector('.aguia-copy-btn');
+                    if (copyAction) {
+                        copyAction.addEventListener('click', function() {
+                            try { navigator.clipboard.writeText(String(plainText || '')); copyAction.textContent = 'Copiado!'; setTimeout(()=>{copyAction.textContent='Copiar descrição';}, 2000); }
+                            catch (e) { /* noop */ }
+                        });
+                    }
+                    const readAction = card.querySelector('.aguia-read-btn');
+                    if (readAction) {
+                        readAction.addEventListener('click', function() {
+                            try {
+                                if (window.speechSynthesis && window.speechSynthesis.speaking) {
+                                    window.speechSynthesis.cancel();
+                                    readAction.textContent = 'Ler descrição';
+                                    return;
+                                }
+                                if (!window.speechSynthesis) return;
+                                const utter = new SpeechSynthesisUtterance(plainText || '');
+                                utter.lang = 'pt-BR';
+                                utter.rate = 1.0;
+                                const voices = window.speechSynthesis.getVoices();
+                                if (voices && voices.length) {
+                                    const v = voices.find(vv => /pt(-|_)br/i.test(vv.lang) || /pt-BR/i.test(vv.lang) || /portuguese/i.test(vv.name));
+                                    if (v) utter.voice = v;
+                                }
+                                utter.onend = function() { readAction.textContent = 'Ler descrição'; };
+                                readAction.textContent = 'Parar leitura';
+                                window.speechSynthesis.speak(utter);
+                            } catch (e) { /* noop */ }
+                        });
+                    }
+            }
+        }
+
+        setTimeout(function() {
+            const el = overlay.querySelector('.aguia-copy-btn') || overlay.querySelector('.aguia-card-close');
+            if (el && typeof el.focus === 'function') el.focus();
+        }, 50);
+    }
+
+    function closeImageInterpreterModal() {
+        const overlay = document.getElementById('aguiaImageInterpreterModal');
+        if (!overlay) return;
+        try { if (window.speechSynthesis && window.speechSynthesis.speaking) window.speechSynthesis.cancel(); } catch (e) {}
+        if (overlay._keyHandler) document.removeEventListener('keydown', overlay._keyHandler);
+        overlay.parentNode && overlay.parentNode.removeChild(overlay);
+    }
     
     // Função para alternar o menu
     function toggleMenu() {
@@ -222,6 +686,13 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 if (menu._aguiaPreviousFocus && typeof menu._aguiaPreviousFocus.focus === 'function') {
                     menu._aguiaPreviousFocus.focus();
+                }
+            } catch (e) {}
+            // Se o modo de interpretação de imagens estava ativo, removemos listeners para evitar efeitos colaterais
+            try {
+                if (!imageInterpreterEnabled) {
+                    // garantimos que não há listeners pendentes
+                    detachImageListeners();
                 }
             } catch (e) {}
         } else {
@@ -371,6 +842,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 action: toggleHighlightedLetters,
                 ariaLabel: 'Ativar ou desativar destaque para letras',
                 id: 'aguiaHighlightedLettersBtn'
+            }
+            ,{
+                iconSvg: AguiaIcons.info,
+                text: 'Interpretar Imagens',
+                action: toggleImageInterpreter,
+                ariaLabel: 'Ativar interpretação de imagens',
+                id: 'aguiaImageInterpreterBtn'
             }
         ];
         
@@ -2377,6 +2855,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         // Salvar preferência desativada
         saveUserPreference('reduceAnimations', false);
+
+        // Reset da funcionalidade de interpretar imagens (nova funcionalidade)
+        try {
+            if (imageInterpreterEnabled) {
+                imageInterpreterEnabled = false;
+                detachImageListeners();
+                closeImageInterpreterModal();
+            }
+            const imgBtn = document.getElementById('aguiaImageInterpreterBtn');
+            if (imgBtn) imgBtn.classList.remove('active');
+            // Salvar preferência desativada
+            try { saveUserPreference('imageInterpreter', false); } catch (e) {}
+        } catch (e) {}
 
         showStatusMessage('AGUIA Resetado', 'success');
     }

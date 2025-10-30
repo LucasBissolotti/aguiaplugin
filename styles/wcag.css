@@ -201,6 +201,41 @@ button#aguiaButton.aguia-button:hover::before {
     padding: 16px;
 }
 
+/* Modal simples para exibir a descrição gerada para imagens */
+.aguia-image-modal {
+    position: fixed;
+    right: 30px;
+    bottom: 160px;
+    width: 340px;
+    max-width: calc(100% - 40px);
+    background: var(--aguia-background-light);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    z-index: 10001;
+    display: none;
+}
+.aguia-image-modal-content {
+    padding: 12px 14px;
+}
+.aguia-image-modal-body {
+    color: #222;
+    font-size: 14px;
+    line-height: 1.4;
+    max-height: 40vh;
+    overflow: auto;
+}
+.aguia-image-modal-close {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: #333;
+    cursor: pointer;
+}
+
 /* Barra de rolagem personalizada */
 .aguia-menu-content::-webkit-scrollbar {
     width: 8px;

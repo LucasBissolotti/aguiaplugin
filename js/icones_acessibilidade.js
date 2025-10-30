@@ -90,9 +90,7 @@ const AguiaIcons = {
     // Ícone para letras destacadas - Material Design
     highlightedLetters: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><text x="7" y="18" font-family="Arial, sans-serif" font-weight="bold" font-size="18">B</text></svg>',
     
-    // Ícone para lupa de conteúdo - Lente com anel (bola preta maior com "furo" central)
-    // O furo central é transparente: fica branco no estado inativo (fundo do botão) e azul no ativo (fundo azul do botão)
-    // Abertura interna centralizada e ligeiramente menor (redução sutil)
+    // Ícone para lupa de conteúdo - Lente com anel
     magnifier: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Lupa de conteúdo</title><path d="M10 3a7 7 0 1 1 0 14a7 7 0 1 1 0-14 M10 4.2a5.8 5.8 0 1 0 0 11.6a5.8 5.8 0 1 0 0-11.6" fill="#000000" fill-rule="evenodd" style="fill:#000000!important"/><path d="M14.5 14.5 L21 21" stroke="#000000" stroke-width="2.2" stroke-linecap="round" style="stroke:#000000!important"/></svg>',
     
     // Ícone para destaque de cabeçalhos - Design minimalista com linha grossa
