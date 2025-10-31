@@ -31,6 +31,11 @@ const AguiaIcons = {
     // Ícone para texto para fala - Pessoa com ondas sonoras (cabeça e corpo preenchidos em preto; ondas só com traço)
     textToSpeech: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Texto para fala</title><path d="M8,10 C8,8.34 9.34,7 11,7 C12.66,7 14,8.34 14,10 C14,11.66 12.66,13 11,13 C9.34,13 8,11.66 8,10 Z" fill="#000000" style="fill:#000000!important"/><path d="M6,19 L16,19 C16,16.5 14,14 11,14 C8,14 6,16.5 6,19 Z" fill="#000000" style="fill:#000000!important"/><path d="M15.5,8 C15.5,8 16.5,9 16.5,10 C16.5,11 15.5,12 15.5,12" stroke="#000000" fill="none" stroke-width="1.5" stroke-linecap="round" style="stroke:#000000!important"/><path d="M18,6.5 C18,6.5 20,8.25 20,10 C20,11.75 18,13.5 18,13.5" stroke="#000000" fill="none" stroke-width="1.5" stroke-linecap="round" style="stroke:#000000!important"/></svg>',
     
+    // Ícone de volume/alto-falante para leitura do menu
+    volume: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Ler funcionalidades</title><path d="M3 10v4h4l5 5V5L7 10H3z" fill="currentColor"/><path d="M16.5 12c0-1.77-.77-3.37-2-4.47v8.94c1.23-1.1 2-2.7 2-4.47z" fill="currentColor"/></svg>',
+    // Ícone de volume desligado / parar leitura (usado enquanto a leitura estiver ativa)
+    volumeOff: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false"><title>Parar leitura</title><path d="M3 10v4h4l5 5V5L7 10H3z" fill="currentColor"/><path d="M19 8l-6 6m0-6l6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
+    
     // Ícone para aumentar texto - Versão limpa de A+
     increaseText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><text x="4" y="16" font-family="Arial, sans-serif" font-weight="bold" font-size="14">A+</text></svg>',
     

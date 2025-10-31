@@ -15,9 +15,60 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// Tentativa antecipada: registrar um atalho imediatamente quando o script for carregado.
+// Isso ajuda quando o código principal (dentro de DOMContentLoaded) não chega a ser executado
+(function registerAguiaShortcutEarly() {
+    try {
+        if (window.__aguia_shortcut_installed) return;
+        // Handler reutilizável para múltiplos targets
+        const __aguia_shortcut_handler = function(e) {
+            try {
+                const key = (e.key || '').toLowerCase();
+                if (!key) return;
+                const isA = key === 'a';
+                const isM = key === 'm';
+                if (!isA && !isM) return;
+                // Apenas Alt+Shift+A
+                const combos = (isA && e.altKey && e.shiftKey);
+                if (!combos) return;
+
+                // Evitar quando em campos editáveis
+                const active = document.activeElement;
+                if (active) {
+                    const tag = (active.tagName || '').toLowerCase();
+                    const role = (active.getAttribute && active.getAttribute('role')) || '';
+                    if (tag === 'input' || tag === 'textarea' || tag === 'select' || role.toLowerCase() === 'textbox') return;
+                    let node = active;
+                    while (node) { try { if (node.isContentEditable) return; } catch (e) {} node = node.parentElement; }
+                }
+
+                // Tenta abrir o menu clicando no botão AGUIA quando disponível
+                try {
+                    const b = document.getElementById('aguiaButton');
+                    if (b && typeof b.click === 'function') {
+                        e.preventDefault(); e.stopPropagation();
+                        b.click();
+                        return;
+                    }
+                } catch (ex) {}
+            } catch (ex) {}
+        };
+
+        // Registrar em diversos alvos para maximizar cobertura
+        try { document.addEventListener('keydown', __aguia_shortcut_handler, true); } catch (e) {}
+        try { window.addEventListener('keydown', __aguia_shortcut_handler, true); } catch (e) {}
+        try { if (document && document.body) document.body.addEventListener('keydown', __aguia_shortcut_handler, true); } catch (e) {}
+        try {
+            if (window.top && window.top !== window && window.top.document) {
+                try { window.top.document.addEventListener('keydown', __aguia_shortcut_handler, true); } catch (e) {}
+            }
+        } catch (e) {}
+
+        window.__aguia_shortcut_installed = true;
+    } catch (e) {}
+})();
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Os estilos CSS agora são carregados pelo PHP
-    // Desliga a sincronização automática com o servidor; salvamento manual via botão
     if (window.AguiaAPI) {
         window.AguiaAPI.autoSync = false;
     }
@@ -43,6 +94,274 @@ document.addEventListener('DOMContentLoaded', function() {
     let highlightedLettersLevel = 0; // 0: desativado, 1: pequeno, 2: médio, 3: grande
     let reduceAnimationsEnabled = false; // Nova preferência: reduzir animações do plugin e do site
     let imageInterpreterEnabled = false; // Nova funcionalidade: interpretar imagens via Gemini
+    // Estado de leitura do menu: controla toggle/cancelamento e timeouts/utter atual
+    let menuReadingActive = false;
+    let menuSpeechTimeout = null;
+    let menuSpeechUtter = null;
+    let menuHighlightedEl = null;
+    // Identificador para a execução atual de leitura — usado para invalidar callbacks antigos
+    let menuSpeechRunId = 0;
+    // Mapa de descrições (pt-BR) para cada funcionalidade do menu.
+    // Chaves preferenciais: id do botão quando disponível, caso contrário o texto exibido.
+    const AGUIA_FEATURE_DESCRIPTIONS = {
+        'aguiaIncreaseFontBtn': 'Aumenta o tamanho do texto na página para facilitar a leitura.',
+        'Aumentar Texto': 'Aumenta o tamanho do texto na página para facilitar a leitura.',
+        'aguiaReadableFontsBtn': 'Alterna para fontes mais legíveis, incluindo opção OpenDyslexic.',
+        'Fontes Legíveis': 'Alterna para fontes mais legíveis, incluindo opção OpenDyslexic.',
+        'Espaçamento entre Linhas': 'Ajusta o espaçamento entre as linhas para melhorar a legibilidade.',
+        'Espaçamento entre Letras': 'Altera o espaçamento entre letras para facilitar a leitura de palavras.',
+        'Daltonismo': 'Abre um painel com filtros para pessoas com diferentes tipos de daltonismo.',
+        'Nenhum': 'Desativa filtros de daltonismo, exibindo as cores originais.',
+        'Protanopia (sem vermelho)': 'Aplicará um filtro que reduz tons vermelhos para simular protanopia.',
+        'Deuteranopia (sem verde)': 'Aplicará um filtro que reduz tons verdes para simular deuteranopia.',
+        'Tritanopia (sem azul)': 'Aplicará um filtro que reduz tons azuis para simular tritanopia.',
+        'Intensidade de Cores': 'Altera a intensidade das cores em três níveis para contraste.',
+        'Inverter cores': 'Inverte as cores da página para melhorar contraste quando necessário.',
+        'Lupa de conteúdo': 'Ativa uma lupa que amplia a área sob o cursor para leitura localizada.',
+        'Leitura de texto': 'Lê o texto selecionado ou o elemento focalizado em voz alta.',
+        'Auxiliar de leitura': 'Realça a linha de leitura para ajudar a seguir o texto com o cursor.',
+        'Destaque para links': 'Realça visualmente os links para facilitar a identificação.',
+        'Foco visível': 'Destaca elementos com foco para navegação por teclado.',
+        'Ocultar imagens': 'Oculta imagens para reduzir distrações visuais.',
+        'Máscara de foco': 'Aplica uma máscara que enfatiza a área de leitura atual.',
+        'Cursor personalizado': 'Substitui o cursor por uma versão maior e mais visível.',
+        'Resetar configurações': 'Restaura as configurações do AGUIA para os valores padrão.',
+        'Interpretação de imagens': 'Gera uma descrição textual da imagem para auxiliar usuários com deficiência visual.'
+    };
+
+    // Função que recolhe o texto e descrições das funcionalidades do menu
+    function gatherMenuDescriptions(menuElement) {
+        const items = [];
+        if (!menuElement) return items;
+        // Título
+        const titleEl = menuElement.querySelector('#aguiaMenuTitle');
+        if (titleEl && titleEl.textContent) {
+            items.push({ text: 'Menu de Acessibilidade.', el: titleEl });
+        }
+
+        // Categorias e opções principais
+        const categoryTitles = menuElement.querySelectorAll('.aguia-category-title');
+        categoryTitles.forEach(cat => {
+            if (cat.textContent) items.push({ text: cat.textContent + '.', el: cat });
+            // dentro da categoria, procure por botões .aguia-option
+            const parent = cat.parentElement || menuElement;
+            const optionButtons = parent.querySelectorAll('.aguia-option');
+            optionButtons.forEach(btn => {
+                // extrair texto visível (span.text) quando presente
+                const textSpan = btn.querySelector('.text');
+                const btnText = (textSpan && textSpan.textContent) ? textSpan.textContent.trim() : (btn.textContent || '').trim();
+                const id = btn.id || (btn.dataset && btn.dataset.value) || btnText;
+                const desc = AGUIA_FEATURE_DESCRIPTIONS[id] || AGUIA_FEATURE_DESCRIPTIONS[btnText] || '';
+                if (btnText) {
+                    const full = desc ? (btnText + ': ' + desc) : (btnText + '.');
+                    items.push({ text: full, el: btn });
+                }
+                // se o botão abrir submenu (ex.: daltonismo), inclua itens do submenu
+                if (btn.id === 'aguiaColorblindButton' || btnText.toLowerCase().indexOf('dalton') !== -1) {
+                    const sub = menuElement.querySelector('#aguiaColorblindPanel');
+                    if (sub) {
+                        const subTitle = sub.querySelector('.aguia-submenu-header h3');
+                        if (subTitle && subTitle.textContent) items.push({ text: subTitle.textContent + '.', el: subTitle });
+                        const subOptions = sub.querySelectorAll('.aguia-submenu-option');
+                        subOptions.forEach(sop => {
+                            const st = (sop.textContent || '').trim();
+                            const sd = AGUIA_FEATURE_DESCRIPTIONS[sop.dataset.value] || AGUIA_FEATURE_DESCRIPTIONS[st] || '';
+                            if (st) {
+                                const fulls = sd ? (st + ': ' + sd) : (st + '.');
+                                items.push({ text: fulls, el: sop });
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+        // Captura outras opções soltas que estejam na raiz do menu
+        const rootOptions = menuElement.querySelectorAll('.aguia-options-grid .aguia-option, .aguia-menu-content > .aguia-option');
+        rootOptions.forEach(btn => {
+            const textSpan = btn.querySelector('.text');
+            const btnText = (textSpan && textSpan.textContent) ? textSpan.textContent.trim() : (btn.textContent || '').trim();
+            const id = btn.id || (btn.dataset && btn.dataset.value) || btnText;
+            const desc = AGUIA_FEATURE_DESCRIPTIONS[id] || AGUIA_FEATURE_DESCRIPTIONS[btnText] || '';
+            if (btnText) {
+                const full = desc ? (btnText + ': ' + desc) : (btnText + '.');
+                items.push({ text: full, el: btn });
+            }
+        });
+
+        // Captura botões do rodapé (Salvar preferências / Redefinir) quando existirem
+        try {
+            const footer = menuElement.querySelector('.aguia-menu-footer');
+            if (footer) {
+                const footerButtons = footer.querySelectorAll('button, .aguia-save-button, .aguia-reset-button');
+                footerButtons.forEach(btn => {
+                    const text = (btn.textContent || '').trim();
+                    if (!text) return;
+                    const id = btn.id || (btn.dataset && btn.dataset.value) || text;
+                    const desc = AGUIA_FEATURE_DESCRIPTIONS[id] || AGUIA_FEATURE_DESCRIPTIONS[text] || '';
+                    const full = desc ? (text + ': ' + desc) : (text + '.');
+                    items.push({ text: full, el: btn });
+                });
+            }
+        } catch (e) {
+        }
+
+        // Remover duplicatas por texto/elemento (mantendo a primeira ocorrência)
+        const seenTexts = new Set();
+        const seenEls = new Set();
+        const unique = [];
+        items.forEach(it => {
+            const txt = it && it.text ? String(it.text).trim() : '';
+            const el = it && it.el ? it.el : null;
+            // pular se já vimos o mesmo texto ou o mesmo elemento
+            if (txt && seenTexts.has(txt)) return;
+            if (el && seenEls.has(el)) return;
+            if (txt) seenTexts.add(txt);
+            if (el) seenEls.add(el);
+            unique.push(it);
+        });
+
+        // Ordenar os itens por posição no DOM (garante ordem visual)
+        try {
+            unique.sort((a, b) => {
+                const ae = a && a.el ? a.el : null;
+                const be = b && b.el ? b.el : null;
+                if (ae && be) {
+                    if (ae === be) return 0;
+                    // se ae precede be no DOM, retorna -1
+                    if (ae.compareDocumentPosition(be) & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
+                    return 1;
+                }
+                // itens com elemento vêm antes de itens sem elemento
+                if (ae && !be) return -1;
+                if (!ae && be) return 1;
+                return 0; // mantém ordem original se nenhum tem elemento
+            });
+        } catch (e) {
+            // se algo falhar, mantemos a ordem original
+        }
+
+        return unique;
+    }
+
+    // Função que lê em voz alta os itens passados (sequencial, pausada)
+    function speakLinesSequentially(items, onEnd) {
+        try { if (!window.speechSynthesis) { if (typeof onEnd === 'function') onEnd(); return; } } catch (e) { if (typeof onEnd === 'function') onEnd(); return; }
+
+        // Se já houver leitura em andamento pelo nosso controle, cancelamos antes de iniciar
+        try {
+            if (menuReadingActive) {
+                try { window.speechSynthesis.cancel(); } catch (e) {}
+            }
+        } catch (e) {}
+
+        // inicia uma nova execução e captura seu id local para evitar reentrância
+        menuSpeechRunId++;
+        const localRunId = menuSpeechRunId;
+
+        menuReadingActive = true;
+        menuSpeechTimeout && clearTimeout(menuSpeechTimeout);
+        menuSpeechTimeout = null;
+        menuSpeechUtter = null;
+
+        let index = 0;
+
+        const clearHighlight = () => {
+            if (menuHighlightedEl) {
+                try { menuHighlightedEl.classList.remove('aguia-menu-item--highlighted'); } catch (e) {}
+                menuHighlightedEl = null;
+            }
+        };
+
+        function speakNext() {
+            // se esta execução foi invalidada externamente, aborta e faz limpeza
+            if (localRunId !== menuSpeechRunId) {
+                try { if (menuSpeechTimeout) { clearTimeout(menuSpeechTimeout); menuSpeechTimeout = null; } } catch (e) {}
+                menuSpeechUtter = null;
+                clearHighlight();
+                if (typeof onEnd === 'function') onEnd();
+                return;
+            }
+            if (!menuReadingActive) {
+                // leitura foi cancelada externamente
+                menuSpeechTimeout && clearTimeout(menuSpeechTimeout);
+                menuSpeechTimeout = null;
+                menuSpeechUtter = null;
+                clearHighlight();
+                // invalidar execução para evitar callbacks remanescentes
+                menuSpeechRunId++;
+                if (typeof onEnd === 'function') onEnd();
+                return;
+            }
+            if (index >= items.length) {
+                // Final da lista: garantir limpeza completa do pipeline de TTS
+                try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
+                menuReadingActive = false;
+                // limpar qualquer utter pendente/timeout
+                try { if (menuSpeechTimeout) { clearTimeout(menuSpeechTimeout); menuSpeechTimeout = null; } } catch (e) {}
+                menuSpeechUtter = null;
+                clearHighlight();
+                // invalidar execução para evitar callbacks remanescentes
+                menuSpeechRunId++;
+                if (typeof onEnd === 'function') onEnd();
+                return;
+            }
+
+            const entry = items[index++];
+            const text = entry && entry.text ? entry.text : (entry || '');
+
+            // aplicar destaque ao elemento correspondente (se houver)
+            clearHighlight();
+            try {
+                if (entry && entry.el && entry.el.classList) {
+                    entry.el.classList.add('aguia-menu-item--highlighted');
+                    menuHighlightedEl = entry.el;
+                }
+            } catch (e) {}
+
+            const utter = new SpeechSynthesisUtterance(text);
+            menuSpeechUtter = utter;
+            utter.lang = 'pt-BR';
+            utter.rate = 0.95; // ligeiramente mais pausado
+            utter.pitch = 1.0;
+            // escolher voz pt-BR se disponível
+            try {
+                const voices = window.speechSynthesis.getVoices();
+                if (voices && voices.length) {
+                    const v = voices.find(vv => /pt(-|_)br/i.test(vv.lang) || /pt-BR/i.test(vv.lang) || /portuguese/i.test(vv.name));
+                    if (v) utter.voice = v;
+                }
+            } catch (e) {}
+            utter.onend = function() {
+                // ignorar se execução foi invalidada
+                if (localRunId !== menuSpeechRunId) return;
+                menuSpeechUtter = null;
+                // remover destaque do item narrado
+                clearHighlight();
+                // breve pausa entre linhas
+                menuSpeechTimeout = setTimeout(function() {
+                    // cheque novamente antes de seguir
+                    if (localRunId !== menuSpeechRunId) { menuSpeechTimeout = null; return; }
+                    menuSpeechTimeout = null;
+                    speakNext();
+                }, 300);
+            };
+            utter.onerror = function() {
+                if (localRunId !== menuSpeechRunId) return;
+                menuSpeechUtter = null;
+                clearHighlight();
+                // tentar continuar
+                menuSpeechTimeout = setTimeout(function() {
+                    if (localRunId !== menuSpeechRunId) { menuSpeechTimeout = null; return; }
+                    menuSpeechTimeout = null;
+                    speakNext();
+                }, 300);
+            };
+            try { window.speechSynthesis.speak(utter); } catch (e) { utter.onerror && utter.onerror(); }
+        }
+        // Inicia leitura
+        speakNext();
+    }
     
     // Define um contêiner de escopo para aplicar os estilos de acessibilidade apenas no conteúdo da página
     function getAguiaScopeElement() {
@@ -66,9 +385,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             node = node.parentElement;
         }
-
-        // Se o ancestral comum for apenas o <body>, evitamos usá-lo para não afetar a UI do plugin
-        // e mantemos o container de conteúdo como escopo padrão
         return content;
     }
     const AGUIA_SCOPE = getAguiaScopeElement();
@@ -89,6 +405,75 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Recupera preferências salvas do usuário
     loadUserPreferences();
+
+    // Atalho de teclado para abrir/fechar o menu de acessibilidade
+    // Combinação escolhida: Alt + Shift + A
+    // Respeita campos de entrada e contextos editáveis para não interferir na digitação
+    (function registerMenuKeyboardShortcut() {
+        function isTypingField(el) {
+            if (!el) return false;
+            const tag = (el.tagName || '').toLowerCase();
+            if (tag === 'input' || tag === 'textarea' || tag === 'select') return true;
+            // Detecta campos que atuam como textbox via ARIA
+            const role = (el.getAttribute && el.getAttribute('role')) || '';
+            if (role && role.toLowerCase() === 'textbox') return true;
+            // verifica ancestors contentEditable
+            let node = el;
+            while (node) {
+                try { if (node.isContentEditable) return true; } catch (e) {}
+                node = node.parentElement;
+            }
+            return false;
+        }
+
+        // Use capture to try to catch the keystroke earlier than other handlers
+    document.addEventListener('keydown', function(e) {
+            try {
+                // Detect the 'A' key in a robust way
+                const isAKey = (e.key === 'A' || e.key === 'a' || e.code === 'KeyA');
+                // Apenas Alt+Shift+A
+                const isShortcut = isAKey && (e.altKey && e.shiftKey);
+                if (!isShortcut) return;
+
+                // Não ativar quando o usuário estiver digitando em um campo
+                if (isTypingField(document.activeElement)) return;
+
+                // Se houver um diálogo modal aberto que não seja o menu AGUIA, evitamos interceptar
+                const activeDialogs = document.querySelectorAll('[role="dialog"][aria-modal="true"]');
+                for (let i = 0; i < activeDialogs.length; i++) {
+                    const dlg = activeDialogs[i];
+                    if (dlg && dlg.id !== 'aguiaMenu') {
+                        // só bloqueia se o diálogo realmente estiver visível (não apenas presente no DOM)
+                        try {
+                            const style = window.getComputedStyle ? window.getComputedStyle(dlg) : null;
+                            const visible = (style && style.display !== 'none' && style.visibility !== 'hidden') || (dlg.offsetParent !== null);
+                            if (visible) return;
+                        } catch (e) {
+                            return;
+                        }
+                    }
+                }
+
+                e.preventDefault();
+                e.stopPropagation();
+
+                // handler alcançado (sem logs)
+
+                // Alterna o menu: preferimos simular clique no botão principal quando possível
+                try {
+                    const menuButton = document.getElementById('aguiaButton');
+                    if (menuButton && typeof menuButton.click === 'function') {
+                        menuButton.click();
+                    } else {
+                        toggleMenu();
+                    }
+                } catch (err) { /* noop */ }
+            } catch (ex) { /* noop */ }
+    }, true);
+
+    // Marca globalmente que o listener foi registrado (útil para diagnóstico via DevTools)
+    try { window.__aguia_shortcut_installed = true; } catch (e) {}
+    })();
     
     // Função para criar o botão de acessibilidade
     function createAccessibilityButton() {
@@ -790,14 +1175,63 @@ document.addEventListener('DOMContentLoaded', function() {
         title.textContent = 'Menu de Acessibilidade';
         
         // Botão de fechar
+        // Botão para leitura do menu (ícone de volume)
+        const readMenuBtn = document.createElement('button');
+        readMenuBtn.className = 'aguia-menu-read';
+        readMenuBtn.setAttribute('aria-label', 'Ler funcionalidades do menu');
+        readMenuBtn.setAttribute('title', 'Ler funcionalidades do menu');
+    readMenuBtn.style.marginLeft = '0.5rem';
+    readMenuBtn.style.background = 'transparent';
+    readMenuBtn.style.border = 'none';
+    readMenuBtn.style.cursor = 'pointer';
+        readMenuBtn.innerHTML = AguiaIcons.volume;
+        readMenuBtn.addEventListener('click', function() {
+            try {
+                const menuEl = document.getElementById('aguiaMenu');
+                const lines = gatherMenuDescriptions(menuEl);
+                if (!lines || !lines.length) return;
+                // Se já estiver falando, interrompe imediatamente e restaura o ícone
+                if (menuReadingActive || (window.speechSynthesis && window.speechSynthesis.speaking)) {
+                    // marca como cancelado
+                    menuReadingActive = false;
+                    // invalidar execução atual para evitar callbacks remanescentes
+                    try { menuSpeechRunId++; } catch (e) {}
+                    try { window.speechSynthesis.cancel(); } catch (e) {}
+                    // limpa timeouts/utter pendentes
+                    try { if (menuSpeechTimeout) { clearTimeout(menuSpeechTimeout); menuSpeechTimeout = null; } } catch (e) {}
+                    menuSpeechUtter = null;
+                    // restaura visual
+                    readMenuBtn.innerHTML = AguiaIcons.volume;
+                    readMenuBtn.setAttribute('aria-pressed', 'false');
+                    readMenuBtn.classList.remove('aguia-menu-read--active');
+                    readMenuBtn.style.filter = '';
+                    return;
+                }
+
+                // Marca como ativo (visual) e inicia leitura
+                readMenuBtn.innerHTML = AguiaIcons.volumeOff;
+                readMenuBtn.setAttribute('aria-pressed', 'true');
+                readMenuBtn.classList.add('aguia-menu-read--active');
+
+                speakLinesSequentially(lines, function() {
+                    // leitura finalizada: restaurar visual
+                    readMenuBtn.innerHTML = AguiaIcons.volume;
+                    readMenuBtn.setAttribute('aria-pressed', 'false');
+                    readMenuBtn.classList.remove('aguia-menu-read--active');
+                });
+            } catch (e) { /* noop */ }
+        });
+
         const closeBtn = document.createElement('button');
         closeBtn.className = 'aguia-menu-close';
         closeBtn.innerHTML = '&times;';
         closeBtn.setAttribute('aria-label', 'Fechar menu de acessibilidade');
         closeBtn.addEventListener('click', toggleMenu);
         
-        header.appendChild(title);
-        header.appendChild(closeBtn);
+    header.appendChild(title);
+    // adiciona botão de leitura ao lado direito do título (antes do fechar)
+    header.appendChild(readMenuBtn);
+    header.appendChild(closeBtn);
         menu.appendChild(header);
         
         // Container para o conteúdo do menu com rolagem
@@ -2529,6 +2963,28 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Função para resetar todas as configurações
     function resetAll() {
+        // Se houver leitura em andamento, interrompe imediatamente e limpa estado
+        try {
+            if (menuReadingActive || (window.speechSynthesis && window.speechSynthesis.speaking)) {
+                menuReadingActive = false;
+                // invalidar execução atual
+                try { menuSpeechRunId++; } catch (e) {}
+                try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
+                try { if (menuSpeechTimeout) { clearTimeout(menuSpeechTimeout); menuSpeechTimeout = null; } } catch (e) {}
+                menuSpeechUtter = null;
+                try { if (menuHighlightedEl && menuHighlightedEl.classList) menuHighlightedEl.classList.remove('aguia-menu-item--highlighted'); } catch (e) {}
+                menuHighlightedEl = null;
+                // restaurar visual do botão de leitura
+                try {
+                    const readBtn = document.querySelector('.aguia-menu-read');
+                    if (readBtn) {
+                        readBtn.innerHTML = (typeof AguiaIcons !== 'undefined' && AguiaIcons.volume) ? AguiaIcons.volume : '';
+                        readBtn.setAttribute('aria-pressed', 'false');
+                        readBtn.classList.remove('aguia-menu-read--active');
+                    }
+                } catch (e) {}
+            }
+        } catch (e) {}
         // Reset de tamanho de fonte
         resetFontSize(true);
         

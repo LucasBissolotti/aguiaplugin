@@ -39,7 +39,7 @@
     font-style: italic;
 }
 
-/* Apply OpenDyslexic font to all text elements */
+/* Aplica a fonte OpenDyslexic a todos os elementos de texto */
 .aguia-opendyslexic-fonts {
     font-family: 'OpenDyslexic', sans-serif !important;
 }
