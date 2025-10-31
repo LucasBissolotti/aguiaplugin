@@ -18,7 +18,7 @@
  * Funções utilitárias do plugin AGUIA
  *
  * Contém helpers para registrar scripts, estilos e integração com o ciclo
- * de renderização do Moodle. Comentários internos padronizados em pt-BR.
+ * de renderização do Moodle.
  *
  * @package    local_aguiaplugin
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
