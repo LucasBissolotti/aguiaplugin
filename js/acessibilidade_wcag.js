@@ -655,6 +655,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleImageClick(img, event) {
         try {
+            // Se a imagem tiver atributo alt preenchido, mostramos isso
+            // diretamente e não chamamos o interpretador Gemini (fallback não necessário).
+            try {
+                const altAttr = img && (img.getAttribute && img.getAttribute('alt')) ? String(img.getAttribute('alt')) : (img && img.alt ? String(img.alt) : '');
+                if (altAttr && altAttr.trim() !== '') {
+                    showImageInterpreterModal(altAttr.trim(), img && img.src ? img.src : null, '<small>Descrição fornecida pelo atributo alt</small>');
+                    return;
+                }
+            } catch (e) { /* ignore e continua para o fallback do Gemini */ }
+
             showImageInterpreterModal('Carregando descrição...', img && img.src ? img.src : null);
             interpretImage(img).then(description => {
                 try { showStatusMessage('Descrição recebida', 'success'); } catch (e) {}
@@ -718,14 +728,109 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function showImageInterpreterModal(text, imageSrc) {
+    /**
+     * Abre um visualizador de imagem em tela cheia acessível para uma src fornecida.
+     * Cria um overlay com a imagem, um botão de fechar, tratadores de teclado
+     * e restaura o foco ao fechar.
+     */
+    function openImageViewer(src, alt) {
+        try {
+            if (!src) return;
+            // Evita criar múltiplos visualizadores
+            let existing = document.getElementById('aguiaImageViewerOverlay');
+            if (existing) { try { existing.parentNode.removeChild(existing); } catch (e) {} }
+
+            const overlay = document.createElement('div');
+            overlay.id = 'aguiaImageViewerOverlay';
+            overlay.setAttribute('role', 'dialog');
+            overlay.setAttribute('aria-modal', 'true');
+            overlay.style.position = 'fixed';
+            overlay.style.inset = '0';
+            overlay.style.background = 'rgba(0,0,0,0.92)';
+            overlay.style.display = 'flex';
+            overlay.style.alignItems = 'center';
+            overlay.style.justifyContent = 'center';
+            overlay.style.zIndex = 11000;
+            overlay.style.padding = '1rem';
+
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            wrapper.style.maxWidth = '98%';
+            wrapper.style.maxHeight = '98%';
+            wrapper.style.display = 'flex';
+            wrapper.style.alignItems = 'center';
+            wrapper.style.justifyContent = 'center';
+
+            const image = document.createElement('img');
+            image.src = src;
+            image.alt = alt || '';
+            image.style.maxWidth = '100%';
+            image.style.maxHeight = '95vh';
+            image.style.objectFit = 'contain';
+            image.style.borderRadius = '6px';
+            image.tabIndex = 0;
+
+            const closeBtn = document.createElement('button');
+            closeBtn.setAttribute('aria-label', 'Fechar visualizador de imagem');
+            closeBtn.innerHTML = '\u00D7';
+            closeBtn.style.position = 'absolute';
+            closeBtn.style.top = '-12px';
+            closeBtn.style.right = '-12px';
+            closeBtn.style.width = '48px';
+            closeBtn.style.height = '48px';
+            closeBtn.style.borderRadius = '8px';
+            closeBtn.style.border = 'none';
+            closeBtn.style.background = '#ffd166';
+            closeBtn.style.color = '#000';
+            closeBtn.style.fontSize = '1.4rem';
+            closeBtn.style.cursor = 'pointer';
+            closeBtn.style.boxShadow = '0 6px 18px rgba(0,0,0,0.4)';
+
+            wrapper.appendChild(image);
+            wrapper.appendChild(closeBtn);
+            overlay.appendChild(wrapper);
+            document.body.appendChild(overlay);
+
+            // Salva o foco anterior
+            try { overlay._previousFocus = document.activeElement; } catch (e) { overlay._previousFocus = null; }
+
+            const cleanup = function() {
+                try {
+                    if (overlay._keyHandler) document.removeEventListener('keydown', overlay._keyHandler);
+                    if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+                    if (overlay._previousFocus && typeof overlay._previousFocus.focus === 'function') overlay._previousFocus.focus();
+                } catch (e) {}
+            };
+
+            closeBtn.addEventListener('click', cleanup);
+            overlay.addEventListener('click', function(e) { if (e.target === overlay) cleanup(); });
+
+            overlay._keyHandler = function(e) {
+                if (e.key === 'Escape' || e.key === 'Esc') { e.preventDefault(); cleanup(); }
+                // permite que o teclado interaja/focalize a imagem
+                if ((e.key === 'Enter' || e.key === ' ') && document.activeElement === image) { e.preventDefault(); }
+            };
+            document.addEventListener('keydown', overlay._keyHandler);
+
+            // Foca a imagem para leitores de tela
+            setTimeout(function() { try { image.focus(); } catch (e) {} }, 50);
+        } catch (e) {}
+    }
+
+    function showImageInterpreterModal(text, imageSrc, footerText) {
         let overlay = document.getElementById('aguiaImageInterpreterModal');
         const contentHtml = function(bodyContent, thumbImg, footerText) {
             return '<div class="aguia-card">'
                 + (thumbImg ? ('<div class="aguia-card-thumb"><img src="' + thumbImg + '" alt="Imagem selecionada"/></div>') : '')
                 + '<div class="aguia-card-body">'
                 + '<div class="aguia-card-header">'
+                + '<div style="display:flex;align-items:center;gap:0.75rem;">'
                 + '<strong class="aguia-card-title">Descrição da imagem</strong>'
+                + '</div>'
+                + '<div class="aguia-card-controls" aria-hidden="false">'
+                + '<button type="button" class="aguia-font-decrease" aria-label="Diminuir tamanho da fonte">A-</button>'
+                + '<button type="button" class="aguia-font-increase" aria-label="Aumentar tamanho da fonte">A+</button>'
+                + '</div>'
                 + '<button class="aguia-card-close" aria-label="Fechar">&times;</button>'
                 + '</div>'
                 + '<div class="aguia-card-content">' + bodyContent + '</div>'
@@ -776,13 +881,13 @@ document.addEventListener('DOMContentLoaded', function() {
             + '<button type="button" class="aguia-close-btn">Fechar</button>'
             + '</div>';
 
-        if (!overlay) {
+            if (!overlay) {
             overlay = document.createElement('div');
             overlay.id = 'aguiaImageInterpreterModal';
             overlay.className = 'aguia-image-overlay';
             overlay.setAttribute('role', 'dialog');
             overlay.setAttribute('aria-modal', 'true');
-            overlay.innerHTML = contentHtml(bodyContent, imageSrc, '<small>Gerado por Gemini</small>');
+            overlay.innerHTML = contentHtml(bodyContent, imageSrc, (typeof footerText !== 'undefined' ? footerText : '<small>Gerado por Gemini</small>'));
             document.body.appendChild(overlay);
 
             overlay.style.position = 'fixed';
@@ -797,27 +902,26 @@ document.addEventListener('DOMContentLoaded', function() {
             const card = overlay.querySelector('.aguia-card');
             card.style.maxWidth = '720px';
             card.style.width = '100%';
-            card.style.background = '#fff';
+            try { card.style.background = ''; } catch(e) {}
             card.style.borderRadius = '10px';
-            card.style.boxShadow = '0 12px 40px rgba(0,0,0,0.3)';
+            try { card.style.boxShadow = '0 12px 40px rgba(0,0,0,0.3)'; } catch(e) {}
             card.style.display = 'flex';
             card.style.gap = '1rem';
             card.style.overflow = 'hidden';
 
             const thumb = card.querySelector('.aguia-card-thumb');
             if (thumb) {
-                thumb.style.flex = '0 0 160px';
-                thumb.style.background = '#f4f6f8';
-                thumb.style.display = 'flex';
-                thumb.style.alignItems = 'center';
-                thumb.style.justifyContent = 'center';
+                try { thumb.style.flex = ''; thumb.style.background = ''; thumb.style.display = ''; thumb.style.alignItems = ''; thumb.style.justifyContent = ''; } catch(e) {}
             }
             const thumbImg = card.querySelector('.aguia-card-thumb img');
             if (thumbImg) {
-                thumbImg.style.maxWidth = '140px';
-                thumbImg.style.maxHeight = '140px';
-                thumbImg.style.objectFit = 'cover';
-                thumbImg.style.borderRadius = '6px';
+                try { thumbImg.style.maxWidth = ''; thumbImg.style.maxHeight = ''; thumbImg.style.objectFit = ''; thumbImg.style.borderRadius = ''; } catch(e) {}
+                try { thumbImg.style.cursor = 'zoom-in'; } catch(e) {}
+                try { thumbImg.setAttribute('role', 'button'); thumbImg.setAttribute('tabindex', '0'); } catch(e) {}
+                try {
+                    thumbImg.addEventListener('click', function() { openImageViewer(thumbImg.src, thumbImg.alt || 'Imagem'); });
+                    thumbImg.addEventListener('keydown', function(ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openImageViewer(thumbImg.src, thumbImg.alt || 'Imagem'); } });
+                } catch(e) {}
             }
 
             const body = card.querySelector('.aguia-card-body');
@@ -919,7 +1023,7 @@ document.addEventListener('DOMContentLoaded', function() {
             overlay._keyHandler = function(e) { if (e.key === 'Escape' || e.key === 'Esc') closeImageInterpreterModal(); };
             document.addEventListener('keydown', overlay._keyHandler);
         } else {
-            overlay.innerHTML = contentHtml(bodyContent, imageSrc, '<small>Gerado por Gemini</small>');
+            overlay.innerHTML = contentHtml(bodyContent, imageSrc, (typeof footerText !== 'undefined' ? footerText : '<small>Gerado por Gemini</small>'));
 
             const cardForStyles = overlay.querySelector('.aguia-card');
             if (cardForStyles) {
@@ -934,18 +1038,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const thumbEl = cardForStyles.querySelector('.aguia-card-thumb');
                 if (thumbEl) {
-                    thumbEl.style.flex = '0 0 160px';
-                    thumbEl.style.background = '#f4f6f8';
-                    thumbEl.style.display = 'flex';
-                    thumbEl.style.alignItems = 'center';
-                    thumbEl.style.justifyContent = 'center';
+                    try { thumbEl.style.flex = ''; thumbEl.style.background = ''; thumbEl.style.display = ''; thumbEl.style.alignItems = ''; thumbEl.style.justifyContent = ''; } catch(e) {}
                 }
                 const thumbImgEl = cardForStyles.querySelector('.aguia-card-thumb img');
                 if (thumbImgEl) {
-                    thumbImgEl.style.maxWidth = '140px';
-                    thumbImgEl.style.maxHeight = '140px';
-                    thumbImgEl.style.objectFit = 'cover';
-                    thumbImgEl.style.borderRadius = '6px';
+                    try { thumbImgEl.style.maxWidth = ''; thumbImgEl.style.maxHeight = ''; thumbImgEl.style.objectFit = ''; thumbImgEl.style.borderRadius = ''; } catch(e) {}
+                    try { thumbImgEl.style.cursor = 'zoom-in'; } catch(e) {}
+                    try { thumbImgEl.setAttribute('role', 'button'); thumbImgEl.setAttribute('tabindex', '0'); } catch(e) {}
+                    try {
+                        thumbImgEl.addEventListener('click', function() { openImageViewer(thumbImgEl.src, thumbImgEl.alt || 'Imagem'); });
+                        thumbImgEl.addEventListener('keydown', function(ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openImageViewer(thumbImgEl.src, thumbImgEl.alt || 'Imagem'); } });
+                    } catch(e) {}
                 }
 
                 const bodyEl = cardForStyles.querySelector('.aguia-card-body');
@@ -961,7 +1064,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     headerEl.style.alignItems = 'center';
                     headerEl.style.justifyContent = 'space-between';
                     headerEl.style.padding = '0.75rem 1rem';
-                    headerEl.style.borderBottom = '1px solid rgba(0,0,0,0.06)';
+                    headerEl.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
                 }
 
                 const titleEl = cardForStyles.querySelector('.aguia-card-title');
@@ -973,7 +1076,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (contentEl) { contentEl.style.padding = '1rem'; contentEl.style.maxHeight = '60vh'; contentEl.style.overflow = 'auto'; }
 
                 const footerEl = cardForStyles.querySelector('.aguia-card-footer');
-                if (footerEl) { footerEl.style.padding = '0.5rem 1rem'; footerEl.style.borderTop = '1px solid rgba(0,0,0,0.04)'; footerEl.style.fontSize = '0.85rem'; footerEl.style.color = '#666'; }
+                if (footerEl) { footerEl.style.padding = '0.5rem 1rem'; footerEl.style.borderTop = '1px solid rgba(255,255,255,0.04)'; footerEl.style.fontSize = '0.85rem'; try { footerEl.style.color = ''; } catch(e){} }
 
                 const actionsContainerForStyles = cardForStyles.querySelector('.aguia-card-actions');
                 if (actionsContainerForStyles) {
@@ -983,7 +1086,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     actionsContainerForStyles.style.alignItems = 'center';
                 }
                 const actionsEls = cardForStyles.querySelectorAll('.aguia-card-actions button');
-                actionsEls.forEach(btn => { btn.style.padding = '0.5rem 0.75rem'; btn.style.borderRadius = '6px'; btn.style.border = '1px solid rgba(0,0,0,0.08)'; btn.style.background = '#fff'; btn.style.cursor = 'pointer'; });
+                actionsEls.forEach(btn => { btn.style.padding = '0.5rem 0.75rem'; btn.style.borderRadius = '6px'; btn.style.border = '1px solid rgba(255,255,255,0.12)'; try { btn.style.background = 'transparent'; } catch(e) {} btn.style.cursor = 'pointer'; try { btn.style.color = 'var(--aguia-modal-fg)'; } catch(e) {} });
                 const copyBtnEl = cardForStyles.querySelector('.aguia-copy-btn');
                 if (copyBtnEl) { copyBtnEl.style.background = '#2271ff'; copyBtnEl.style.color = '#fff'; copyBtnEl.style.border = 'none'; }
                 const closeActionEl = cardForStyles.querySelector('.aguia-close-btn');
@@ -1044,10 +1147,58 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        setTimeout(function() {
-            const el = overlay.querySelector('.aguia-copy-btn') || overlay.querySelector('.aguia-card-close');
-            if (el && typeof el.focus === 'function') el.focus();
-        }, 50);
+        // Initialize accessible defaults and controls (font-size variable, focus, handlers)
+        try {
+            // Default font size variable (can be adjusted by controls)
+            try { overlay.style.setProperty('--aguia-modal-font-size', overlay._aguiaFontSize || '20px'); } catch (e) {}
+
+            // Ensure content area is focusable and receives focus for screen readers
+            const contentEl = overlay.querySelector('.aguia-card-content');
+            if (contentEl) {
+                try { contentEl.setAttribute('tabindex', '0'); } catch (e) {}
+            }
+
+            // Font size controls
+            const inc = overlay.querySelector('.aguia-font-increase');
+            const dec = overlay.querySelector('.aguia-font-decrease');
+            const applyFontSize = function(sizePx) {
+                let s = String(sizePx || '').trim();
+                if (!/px$/.test(s)) s = (parseInt(s,10) || 20) + 'px';
+                try { overlay.style.setProperty('--aguia-modal-font-size', s); overlay._aguiaFontSize = s; } catch (e) {}
+            };
+            if (inc) {
+                inc.addEventListener('click', function() {
+                    try {
+                        const cur = window.getComputedStyle(overlay).getPropertyValue('--aguia-modal-font-size') || overlay._aguiaFontSize || '20px';
+                        const n = Math.min(48, (parseInt(cur,10) || 20) + 2);
+                        applyFontSize(n + 'px');
+                        const c = overlay.querySelector('.aguia-card-content'); if (c && typeof c.focus === 'function') c.focus();
+                    } catch (e) {}
+                });
+            }
+            if (dec) {
+                dec.addEventListener('click', function() {
+                    try {
+                        const cur = window.getComputedStyle(overlay).getPropertyValue('--aguia-modal-font-size') || overlay._aguiaFontSize || '20px';
+                        const n = Math.max(12, (parseInt(cur,10) || 20) - 2);
+                        applyFontSize(n + 'px');
+                        const c = overlay.querySelector('.aguia-card-content'); if (c && typeof c.focus === 'function') c.focus();
+                    } catch (e) {}
+                });
+            }
+
+            // Close button already wired to closeImageInterpreterModal; ensure aria label and keyboard accessibility
+            const closeBtn = overlay.querySelector('.aguia-card-close');
+            if (closeBtn) {
+                try { closeBtn.setAttribute('aria-label', closeBtn.getAttribute('aria-label') || 'Fechar'); } catch (e) {}
+            }
+
+            // Focus priority: content element, then copy button, then close button
+            setTimeout(function() {
+                const toFocus = overlay.querySelector('.aguia-card-content') || overlay.querySelector('.aguia-copy-btn') || overlay.querySelector('.aguia-card-close');
+                if (toFocus && typeof toFocus.focus === 'function') toFocus.focus();
+            }, 50);
+        } catch (e) {}
     }
 
     function closeImageInterpreterModal() {
@@ -3155,6 +3306,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (customCursorBtn) {
             customCursorBtn.classList.remove('active');
         }
+        // Garantir que o menu e seu conteúdo voltem ao cursor padrão
+        try {
+            const menuEl = document.getElementById('aguiaMenu');
+            if (menuEl) {
+                try { menuEl.style.cursor = ''; } catch (e) {}
+                try { menuEl.style.removeProperty('--aguia-custom-cursor'); } catch (e) {}
+                try { menuEl.classList.remove('aguia-custom-cursor-active'); } catch (e) {}
+            }
+        } catch (e) {}
         
         // Esconde as máscaras
         const maskH = document.getElementById('aguiaReadingMaskH');
