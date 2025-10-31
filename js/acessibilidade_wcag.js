@@ -1066,6 +1066,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (isExpanded) {
             menu.style.display = 'none';
+            // Ao fechar, garantimos que qualquer estilo de cursor aplicado ao menu seja removido
+                try { menu.style.cursor = ''; try { menu.style.removeProperty('--aguia-custom-cursor'); } catch(ee){} } catch (e) {}
+            try { menu.classList.remove('aguia-custom-cursor-active'); } catch (e) {}
             button.setAttribute('aria-expanded', 'false');
             // Remove aria-modal and keyboard trap when fechando
             try {
@@ -1095,6 +1098,21 @@ document.addEventListener('DOMContentLoaded', function() {
             } catch (e) {}
         } else {
             menu.style.display = 'block';
+            // Aplicar cursor customizado dentro do menu se a funcionalidade Cursor Grande estiver ativa
+            try {
+                if (typeof customCursorEnabled !== 'undefined' && customCursorEnabled) {
+                    const scope = window.AGUIA_SCOPE || document.getElementById('aguia-scope-element') || document.body;
+                    const computedCursor = (window.getComputedStyle && scope) ? (window.getComputedStyle(scope).cursor || '') : '';
+                    if (computedCursor) {
+                        try { menu.style.cursor = computedCursor; try { menu.style.setProperty('--aguia-custom-cursor', computedCursor); } catch(ee){} } catch (e) {}
+                    } else {
+                        try { menu.classList.add('aguia-custom-cursor-active'); } catch (e) {}
+                    }
+                } else {
+                    try { menu.style.cursor = ''; try { menu.style.removeProperty('--aguia-custom-cursor'); } catch(ee){} } catch (e) {}
+                    try { menu.classList.remove('aguia-custom-cursor-active'); } catch (e) {}
+                }
+            } catch (e) {}
             button.setAttribute('aria-expanded', 'true');
             // Marcar modal para tecnologias assistivas
             menu.setAttribute('aria-modal', 'true');
@@ -1713,6 +1731,27 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Adiciona o menu completo ao corpo do documento
         document.body.appendChild(menu);
+        // Se o Cursor Grande já estiver ativo, aplicamos a classe ao menu para que o cursor
+        // dentro do próprio menu também seja alterado.
+        try {
+            if (typeof customCursorEnabled !== 'undefined' && customCursorEnabled) {
+                const m = document.getElementById('aguiaMenu');
+                if (m) {
+                    try {
+                        const scope = window.AGUIA_SCOPE || document.getElementById('aguia-scope-element') || document.body;
+                        const computedCursor = (window.getComputedStyle && scope) ? (window.getComputedStyle(scope).cursor || '') : '';
+                        if (computedCursor) {
+                            m.style.cursor = computedCursor;
+                            try { m.style.setProperty('--aguia-custom-cursor', computedCursor); } catch (ee) {}
+                        } else {
+                            m.classList.add('aguia-custom-cursor-active');
+                        }
+                    } catch (e) {
+                        try { m.classList.add('aguia-custom-cursor-active'); } catch (er) {}
+                    }
+                }
+            }
+        } catch (e) {}
     }
     
     // Função para criar botões de opção com estilo consistente
@@ -1766,13 +1805,71 @@ document.addEventListener('DOMContentLoaded', function() {
                     }, 3500);
                 }
                 option.action();
+                // Se este botão é o "Cursor Grande", também aplicamos/removemos
+                // o efeito dentro do menu para que o cursor usado ali mude
+                // apenas quando a funcionalidade estiver ativa.
+                try {
+                    if (option.id === 'aguiaCustomCursorBtn') {
+                        const menuEl = document.getElementById('aguiaMenu');
+                        if (menuEl) {
+                            try {
+                                const scope = window.AGUIA_SCOPE || document.getElementById('aguia-scope-element') || document.body;
+                                const computedCursor = (window.getComputedStyle && scope) ? (window.getComputedStyle(scope).cursor || '') : '';
+                                if (typeof customCursorEnabled !== 'undefined' && customCursorEnabled) {
+                                    if (computedCursor) {
+                                        menuEl.style.cursor = computedCursor;
+                                        try { menuEl.style.setProperty('--aguia-custom-cursor', computedCursor); } catch (ee) {}
+                                    }
+                                    else menuEl.classList.add('aguia-custom-cursor-active');
+                                } else {
+                                    // remover estilo inline e classe residual
+                                    try { menuEl.style.cursor = ''; } catch (er) {}
+                                    try { menuEl.style.removeProperty('--aguia-custom-cursor'); } catch (ee) {}
+                                    try { menuEl.classList.remove('aguia-custom-cursor-active'); } catch (er) {}
+                                }
+                            } catch (er) {
+                                try {
+                                    if (typeof customCursorEnabled !== 'undefined' && customCursorEnabled) menuEl.classList.add('aguia-custom-cursor-active');
+                                    else menuEl.classList.remove('aguia-custom-cursor-active');
+                                } catch (e) {}
+                            }
+                        }
+                    }
+                } catch (e) { /* noop */ }
             } catch (err) { console.error('Erro ao executar ação do botão AGUIA', err); }
         });
         button.addEventListener('keydown', function(e) {
             // Permitir navegação por teclado (WCAG 2.1.1)
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                try { option.action(); } catch (err) { console.error('Erro ao executar ação do botão AGUIA via teclado', err); }
+                try {
+                    option.action();
+                    if (option.id === 'aguiaCustomCursorBtn') {
+                        const menuEl = document.getElementById('aguiaMenu');
+                        if (menuEl) {
+                            try {
+                                const scope = window.AGUIA_SCOPE || document.getElementById('aguia-scope-element') || document.body;
+                                const computedCursor = (window.getComputedStyle && scope) ? (window.getComputedStyle(scope).cursor || '') : '';
+                                if (typeof customCursorEnabled !== 'undefined' && customCursorEnabled) {
+                                    if (computedCursor) {
+                                        menuEl.style.cursor = computedCursor;
+                                        try { menuEl.style.setProperty('--aguia-custom-cursor', computedCursor); } catch (ee) {}
+                                    }
+                                    else menuEl.classList.add('aguia-custom-cursor-active');
+                                } else {
+                                    try { menuEl.style.cursor = ''; } catch (er) {}
+                                    try { menuEl.style.removeProperty('--aguia-custom-cursor'); } catch (ee) {}
+                                    try { menuEl.classList.remove('aguia-custom-cursor-active'); } catch (er) {}
+                                }
+                            } catch (er) {
+                                try {
+                                    if (typeof customCursorEnabled !== 'undefined' && customCursorEnabled) menuEl.classList.add('aguia-custom-cursor-active');
+                                    else menuEl.classList.remove('aguia-custom-cursor-active');
+                                } catch (e) {}
+                            }
+                        }
+                    }
+                } catch (err) { console.error('Erro ao executar ação do botão AGUIA via teclado', err); }
             }
         });
         

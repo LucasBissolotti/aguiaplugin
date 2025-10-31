@@ -25,3 +25,28 @@
     align-items: center;
     justify-content: center;
 }
+
+/* Garanta que o cursor personalizado "Cursor Grande" seja usado em todo o
+menu de acessibilidade e seus descendentes enquanto o recurso estiver ativo.
+
+O JS alterna a classe `aguia-custom-cursor-active` no menu
+ou define um estilo `cursor` embutido. Prefira a variável CSS
+`--aguia-custom-cursor`. Use !important para
+sobrescrever os padrões de componente/botão para que o cursor não volte ao estado original em
+elementos interativos dentro do menu.
+
+*/
+#aguiaMenu.aguia-custom-cursor-active,
+#aguiaMenu.aguia-custom-cursor-active *,
+.aguia-custom-cursor-active #aguiaMenu,
+.aguia-custom-cursor-active #aguiaMenu * {
+    cursor: var(--aguia-custom-cursor, auto) !important;
+}
+
+/* Também garante que qualquer cursor embutido definido por JS em #aguiaMenu se propague para os filhos (alguns navegadores podem mostrar um ponteiro para botões, a menos que
+seja substituído). Adicionamos um seletor específico para o menu direto e seus
+descendentes também. */
+#aguiaMenu,
+#aguiaMenu * {
+    cursor: var(--aguia-custom-cursor, auto) !important;
+}
