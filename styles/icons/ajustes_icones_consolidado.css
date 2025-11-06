@@ -1,0 +1,414 @@
+/**
+ * AguiaPlugin — Ajustes consolidados para todos os ícones (UNIFICADO)
+ *
+ * Descrição:
+ *   Regras CSS unificadas para garantir renderização consistente de todos
+ *   os ícones do plugin (tamanho, preenchimento, alinhamento e remoção de 
+ *   elementos sobrepostos).
+ *   
+ *   Este arquivo consolida:
+ *   - ajuste_*.css (15 arquivos individuais)
+ *   - padronizacao_tamanho_icones.css
+ *   - icones_unificados.css
+ *
+ * @module styles/icons/ajustes_icones_consolidado.css
+ * @package    local_aguiaplugin
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/* ============================================
+   REGRAS GLOBAIS PARA TODOS OS ÍCONES
+   ============================================ */
+
+/* Padronização de tamanho para todos os ícones */
+.aguia-option .icon svg,
+.aguia-button .icon svg,
+.aguia-wcag-button .icon svg,
+[id^="aguia"] .icon svg,
+[class^="aguia"] .icon svg {
+    width: 36px !important;
+    height: 36px !important;
+    overflow: visible !important;
+    display: block !important;
+    margin: 0 auto !important;
+    transform: none !important;
+    filter: none !important;
+    fill: #000000 !important; /* Cor padrão preto */
+    stroke-width: 1.5 !important; /* PADRONIZADO: traço médio equilibrado */
+    transition: none !important; /* Sem transições para consistência */
+}
+
+/* Container dos ícones */
+.aguia-option .icon,
+.aguia-button .icon,
+.aguia-wcag-button .icon,
+[id^="aguia"] .icon {
+    position: static !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: 40px !important;
+    margin-bottom: 10px !important;
+}
+
+/* Padronização de espessura para todos os elementos SVG */
+.aguia-option .icon svg *,
+.aguia-button .icon svg *,
+.aguia-wcag-button .icon svg *,
+[id^="aguia"] .icon svg * {
+    stroke-width: 1.5 !important; /* Padrão: traço médio globalmente */
+}
+
+/* Exceção: Guia de Leitura usa stroke-width customizado */
+#aguiaReadingHelperBtn .icon svg * {
+    stroke-width: unset !important; /* Remove o padrão global */
+}
+
+/* Linhas finas para elementos específicos */
+.aguia-option .icon svg line,
+.aguia-option .icon svg circle[stroke] {
+    stroke-width: 1.5 !important; /* Padrão: traço médio */
+}
+
+/* Exceção: Guia de Leitura mantém suas configurações */
+#aguiaReadingHelperBtn .icon svg line {
+    stroke-width: unset !important;
+}
+
+/* Texto em ícones - padrão semi-bold */
+.aguia-option .icon svg text,
+.aguia-button .icon svg text {
+    font-weight: 600 !important; /* Padrão: semi-bold */
+    stroke: none !important;
+}
+
+/* Remover pseudo-elementos que podem sobrepor ícones */
+.aguia-option .icon::before,
+.aguia-option .icon::after,
+.aguia-button .icon::before,
+.aguia-button .icon::after,
+.aguia-wcag-button .icon::before,
+.aguia-wcag-button .icon::after,
+[id^="aguia"] .icon::before,
+[id^="aguia"] .icon::after {
+    display: none !important;
+    content: none !important;
+}
+
+/* ============================================
+   CORES PADRÃO DOS ÍCONES
+   ============================================ */
+
+/* Estado normal - preto para todos os ícones */
+.aguia-option .icon svg,
+.aguia-button .icon svg,
+.aguia-wcag-button .icon svg,
+[id^="aguia"] .icon svg {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+    stroke-width: 1.5 !important; /* Padronizado: traço médio */
+    color: #000000 !important;
+}
+
+/* Estado ativo - manter preto */
+.aguia-option.active .icon svg,
+.aguia-button.active .icon svg,
+.aguia-wcag-button.active .icon svg,
+[id^="aguia"].active .icon svg {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+    color: #000000 !important;
+}
+
+/* Estado hover - SEM transformação para consistência */
+.aguia-option:hover .icon svg,
+.aguia-button:hover .icon svg,
+.aguia-wcag-button:hover .icon svg,
+[id^="aguia"]:hover .icon svg {
+    transform: none !important;
+}
+
+/* ============================================
+   AJUSTES ESPECÍFICOS POR BOTÃO
+   ============================================ */
+
+/* Botão Alto Contraste */
+#aguiaHighContrastBtn .icon svg {
+    fill: #000000 !important;
+}
+
+#aguiaHighContrastBtn.active .icon svg {
+    fill: #000000 !important;
+}
+
+/* Botão Aumentar Texto - texto com espessura equilibrada */
+#aguiaIncreaseFontBtn .icon svg {
+    width: 40px !important; /* Aumentado de 36px */
+    height: 40px !important; /* Aumentado de 36px */
+    transform: translateY(5px) !important; /* Move o ícone 5px para baixo */
+}
+
+#aguiaIncreaseFontBtn:hover .icon svg {
+    transform: translateY(5px) !important; /* Mantém a posição no hover */
+}
+
+#aguiaIncreaseFontBtn .icon svg,
+#aguiaIncreaseFontBtn .icon svg text {
+    fill: #000000 !important;
+    font-weight: 600 !important; /* Semi-bold - equilíbrio entre 500 e 700 */
+    font-size: 16px !important; /* Aumentado de 14px */
+    stroke: none !important; /* Sem traço no texto */
+}
+
+/* Garantir consistência em todos os estados */
+#aguiaIncreaseFontBtn .icon svg text,
+#aguiaIncreaseFontBtn:hover .icon svg text,
+#aguiaIncreaseFontBtn.active .icon svg text {
+    font-weight: 600 !important;
+    stroke-width: 0 !important;
+}
+
+/* Botão Intensidade de Cor - gota dividida */
+#aguiaColorIntensityBtn .icon svg {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+}
+
+/* Botão Destaque de Links */
+#aguiaEmphasizeLinksBtn .icon svg ellipse {
+    stroke: #000000 !important;
+    stroke-width: 1.5 !important; /* Padronizado: traço médio */
+    fill: none !important;
+}
+
+#aguiaEmphasizeLinksBtn .icon svg line {
+    stroke: #000000 !important;
+    stroke-width: 1 !important; /* Linha mais fina */
+    fill: none !important;
+}
+
+/* Botão Letras Destacadas */
+#aguiaHighlightedLettersBtn .icon svg text {
+    fill: #000000 !important;
+    font-weight: 600 !important; /* Padronizado: semi-bold */
+    font-size: 18px !important;
+    stroke: none !important;
+}
+
+/* Botão Ocultar Imagens */
+#aguiaHideImagesBtn .icon svg rect {
+    stroke: #000000 !important;
+    stroke-width: 1.5 !important; 
+    fill: none !important;
+}
+
+#aguiaHideImagesBtn .icon svg line {
+    stroke: #000000 !important;
+    stroke-width: 1.5 !important; /* Padronizado: traço médio */
+    stroke-linecap: round !important;
+}
+
+#aguiaHideImagesBtn .icon svg circle,
+#aguiaHideImagesBtn .icon svg path {
+    fill: #000000 !important;
+}
+
+/* Botão Máscara de Foco (Horizontal e Vertical) */
+#aguiaReadingMaskBtn .icon svg rect,
+#aguiaReadingMaskHorizontalBtn .icon svg rect,
+#aguiaReadingMaskVerticalBtn .icon svg rect {
+    fill: #000000 !important;
+    stroke: none !important; /* Retângulos preenchidos sem borda */
+}
+
+/* Retângulos vazados (com stroke apenas) */
+#aguiaReadingMaskBtn .icon svg rect[fill="none"],
+#aguiaReadingMaskHorizontalBtn .icon svg rect[fill="none"],
+#aguiaReadingMaskVerticalBtn .icon svg rect[fill="none"] {
+    fill: none !important;
+    stroke: #000000 !important;
+    stroke-width: 1.5 !important; /* Padronizado: traço médio */
+}
+
+/* Botão Cursor Personalizado - todos os estados */
+#aguiaCustomCursorBtn .icon svg,
+#aguiaCustomCursorBtn:hover .icon svg,
+#aguiaCustomCursorBtn.active .icon svg {
+    fill: #000000 !important;
+    transform: none !important; /* Sem transformação no hover */
+}
+
+#aguiaCustomCursorBtn .icon svg path,
+#aguiaCustomCursorBtn:hover .icon svg path,
+#aguiaCustomCursorBtn.active .icon svg path {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+    stroke-width: 0.5 !important; /* Padronizado: traço fino para contorno */
+}
+
+/* Botão Destaque de Cabeçalho - todos os estados */
+#aguiaHeaderHighlightBtn .icon svg rect,
+#aguiaHeaderHighlightBtn:hover .icon svg rect,
+#aguiaHeaderHighlightBtn.active .icon svg rect {
+    stroke: #000000 !important;
+    stroke-width: 1.5 !important; /* Padronizado: traço médio */
+    fill: none !important;
+}
+
+#aguiaHeaderHighlightBtn .icon svg path,
+#aguiaHeaderHighlightBtn:hover .icon svg path,
+#aguiaHeaderHighlightBtn.active .icon svg path {
+    stroke: #000000 !important;
+    stroke-width: 2.5 !important; /* Linha de título mais grossa */
+    stroke-linecap: round !important;
+    fill: none !important;
+}
+
+/* Botão Lupa/Ampliador - usa stroke, não fill */
+#aguiaMagnifierBtn .icon svg circle,
+#aguiaMagnifierBtn:hover .icon svg circle,
+#aguiaMagnifierBtn.active .icon svg circle {
+    stroke: #000000 !important;
+    stroke-width: 1.8 !important; /* Padronizado: traço médio para círculo */
+    fill: none !important;
+}
+
+#aguiaMagnifierBtn .icon svg path,
+#aguiaMagnifierBtn:hover .icon svg path,
+#aguiaMagnifierBtn.active .icon svg path {
+    stroke: #000000 !important;
+    stroke-width: 2 !important; /* Cabo da lupa um pouco mais grosso */
+    stroke-linecap: round !important;
+    fill: none !important;
+}
+
+/* Botão Espaçamento de Letras - setas e texto */
+#aguiaLetterSpacingBtn .icon svg {
+    padding: 0 !important; /* Remover padding extra */
+}
+
+#aguiaLetterSpacingBtn .icon svg path,
+#aguiaLetterSpacingBtn:hover .icon svg path,
+#aguiaLetterSpacingBtn.active .icon svg path {
+    stroke: #000000 !important;
+    stroke-width: 1.5 !important; /* Padronizado: traço médio */
+    fill: none !important;
+}
+
+#aguiaLetterSpacingBtn .icon svg text,
+#aguiaLetterSpacingBtn:hover .icon svg text,
+#aguiaLetterSpacingBtn.active .icon svg text {
+    fill: #000000 !important;
+    font-weight: 600 !important; /* Padronizado: semi-bold */
+    font-size: 12px !important;
+    stroke: none !important;
+}
+
+/* Botão Espaçamento entre Linhas - TODOS os elementos preenchidos em preto */
+#aguiaLineSpacingBtn .icon svg path,
+#aguiaLineSpacingBtn:hover .icon svg path,
+#aguiaLineSpacingBtn.active .icon svg path {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+    stroke-width: 1 !important;
+}
+
+#aguiaLineSpacingBtn .icon svg rect,
+#aguiaLineSpacingBtn:hover .icon svg rect,
+#aguiaLineSpacingBtn.active .icon svg rect {
+    fill: #000000 !important;
+    stroke: none !important;
+}
+
+#aguiaLineSpacingBtn .icon svg line,
+#aguiaLineSpacingBtn:hover .icon svg line,
+#aguiaLineSpacingBtn.active .icon svg line {
+    stroke: #000000 !important;
+    stroke-width: 1.5 !important;
+    fill: none !important;
+}
+
+/* Garantir que TODO o SVG fique preto */
+#aguiaLineSpacingBtn .icon svg,
+#aguiaLineSpacingBtn:hover .icon svg,
+#aguiaLineSpacingBtn.active .icon svg {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+}
+
+#aguiaLineSpacingBtn .icon svg *,
+#aguiaLineSpacingBtn:hover .icon svg *,
+#aguiaLineSpacingBtn.active .icon svg * {
+    fill: #000000 !important;
+    stroke: #000000 !important;
+}
+
+/* Botão Texto para Fala - pessoa com ondas */
+#aguiaTextToSpeechBtn .icon svg path[fill] {
+    fill: #000000 !important;
+    stroke: none !important;
+}
+
+#aguiaTextToSpeechBtn .icon svg path[stroke] {
+    stroke: #000000 !important;
+    stroke-width: 1.5 !important; /* Padronizado: traço médio para ondas */
+    fill: none !important;
+    stroke-linecap: round !important;
+}
+
+/* Botão Guia de Leitura - permitir que o SVG use suas próprias configurações */
+#aguiaReadingHelperBtn .icon svg rect {
+    stroke: #000000 !important;
+    fill: none !important;
+    stroke-width: 2 !important; 
+}
+#aguiaReadingHelperBtn .icon svg line {
+    stroke: #000000 !important;
+    fill: none !important;
+}
+
+#aguiaReadingHelperBtn .icon svg line:first-of-type {
+    stroke-width: 2 !important; 
+}
+
+#aguiaReadingHelperBtn .icon svg line:nth-of-type(2),
+#aguiaReadingHelperBtn .icon svg line:nth-of-type(3) {
+    stroke-width: 1.3 !important; /* Linhas seguintes mais finas */
+}
+
+/* Botão Fontes Legíveis - mover ícone para a direita */
+#aguiaReadableFontsBtn .icon svg {
+    transform: translateX(2px) !important; /* Move o ícone 2px para a direita */
+}
+
+/* Botão Interpretar Imagens - centralizar movendo para a direita */
+#aguiaImageInterpreterBtn .icon svg {
+    transform: translateX(4px) !important; /* Move o ícone 4px para a direita */
+}
+
+/* ============================================
+   ÍCONES DO PAINEL DE DALTONISMO
+   ============================================ */
+
+#aguiaColorblindPanel .aguia-icon-container svg {
+    width: 24px !important;
+    height: 24px !important;
+    display: block !important;
+}
+
+/* Ícones de círculos coloridos para daltonismo */
+#aguiaColorblindPanel .aguia-submenu-option[data-value="protanopia"] .icon svg circle {
+    fill: #FF0000 !important;
+}
+
+#aguiaColorblindPanel .aguia-submenu-option[data-value="deuteranopia"] .icon svg circle {
+    fill: #00FF00 !important;
+}
+
+#aguiaColorblindPanel .aguia-submenu-option[data-value="tritanopia"] .icon svg circle {
+    fill: #0000FF !important;
+}
+
+#aguiaColorblindPanel .aguia-submenu-option[data-value="none"] .icon svg path {
+    stroke: #000000 !important;
+}

@@ -1460,7 +1460,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 id: 'aguiaHighlightedLettersBtn'
             }
             ,{
-                iconSvg: AguiaIcons.info,
+                iconSvg: AguiaIcons.imageInterpreter,
                 text: 'Interpretar Imagens',
                 action: toggleImageInterpreter,
                 ariaLabel: 'Ativar interpretação de imagens',
@@ -2509,7 +2509,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 noneButton.classList.add('active');
             }
             
-            // Remove classes de daltonismo do elemento HTML
+            // Remove classes de daltonismo do body, html e AGUIA_SCOPE
+            document.body.classList.remove(
+                'aguia-colorblind-protanopia',
+                'aguia-colorblind-deuteranopia',
+                'aguia-colorblind-tritanopia',
+                'aguia-colorblind-achromatopsia'
+            );
+            document.documentElement.classList.remove(
+                'aguia-colorblind-protanopia',
+                'aguia-colorblind-deuteranopia',
+                'aguia-colorblind-tritanopia',
+                'aguia-colorblind-achromatopsia'
+            );
             AGUIA_SCOPE.classList.remove(
                 'aguia-colorblind-protanopia',
                 'aguia-colorblind-deuteranopia',
@@ -2529,7 +2541,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para configurar modo de daltonismo (WCAG 1.4.8)
     // Função para lidar com múltiplos modos de daltonismo
     function setColorBlindModes(modes) {
-        // Remove classes anteriores
+        // Remove classes anteriores do body e html para garantir que funcionem
+        document.body.classList.remove(
+            'aguia-colorblind-protanopia',
+            'aguia-colorblind-deuteranopia',
+            'aguia-colorblind-tritanopia'
+        );
+        document.documentElement.classList.remove(
+            'aguia-colorblind-protanopia',
+            'aguia-colorblind-deuteranopia',
+            'aguia-colorblind-tritanopia'
+        );
+        // Também remove do AGUIA_SCOPE por compatibilidade
         AGUIA_SCOPE.classList.remove(
             'aguia-colorblind-protanopia',
             'aguia-colorblind-deuteranopia',
@@ -2539,6 +2562,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Evita conflito com os filtros de intensidade de cor (ambos usam 'filter')
         // Remover quaisquer classes de intensidade de cor ativas
         AGUIA_SCOPE.classList.remove(
+            'aguia-color-intensity-low',
+            'aguia-color-intensity-high',
+            'aguia-color-intensity-gray'
+        );
+        document.body.classList.remove(
             'aguia-color-intensity-low',
             'aguia-color-intensity-high',
             'aguia-color-intensity-gray'
@@ -2566,8 +2594,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const colorblindButton = document.getElementById('aguiaColorblindButton');
         
         if (modes.length > 0) {
-            // Aplica filtros no escopo
+            // Aplica filtros no body e html para garantir que toda a página seja afetada
             modes.forEach(mode => {
+                document.body.classList.add('aguia-colorblind-' + mode);
+                document.documentElement.classList.add('aguia-colorblind-' + mode);
                 AGUIA_SCOPE.classList.add('aguia-colorblind-' + mode);
             });
             
@@ -2575,6 +2605,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const aguiaButton = document.getElementById('aguiaButton');
             if (aguiaButton) {
                 aguiaButton.style.filter = 'none';
+            }
+            const aguiaMenu = document.getElementById('aguiaMenu');
+            if (aguiaMenu) {
+                aguiaMenu.style.filter = 'none';
             }
             
             colorblindButton.classList.add('active');

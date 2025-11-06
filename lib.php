@@ -55,14 +55,8 @@ function local_aguiaplugin_require_js() {
     }
     $PAGE->requires->js('/local/aguiaplugin/js/gerenciamento_memoria.js');
     $PAGE->requires->js('/local/aguiaplugin/js/icones_acessibilidade.js');
-    $PAGE->requires->js('/local/aguiaplugin/js/botoes_acessibilidade.js');
     $PAGE->requires->js('/local/aguiaplugin/js/api_preferencias.js'); 
     $PAGE->requires->js('/local/aguiaplugin/js/acessibilidade_wcag.js'); 
-    $PAGE->requires->js('/local/aguiaplugin/js/inicializar_daltonismo.js');
-    $PAGE->requires->js('/local/aguiaplugin/js/atualizador_icones.js');
-    $PAGE->requires->js('/local/aguiaplugin/js/letras_destaque.js');
-    $PAGE->requires->js('/local/aguiaplugin/js/ajuste_exibicao.js');
-    $PAGE->requires->js('/local/aguiaplugin/js/ampliador_conteudo.js'); 
     $PAGE->requires->js('/local/aguiaplugin/js/ampliador_autonomo.js'); 
 }
 
@@ -111,34 +105,13 @@ function local_aguiaplugin_before_standard_html_head() {
         'painel_daltonismo.css',
         'intensidade_cores.css',
         'mascara_leitura_cursor.css',
-        'icones.css',
-        'interacoes_botoes.css',
         'estilos_botoes.css',
         'destaque_cabecalho.css',
-        'espacamento_adicional.css',
         'espacamento_separado.css',
         'letras_destaque.css',
         'fonte_opendyslexic.css',
-        'ampliador_conteudo.css',
         'aguia_button.css',
-        'icons/padronizacao_tamanho_icones.css',
-        'icons/icones_unificados.css',
-        'icons/ajuste_letras_destaque.css',
-        'icons/ajuste_icone_espacamento_letras.css',
-        'icons/ajuste_icone_ampliador.css',
-        'icons/ajuste_icone_destaque_cabecalho.css',
-        'icons/ajuste_intensidade_cor.css',
-        'icons/ajuste_texto_para_fala.css',
-        'icons/ajuste_ocultar_imagens.css',
-        'icons/ajuste_tamanho_texto.css',
-        'icons/ajuste_altura_linha.css',
-        'icons/ajuste_destaque_links.css',
-        'icons/ajuste_mascara_foco_horizontal.css',
-        'icons/ajuste_mascara_foco_vertical.css',
-        'icons/ajuste_alto_contraste.css',
-        'manutencao_icones.css',
-        'correcao_icones_final.css', 
-        'icons/correcao_cursor_personalizado.css',
+        'icons/ajustes_icones_consolidado.css',
     ];
 
     $links = [];

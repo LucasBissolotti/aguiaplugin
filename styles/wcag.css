@@ -649,8 +649,25 @@ button#aguiaButton.aguia-button:hover::before {
     }
 }
 
+/* Classes de tamanho de texto - WCAG 1.4.4 */
+.aguia-text-size-100 {
+    font-size: 1rem !important;
+}
+
+.aguia-text-size-110 {
+    font-size: 1.1rem !important;
+}
+
+.aguia-text-size-120 {
+    font-size: 1.2rem !important;
+}
+
+.aguia-text-size-130 {
+    font-size: 1.3rem !important;
+}
+
 .aguia-text-size-140 {
-    font-size: 140% !important;
+    font-size: 1.4rem !important;
 }
 
 /* Respeita preferência do usuário por reduzir movimento */
@@ -682,7 +699,7 @@ button#aguiaButton.aguia-button:hover::before {
 }
 
 .aguia-text-size-150 {
-    font-size: 150% !important;
+    font-size: 1.5rem !important;
 }
 
 /* Garante que links sejam identificáveis - WCAG 1.4.1 */
