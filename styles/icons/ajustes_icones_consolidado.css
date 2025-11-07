@@ -156,7 +156,7 @@
 #aguiaIncreaseFontBtn .icon svg text {
     fill: #000000 !important;
     font-weight: 600 !important; /* Semi-bold - equilíbrio entre 500 e 700 */
-    font-size: 16px !important; /* Aumentado de 14px */
+    font-size: 16px !important; 
     stroke: none !important; /* Sem traço no texto */
 }
 

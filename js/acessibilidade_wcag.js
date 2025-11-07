@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let menuHighlightedEl = null;
     // Identificador para a execução atual de leitura — usado para invalidar callbacks antigos
     let menuSpeechRunId = 0;
-    // Mapa de descrições (pt-BR) para cada funcionalidade do menu.
+    // Mapa de descrições para cada funcionalidade do menu.
     // Chaves preferenciais: id do botão quando disponível, caso contrário o texto exibido.
     const AGUIA_FEATURE_DESCRIPTIONS = {
         'aguiaIncreaseFontBtn': 'Aumenta o tamanho do texto na página para facilitar a leitura.',
@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const utter = new SpeechSynthesisUtterance(text);
             menuSpeechUtter = utter;
             utter.lang = 'pt-BR';
-            utter.rate = 0.95; // ligeiramente mais pausado
+            utter.rate = 0.95;
             utter.pitch = 1.0;
             // escolher voz pt-BR se disponível
             try {
@@ -426,10 +426,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
 
-        // Use capture to try to catch the keystroke earlier than other handlers
     document.addEventListener('keydown', function(e) {
             try {
-                // Detect the 'A' key in a robust way
                 const isAKey = (e.key === 'A' || e.key === 'a' || e.code === 'KeyA');
                 // Apenas Alt+Shift+A
                 const isShortcut = isAKey && (e.altKey && e.shiftKey);
@@ -584,15 +582,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /**
      * Alterna o modo de interpretação de imagens (Image Interpreter).
-     * Quando ativado, o usuário pode clicar em imagens para obter uma descrição
-     * (se houver integração com um serviço de interpretação). Atualiza botões
-     * de interface, anexa/remova listeners e salva a preferência do usuário.
+     * Quando ativado, o usuário pode clicar em imagens para obter uma descrição.
      * @returns {void}
      */
     // Alterna o modo de interpretação de imagens
     function toggleImageInterpreter() {
         imageInterpreterEnabled = !imageInterpreterEnabled;
-        // Atualiza preferência visual (se o botão existir)
+        // Atualiza preferência visual do botão
         try {
             const btn = document.getElementById('aguiaImageInterpreterBtn');
             if (btn) {
@@ -619,9 +615,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let _aguiaImageHandler = null;
 
     /**
-     * Anexa listeners de clique em imagens dentro do escopo AGUIA para permitir
-     * a interpretação ao clique. Remove listeners anteriores antes de adicionar
-     * para evitar duplicidade. O handler é armazenado em `_aguiaImageHandler`.
+     * Anexa listeners de clique em imagens dentro do escopo AGUIA para permitir a interpretação ao clique.
      * @returns {void}
      */
     function attachImageListeners() {
@@ -683,7 +677,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const imageUrl = img.src || img.getAttribute('data-src') || '';
                 const form = new FormData();
 
-                // Tentativa de buscar o blob da imagem (pode falhar por CORS)
+                // Tentativa de buscar o blob da imagem
                 let sentBlob = false;
                 if (imageUrl) {
                     try {
@@ -1147,18 +1141,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Initialize accessible defaults and controls (font-size variable, focus, handlers)
         try {
-            // Default font size variable (can be adjusted by controls)
             try { overlay.style.setProperty('--aguia-modal-font-size', overlay._aguiaFontSize || '20px'); } catch (e) {}
 
-            // Ensure content area is focusable and receives focus for screen readers
             const contentEl = overlay.querySelector('.aguia-card-content');
             if (contentEl) {
                 try { contentEl.setAttribute('tabindex', '0'); } catch (e) {}
             }
 
-            // Font size controls
             const inc = overlay.querySelector('.aguia-font-increase');
             const dec = overlay.querySelector('.aguia-font-decrease');
             const applyFontSize = function(sizePx) {
@@ -1187,13 +1177,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
 
-            // Close button already wired to closeImageInterpreterModal; ensure aria label and keyboard accessibility
             const closeBtn = overlay.querySelector('.aguia-card-close');
             if (closeBtn) {
                 try { closeBtn.setAttribute('aria-label', closeBtn.getAttribute('aria-label') || 'Fechar'); } catch (e) {}
             }
 
-            // Focus priority: content element, then copy button, then close button
             setTimeout(function() {
                 const toFocus = overlay.querySelector('.aguia-card-content') || overlay.querySelector('.aguia-copy-btn') || overlay.querySelector('.aguia-card-close');
                 if (toFocus && typeof toFocus.focus === 'function') toFocus.focus();
@@ -1221,7 +1209,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 try { menu.style.cursor = ''; try { menu.style.removeProperty('--aguia-custom-cursor'); } catch(ee){} } catch (e) {}
             try { menu.classList.remove('aguia-custom-cursor-active'); } catch (e) {}
             button.setAttribute('aria-expanded', 'false');
-            // Remove aria-modal and keyboard trap when fechando
+            // Remove aria-modal ao fechar
             try {
                 menu.removeAttribute('aria-modal');
             } catch (e) {}
@@ -1317,7 +1305,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Caso contrário, fecha o menu
                         toggleMenu();
                     } catch (err) {
-                        // silencioso
                     }
                 };
                 // Usamos pointerdown para cobrir mouse e touch de forma consistente
@@ -1594,12 +1581,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Opções para o painel de daltonismo
         const colorblindOptions = [
-            // Para 'Nenhum', não renderizamos ícone para evitar duplicação visual
             { value: 'none', text: 'Nenhum' },
             { value: 'protanopia', text: 'Protanopia (sem vermelho)', iconSvg: AguiaIcons.protanopia },
             { value: 'deuteranopia', text: 'Deuteranopia (sem verde)', iconSvg: AguiaIcons.deuteranopia },
             { value: 'tritanopia', text: 'Tritanopia (sem azul)', iconSvg: AguiaIcons.tritanopia },
-            // Removido: achromatopsia (Monocromacia)
         ];
         
         // Adiciona as opções como botões
@@ -1732,7 +1717,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 iconSvg: AguiaIcons.reduceAnimations,
                 text: 'Reduzir Animações',
                 action: function() {
-                    // Toggle reduce animations
                     toggleReduceAnimations();
                 },
                 ariaLabel: 'Ativar ou desativar redução de animações',
@@ -1762,21 +1746,19 @@ document.addEventListener('DOMContentLoaded', function() {
                                 if (expanded) {
                                     toggleMenu();
                                 } else if (menu) {
-                                    // ensure hidden if somehow visible
                                     menu.style.display = 'none';
                                 }
                             } catch (e) {}
                             if (button) button.classList.add('active');
                             showStatusMessage('Lupa de conteúdo ativada', 'success');
                         } else {
-                            // Mostra o menu quando desativa a lupa. Use toggleMenu to open if currently closed
+                            // Mostra o menu quando desativa a lupa.
                             try {
                                 const menuButton = document.getElementById('aguiaButton');
                                 const expanded = menuButton && menuButton.getAttribute('aria-expanded') === 'true';
                                 if (!expanded) {
                                     toggleMenu();
                                 } else if (menu) {
-                                    // ensure visible
                                     menu.style.display = 'block';
                                 }
                             } catch (e) {}
@@ -2061,8 +2043,6 @@ document.addEventListener('DOMContentLoaded', function() {
             message.className = 'aguia-status-message' + (type ? ' ' + type : '');
         }
 
-    // (debug logs removed for production)
-
     // Limpa posicionamento inline anterior
         message.style.left = '';
         message.style.top = '';
@@ -2079,8 +2059,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const mRect = menu.getBoundingClientRect();
 
             // Posiciona acima do menu, alinhado à borda direita do menu
-            let top = mRect.top - msgRect.height - 8; // 8px de espaçamento
-            let left = mRect.left + mRect.width - msgRect.width - 8; // alinhado à direita com 8px de folga
+            let top = mRect.top - msgRect.height - 8; 
+            let left = mRect.left + mRect.width - msgRect.width - 8;
 
             // Proteções contra sair da tela
             if (top < 8) top = 8;
@@ -2124,7 +2104,6 @@ document.addEventListener('DOMContentLoaded', function() {
             message._aguiaHideHandler = null;
         }
 
-        // Forçar reprodução da animação de entrada (reinicia caso já tenha sido reproduzida)
             try {
                 // Verifica se o usuário prefere reduzir motion via media query
                 var prefersReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2539,7 +2518,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Função para configurar modo de daltonismo (WCAG 1.4.8)
-    // Função para lidar com múltiplos modos de daltonismo
     function setColorBlindModes(modes) {
         // Remove classes anteriores do body e html para garantir que funcionem
         document.body.classList.remove(
