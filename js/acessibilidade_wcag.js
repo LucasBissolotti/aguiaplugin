@@ -2686,7 +2686,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             case 2: // OpenDyslexic
                 AGUIA_SCOPE.classList.add('aguia-opendyslexic-fonts');
-                showStatusMessage('Fontes Amigável (OpenDyslexic) ativadas', 'success');
+                showStatusMessage('Fontes Amigável (OpenDyslexic) ativada', 'success');
                 readableFontsEnabled = true;
                 break;
         }
