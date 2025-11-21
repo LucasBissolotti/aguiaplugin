@@ -147,6 +147,7 @@ Planejamos adicionar as seguintes funcionalidades em versões futuras:
 - Reconhecimento de voz para controle de funções
 - Melhoria na detecção automática de necessidades de acessibilidade
 - Relatórios de uso e eficácia das ferramentas
+- Ampliar o público, para atender as necessidades de pessoas com surdez
 
 ## Suporte
 
