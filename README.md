@@ -138,6 +138,10 @@ Este plugin implementa o provedor de privacidade do Moodle para declarar, export
 - Exportação: os dados são exportados pelo fluxo padrão do Moodle em Administração do site > Usuários > Privacidade e políticas > Exportar dados do usuário. O resultado é um pacote (ZIP) com arquivos JSON/HTML contendo as informações exportadas por componente. As preferências também aparecem em "User preferences" no relatório.
 - Exclusão: é possível solicitar a exclusão de dados pelo mesmo fluxo ("Excluir dados do usuário"). O provider do plugin remove as linhas para o(s) usuário(s) na tabela.
 
+## Teste
+
+Caso queira testar o plugin, desenvolvemos uma landing page sem fins lucrativos que pode ser acessada em: https://aguia-web.vercel.app/
+
 ## Desenvolvimento futuro
 
 Planejamos adicionar as seguintes funcionalidades em versões futuras:
@@ -155,7 +159,7 @@ Se encontrar problemas ou tiver sugestões, abra uma [issue](https://github.com/
 
 ## Licença
 
-Este plugin é licenciado sob os termos da [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.html) ou posterior.
+Este plugin é licenciado sob os termos da [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.html).
 
 ---
 
